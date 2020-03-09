@@ -36,7 +36,7 @@ public class Client extends Application{
 		view.start();
 		
 		
-		System.out.println("ajdkfhaskjdjfl");
+		System.out.println("testtest");
 	}
 
 }

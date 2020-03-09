@@ -19,9 +19,10 @@ public class Client extends Application{
 	private ClientView view;
 	private ClientController controller;
 	private ClientModel model;
-
+	
 	public static void main(String[] args) {
 		launch(args);
+		System.out.println("Git 1st try");
 
 	}
 

@@ -10,15 +10,18 @@ package Client;
 
 
 
+import Client.ClientController.ClientController;
+import Client.ClientModel.ClientModel;
+import Client.ClientView.ClientView;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 
 
 public class Client extends Application{
-	private ClientView view;
-	private ClientController controller;
-	private ClientModel model;
+	public ClientView view;
+	public ClientController controller;
+	public ClientModel model;
 
 	public static void main(String[] args) {
 		launch(args);

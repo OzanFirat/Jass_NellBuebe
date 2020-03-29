@@ -1,4 +1,4 @@
-package Client;
+package Client.ClientView;
 
 /**
  * 
@@ -8,7 +8,7 @@ package Client;
 
 import java.util.ArrayList;
 
-
+import Client.ClientModel.ClientModel;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -27,7 +27,7 @@ public class ClientView {
 	
 	
 	
-protected ClientView(Stage stage, ClientModel model) {
+public ClientView(Stage stage, ClientModel model) {
 	this.stage = stage;
 	this.model = model;
 	

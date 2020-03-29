@@ -1,4 +1,7 @@
-package Client;
+package Client.ClientController;
+
+import Client.ClientModel.ClientModel;
+import Client.ClientView.ClientView;
 
 /**
  * 
@@ -6,7 +9,6 @@ package Client;
  * @author ozanf
  *
  */
-
 
 public class ClientController {
 

@@ -1,4 +1,7 @@
-package Server;
+package Server.ServerController;
+
+import Server.ServerModel.ServerModel;
+import Server.ServerView.ServerView;
 
 /**
  * 

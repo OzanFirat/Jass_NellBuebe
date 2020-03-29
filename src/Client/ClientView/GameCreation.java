@@ -1,5 +1,5 @@
 package Client.ClientView;
 
-public class CreateGame {
+public class GameCreation {
 
 }

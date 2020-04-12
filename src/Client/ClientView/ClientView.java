@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import Client.ClientModel.ClientModel;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -19,43 +22,51 @@ public class ClientView {
 	private ClientModel model;
 	private Stage stage;
 
-	protected BorderPane root;
-	private HBox handsBox;
-	private Button b;
-	
+	private Scene sceneCreateGame;
+	private Scene sceneJassGame;
+	private final double sceneWidth = 1500;
+	private final double sceneHeight = 1000;
 
-	
-	
-	
-public ClientView(Stage stage, ClientModel model) {
-	this.stage = stage;
-	this.model = model;
-	
-	stage.setTitle("Jassen2020!");
-	
-	root = new BorderPane(); 
-	handsBox = new HBox();
-	
-	// puts the Buttons in hand for PlayingCards from hand.
-	for(int i = 0; i <=8; i++) {
-		handsBox.getChildren().add(b = new Button("b" + i));
-		
+	public JassGameRoot rootGame;
+	public CreateGameRoot rootCreateGame;
+
+
+
+
+
+	//Define the image for the background
+	private Image background = new Image(getClass().getClassLoader().getResourceAsStream("images/background1.png"));
+
+
+
+
+	public ClientView(Stage stage, ClientModel model) {
+		this.stage = stage;
+		this.model = model;
+
+		// Import the image for the background - used by many stages so it's in the constructor
+		rootCreateGame = new CreateGameRoot(model);
+		rootCreateGame.setBackground(new Background(new BackgroundImage(background, null, null, null, null)));
+		sceneCreateGame = new Scene(rootCreateGame, sceneWidth, sceneHeight);
+		sceneCreateGame.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
+
+
+		stage.setScene(sceneCreateGame);
+		stage.setResizable(false);
 	}
-	
-	
-	root.setBottom(handsBox);
-	
-	
-	Scene scene = new Scene(root);
-	stage.setScene(scene);
-	
-}
 
 
-public void start() {
-	stage.show();
-}
+	public void changeToGameScene() {
+		rootGame = new JassGameRoot(model);
+		rootGame.setBackground(new Background(new BackgroundImage(background, null, null, null, null)));
+		sceneJassGame = new Scene(rootGame, sceneWidth, sceneHeight);
+		sceneJassGame.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
+		stage.setScene(sceneJassGame);
+	}
 
+	public void start() {
+		stage.show();
+	}
 
 
 }

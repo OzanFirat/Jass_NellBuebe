@@ -16,7 +16,9 @@ public class Card {
     };
 
     public enum Rank {Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace;
-        @Override
+        private int value;
+    	
+    	@Override
         public String toString() {
             String str = "ace";  // Assume we have an ace, then cover all other cases
             // Get ordinal value, which ranges from 0 to 12
@@ -39,6 +41,27 @@ public class Card {
                 str = "king";
             }
             return str;
+        }
+    	
+    	 // needed in round to count the number of points
+        public int getValueinPoints() {
+            int value = 0;
+            int ordinal = this.ordinal();
+            if (ordinal == 0) value = 0;
+            if (ordinal== 1) value = 0;
+            if (ordinal == 2) value = 0;
+            if (ordinal == 3) value = 0;
+            if (ordinal == 4) value = 10;
+            if (ordinal == 5) value = 2;
+            if (ordinal == 6) value = 3;
+            if (ordinal == 7) value = 4;
+            if (ordinal == 8) value = 10;
+            return value;
+        }
+
+        //only used for trumpf to set the correct points for nell and buur
+        public int setAndGetValueTrumpf(int value){
+            return value;
         }
     };
 

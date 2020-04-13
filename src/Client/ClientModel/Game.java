@@ -51,6 +51,14 @@ public class Game {
             player4.addCard(deck.dealCard());
         }
     }
+    
+    private void makeRound(){
+        Round round = new Round(trumpf);
+        for (Player p : opponentPlayers){
+            Turn turn = new Turn(p, p.getHandCards().get(0));
+            round.addTurn(turn);
+        }
+    }
 
     public Player getYourPlayer() {
         return yourPlayer;

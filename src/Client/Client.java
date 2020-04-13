@@ -37,9 +37,6 @@ public class Client extends Application{
 
 		// Display the GUI after all initialization is complete
 		view.start();
-		
-		
-		System.out.println("testtest");
 	}
 
 }

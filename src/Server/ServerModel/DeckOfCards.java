@@ -7,10 +7,15 @@ import java.util.Collections;
 public class DeckOfCards {
 	
 	public final int NUMOFCARDS = 36;
-	public ArrayList<Card> deckOfCards;
+	public ArrayList<Card> deckOfCards = new ArrayList<>();
 	
-	public DeckOfCards(ArrayList<Card> cards) {
-		this.deckOfCards = new ArrayList<>(NUMOFCARDS);
+	public DeckOfCards() {
+		shuffle();
+	}
+		
+		
+	private void shuffle() {
+		deckOfCards.clear(); //Clearing the Deck
 		
 		for(Card.Suit suit : Card.Suit.values()) {
 			for(Card.Rank rank : Card.Rank.values()) {
@@ -19,12 +24,16 @@ public class DeckOfCards {
 				
 			}	
 		}
-		Collections.shuffle(deckOfCards); 	
-	}
-	
-	// player calls method and gets card from deck
-	public void getCardfromDeck() {
 		
+		Collections.shuffle(deckOfCards); 	
+		
+	}
+
+	
+	// takes the first Card of the Deck and returns it. 
+	public Card dealCard() {
+		Card card = (deckOfCards.size() > 0) ? deckOfCards.remove(deckOfCards.size()-1): null;
+		return card;
 	}	
 }
 

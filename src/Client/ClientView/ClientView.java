@@ -24,8 +24,8 @@ public class ClientView {
 
 	private Scene sceneCreateGame;
 	private Scene sceneJassGame;
-	private final double sceneWidth = 1500;
-	private final double sceneHeight = 1000;
+	private final double sceneWidth = 1400;
+	private final double sceneHeight = 800;
 
 	public JassGameRoot rootGame;
 	public CreateGameRoot rootCreateGame;
@@ -35,7 +35,7 @@ public class ClientView {
 
 
 	//Define the image for the background
-	private Image background = new Image(getClass().getClassLoader().getResourceAsStream("images/background1.png"));
+	private Image background = new Image(getClass().getClassLoader().getResourceAsStream("images/background_1400x800.png"));
 
 
 

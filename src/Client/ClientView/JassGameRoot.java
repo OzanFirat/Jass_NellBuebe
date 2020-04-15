@@ -22,16 +22,24 @@ public class JassGameRoot extends Pane {
     public ArrayList<CardLabel> playedCards = new ArrayList<>();
 
     //Panes to add the elements needed to play
+    
     Pane rootCards = new Pane();
     Pane cardsInMiddle = new Pane();
-    Pane opponents = new Pane();
+    Pane player2 = new Pane();
+    Pane player3 = new Pane();
+    Pane player4 = new Pane();
 
     //Elements to display the opponents
-    public CardLabel oppCard;
-    private ArrayList<ImageView> imgOpponents = new ArrayList<>();
-    protected ArrayList<Label> lblOpponentName = new ArrayList<>();
-    protected ArrayList<Pane> oppContainers = new ArrayList<>();
-
+    public ArrayList<CardLabel> oppPlayer2Cards = new ArrayList<>();
+    public ArrayList<CardLabel> oppPlayer3Cards = new ArrayList<>();
+    public ArrayList<CardLabel> oppPlayer4Cards = new ArrayList<>();
+    public Label lblPlayer2Name = null;
+    public Label lblPlayer3Name = null;
+    public Label lblPlayer4Name = null;
+    public ImageView imvPlayer2 = null;
+    public ImageView imvPlayer3 = null;
+    public ImageView imvPlayer4 = null;
+    
     //Elements to display the chat
     protected TextArea txtChat = new TextArea();
     protected TextField inputChat = new TextField();
@@ -46,25 +54,33 @@ public class JassGameRoot extends Pane {
 
     // ArrayList for the playable Cards
     public ArrayList<CardLabel> yourCards = new ArrayList<>();
-    public double xStartPoint = 275;
-    public double yStartingPoint = 770;
-    public double xSpace = 106.25;
+    public double xStartPoint = 342.5;
+    public double yStartingPoint = 630;
+    public double xSpace = 80;
 
     // TEST Button to remove cards In Middle, and one to replace them
     public Button btnRemove = new Button("Remove");
     public Button btnRemake = new Button("Remake");
+    
+    private double xMiddle = 700;
+    private double yMiddle = 400;
+    private double cardWidth = 75;
+    private double cardHeight = 120;
+    private double spaceToEdge = 50;
 
     public JassGameRoot(ClientModel model) {
         this.model = model;
 
         createYourCards();
-        createOpponentLabel();
+        createPlayer2();
+        createPlayer3();
+        createPlayer4();
         createTrumpfElements();
         createScoreFrame();
         placeRemoveButton();
         placeCreateCardsInMiddleBtn();
 
-        this.getChildren().addAll(rootCards, cardsInMiddle, opponents, cntTrumpf, btnRemake, btnRemove, txtScore);
+        this.getChildren().addAll(rootCards, cardsInMiddle, player2, player3, player4, cntTrumpf, btnRemake, btnRemove, txtScore);
 
     }
 
@@ -112,74 +128,100 @@ public class JassGameRoot extends Pane {
 
     */
 
-    public void createOpponentLabel() {
-        Image back = new Image(getClass().getClassLoader().getResourceAsStream("images/back.jpg"));
-
-        for (int i = 0; i < 3; i++) {
-
-            ImageView opp = new ImageView(back);
-            opp.setPreserveRatio(true);
-            opp.setFitWidth(100);
-
-            imgOpponents.add(opp);
-            Label oppName = new Label(model.getGame().getOpponentPlayers().get(i).getPlayerName());
-            oppName.setMinWidth(opp.getFitWidth());
-
-            lblOpponentName.add(oppName);
-            VBox container = new VBox();
-            container.getChildren().addAll(oppName, opp);
-            oppContainers.add(container);
-        }
-
-        oppContainers.get(1).setTranslateX(700);
-        oppContainers.get(1).setTranslateY(70);
-
-
-        oppContainers.get(0).setTranslateX(1300);
-        oppContainers.get(0).setTranslateY(400);
-        oppContainers.get(0).setRotate(90);
-
-        oppContainers.get(2).setTranslateX(100);
-        oppContainers.get(2).setTranslateY(400);
-        oppContainers.get(2).setRotate(270);
-
-        opponents.getChildren().addAll(oppContainers);
-    }
+    
 
     public void createPlayer2(){
+        // Create the stack of cards to play
+        for (int i = 0; i < model.getGame().getOpponentPlayers().get(0).getHandCards().size(); i++){
+            CardLabel card = new CardLabel(model.getGame().getOpponentPlayers().get(0).getHandCards().get(i));
+            oppPlayer2Cards.add(card);
+        }
+
+        // Create the image (back of card) to display player
         Image back = new Image(getClass().getClassLoader().getResourceAsStream("images/back.jpg"));
-        ImageView opp = new ImageView(back);
-        opp.setFitHeight(160);
-        opp.setFitWidth(100);
+        imvPlayer2 = new ImageView(back);
+        imvPlayer2.setFitHeight(cardHeight);
+        imvPlayer2.setFitWidth(cardWidth);
 
-        Label oppName = new Label(model.getGame().getOpponentPlayers().get(0).getPlayerName());
-        oppName.setMinWidth(opp.getFitWidth());
+        // Create the label to show player name
+        lblPlayer2Name = new Label(model.getGame().getOpponentPlayers().get(0).getPlayerName());
+        lblPlayer2Name.setMinWidth(imvPlayer2.getFitWidth());
 
+        // Create the container to add back and player name
+        VBox container = new VBox();
+        container.getChildren().addAll(lblPlayer2Name, imvPlayer2);
 
+        // Add the ArrayList Cardlabel and the container (name and image) to the pane
+        player2.getChildren().addAll(oppPlayer2Cards);
+        player2.getChildren().add(container);
+
+        // Place the pane at the right place
+        player2.setRotate(90);
+        player2.setTranslateX(1400 - (spaceToEdge + cardHeight));
+        player2.setTranslateY(yMiddle - cardWidth);
+        
     }
 
     public void createPlayer3(){
+        // Create the stack of cards to play
+        for (int i = 0; i < model.getGame().getOpponentPlayers().get(1).getHandCards().size(); i++){
+            CardLabel card = new CardLabel(model.getGame().getOpponentPlayers().get(1).getHandCards().get(i));
+            oppPlayer3Cards.add(card);
+        }
+
+        // Create the image (back of card) to display player
         Image back = new Image(getClass().getClassLoader().getResourceAsStream("images/back.jpg"));
-        ImageView opp = new ImageView(back);
-        opp.setFitHeight(160);
-        opp.setFitWidth(100);
+        imvPlayer3 = new ImageView(back);
+        imvPlayer3.setFitHeight(cardHeight);
+        imvPlayer3.setFitWidth(cardWidth);
 
-        Label oppName = new Label(model.getGame().getOpponentPlayers().get(1).getPlayerName());
-        oppName.setMinWidth(opp.getFitWidth());
+        // Create the label to show player name
+        lblPlayer3Name = new Label(model.getGame().getOpponentPlayers().get(1).getPlayerName());
+        lblPlayer3Name.setMinWidth(imvPlayer3.getFitWidth());
 
+        // Create the container to add back and player name
+        VBox container = new VBox();
+        container.getChildren().addAll(lblPlayer3Name, imvPlayer3);
 
+        // Add the ArrayList Cardlabel and the container (name and image) to the pane
+        player3.getChildren().addAll(oppPlayer3Cards);
+        player3.getChildren().add(container);
+
+        // Place the pane at the right place
+        player3.setTranslateX(xMiddle - (cardWidth/2));
+        player3.setTranslateY(spaceToEdge);
     }
 
     public void createPlayer4(){
+        // Create the stack of cards to play
+        for (int i = 0; i < model.getGame().getOpponentPlayers().get(2).getHandCards().size(); i++){
+            CardLabel card = new CardLabel(model.getGame().getOpponentPlayers().get(2).getHandCards().get(i));
+            oppPlayer4Cards.add(card);
+        }
+
+        // Create the image (back of card) to display player
         Image back = new Image(getClass().getClassLoader().getResourceAsStream("images/back.jpg"));
-        ImageView opp = new ImageView(back);
-        opp.setFitHeight(160);
-        opp.setFitWidth(100);
+        imvPlayer4 = new ImageView(back);
+        imvPlayer4.setFitHeight(cardHeight);
+        imvPlayer4.setFitWidth(cardWidth);
 
-        Label oppName = new Label(model.getGame().getOpponentPlayers().get(2).getPlayerName());
-        oppName.setMinWidth(opp.getFitWidth());
+        // Create the label to show player name
+        lblPlayer4Name = new Label(model.getGame().getOpponentPlayers().get(2).getPlayerName());
+        lblPlayer4Name.setMinWidth(imvPlayer4.getFitWidth());
 
+        // Create the container to add back and player name
+        VBox container = new VBox();
+        container.getChildren().addAll(lblPlayer4Name, imvPlayer4);
 
+        // Add the ArrayList Cardlabel and the container (name and image) to the pane
+        player4.getChildren().addAll(oppPlayer4Cards);
+        player4.getChildren().add(container);
+
+        // Place the pane at the right place
+        player4.setRotate(270);
+        player4.setTranslateX(spaceToEdge+20);
+        player4.setTranslateY(yMiddle - cardWidth);
+        
     }
 
 
@@ -190,10 +232,10 @@ public class JassGameRoot extends Pane {
         imgTrumpf = loadTrumpfImage();
         imgContainer.getChildren().add(imgTrumpf);
         imgContainer.getStyleClass().add("trumpf");
-        lblTrumpf.setMinWidth(90);
+        lblTrumpf.setMinWidth(70);
         cntTrumpf.getChildren().addAll(lblTrumpf, imgContainer);
-        cntTrumpf.setTranslateX(850);
-        cntTrumpf.setTranslateY(70);
+        cntTrumpf.setTranslateX(xMiddle + cardWidth*2);
+        cntTrumpf.setTranslateY(spaceToEdge);
     }
 
 
@@ -219,8 +261,8 @@ public class JassGameRoot extends Pane {
         TranslateTransition animation = new TranslateTransition();
         animation.setDuration(Duration.seconds(1));
         animation.setNode(card);
-        animation.setToX(700);
-        animation.setToY(500);
+        animation.setToX(xMiddle - (cardWidth/2));
+        animation.setToY(yMiddle + 10);
         animation.play();
     }
 
@@ -236,7 +278,7 @@ public class JassGameRoot extends Pane {
         TranslateTransition animation = new TranslateTransition();
         animation.setDuration(Duration.seconds(1));
         animation.setNode(card);
-        animation.setToY(500);
+        animation.setToY(yMiddle-10);
         animation.play();
     }
 
@@ -259,8 +301,8 @@ public class JassGameRoot extends Pane {
         Image trumpf = new Image(getClass().getClassLoader().getResourceAsStream("images/" + fileName));
         ImageView img = new ImageView();
         img.setImage(trumpf);
-        img.setFitWidth(70);
-        img.setFitHeight(70);
+        img.setFitWidth(50);
+        img.setFitHeight(50);
         return img;
     }
 

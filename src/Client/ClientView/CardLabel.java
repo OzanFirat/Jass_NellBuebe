@@ -13,8 +13,8 @@ public class CardLabel extends Label {
         String fileName = cardToFileName(c);
         Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/" + fileName));
         ImageView imv = new ImageView(image);
-        imv.setFitHeight(160);
-        imv.setFitWidth(100);
+        imv.setFitHeight(120);
+        imv.setFitWidth(75);
         this.setGraphic(imv);
         this.card = c;
     }

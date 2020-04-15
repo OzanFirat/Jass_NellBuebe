@@ -18,7 +18,9 @@ public class CreateGameRoot extends Pane {
     public Button btnStartGame;
     private Rectangle rect;
     public ArrayList<Button> btnChooseTrumpf = new ArrayList<Button>(4);
-
+    
+    public int xMiddle = 700;
+    public int yMiddle = 400;
 
 
     public CreateGameRoot(ClientModel model) {
@@ -33,16 +35,16 @@ public class CreateGameRoot extends Pane {
 
 
     private Rectangle createBackgroundRect(){
-        Rectangle rect = new Rectangle(750, 500);
-        rect.setTranslateY(250);
-        rect.setTranslateX(375);
+        Rectangle rect = new Rectangle(xMiddle, yMiddle);
+        rect.setTranslateY(yMiddle - (yMiddle/2));
+        rect.setTranslateX(xMiddle - (xMiddle/2));
         return rect;
     }
 
     private Button createBtnStartGame(){
         Button btn = new Button("Start");
-        btn.setTranslateX(1000);
-        btn.setTranslateY(700);
+        btn.setTranslateX(xMiddle + 200);
+        btn.setTranslateY(yMiddle + 150);
         return btn;
     }
 
@@ -65,8 +67,8 @@ public class CreateGameRoot extends Pane {
 
 
 
-        box.setTranslateX(550);
-        box.setTranslateY(475);
+        box.setTranslateX(500);
+        box.setTranslateY(365);
         box.getChildren().addAll(btnChooseTrumpf);
         box.setAlignment(Pos.CENTER);
         return box;

@@ -1,8 +1,0 @@
-/**
- * 
- */
-/**
- * @author ozanf
- *
- */
-package Client;

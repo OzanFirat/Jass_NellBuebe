@@ -3,12 +3,10 @@ package Client.View;
 import Client.Model.ClientModel;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -95,6 +93,19 @@ public class GameView {
     //Define the image for the background
     private Image background = new Image(getClass().getClassLoader().getResourceAsStream("images/background_1400x800.png"));
 
+    // Elements to display the chatRoom
+    public Button btnChatGame;
+
+    // Elements to display gameRules
+
+    public Label lblGameInstruction;
+
+    public Button btngameCards;
+    public Button btnNebenfarbe;
+    public Button btnTrump;
+    public Button btnUndeUfe;
+    public Button btnObeAbe;
+
     public GameView(Stage gameStage, ClientModel model) {
         this.gameStage = gameStage;
         this.model = model;
@@ -123,6 +134,44 @@ public class GameView {
         rootJassGame.getChildren().addAll(rootCards, vBoxTrumpf, cardsPlayedByOpponents, overlayNotYourTurn, paneScoreTable);
         rootJassGame.getChildren().addAll(oppPanes);
         rootJassGame.setBackground(new Background(new BackgroundImage(background, null, null, null, null)));
+
+        btnChatGame = new Button("start Chat");
+        btnChatGame.setTranslateX(1200);
+        btnChatGame.setTranslateY(725);
+
+
+        lblGameInstruction = new Label("game instruction");
+        lblGameInstruction.setAlignment(Pos.CENTER);
+        lblGameInstruction.setId("titleRules");
+        lblGameInstruction.setTranslateX(60);
+        lblGameInstruction.setTranslateY(605);
+
+        btngameCards = new Button("basic principles");
+        btngameCards.setId("rules");
+        btngameCards.setTranslateX(60);
+        btngameCards.setTranslateY(625);
+
+        btnTrump = new Button("trump");
+        btnTrump.setId("rules");
+        btnTrump.setTranslateX(60);
+        btnTrump.setTranslateY(650);
+
+        btnNebenfarbe = new Button("nebenfarbe");
+        btnNebenfarbe.setId("rules");
+        btnNebenfarbe.setTranslateX(60);
+        btnNebenfarbe.setTranslateY(675);
+
+        btnObeAbe = new Button("obeabe");
+        btnObeAbe.setId("rules");
+        btnObeAbe.setTranslateX(60);
+        btnObeAbe.setTranslateY(700);
+
+        btnUndeUfe = new Button("undeufe");
+        btnUndeUfe.setId("rules");
+        btnUndeUfe.setTranslateX(60);
+        btnUndeUfe.setTranslateY(725);
+
+        rootJassGame.getChildren().addAll(btnChatGame,btngameCards,btnTrump,btnNebenfarbe,btnUndeUfe,btnObeAbe,lblGameInstruction);
 
         Scene scene = new Scene(rootJassGame, sceneWidth, sceneHeight);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());

@@ -1,22 +1,22 @@
 package Server;
 
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.logging.Logger;
+
 
 public class ServerView {
 
-
-
     private Stage stage;
     private ServerModel model;
-
 
     //Labels
     Label serverIP;
@@ -34,23 +34,12 @@ public class ServerView {
     MenuItem DEItem;
     MenuItem ENGItem;
 
-    private String externIP;
-    private String internIP;
+    //Define the image for the background in serverView
+    private Image tafel = new Image(getClass().getClassLoader().getResourceAsStream("images/tafel.jpg"));
+
 
     public ServerView(Stage stage, ServerModel model) {
         this.stage = stage;
-
-        /**
-         try{
-         this.externIP = InetAddress.getLocalHost().toString().substring(18);
-         this.internIP = InetAddress.getLoopbackAddress().toString().substring(10);
-         } catch (UnknownHostException e) {
-         e.printStackTrace();
-         }
-
-         **/
-        Logger logger = ServerMain.sMain.getLogger();
-
 
         // initializing the menuBar
         MenuBar mBar = new MenuBar();
@@ -63,25 +52,42 @@ public class ServerView {
         ENGItem = new MenuItem("ENG");
 
         serverMenu.getItems().addAll();
-        languageMenu.getItems().addAll(DEItem,ENGItem);
-        mBar.getMenus().addAll(serverMenu,languageMenu,helpMenu);
+        languageMenu.getItems().addAll(DEItem, ENGItem);
+        mBar.getMenus().addAll(serverMenu, languageMenu, helpMenu);
 
         // initializing all GUI elements
         lblJassGame = new Label("JASS_GAME-SERVER");
-        serverIP = new Label("Server-IP: ");
-        startBtn = new Button("star Server");
+        lblJassGame.setFont(Font.font("Comic Sans MS", 20));
+        lblJassGame.getStyleClass().add("server-text");
+
+        serverIP = new Label("Server-IP: 127.0.0.1");
+        serverIP.setFont(Font.font("Comic Sans MS", 20));
+        serverIP.getStyleClass().add("server-text");
+
+        startBtn = new Button("start Server");
+        startBtn.setFont(Font.font("Comic Sans MS", 15));
+
 
         GridPane gp = new GridPane();
+
+        // To align horizontally and vertically in the cell
+        GridPane.setHalignment(lblJassGame, HPos.CENTER);
+        GridPane.setValignment(lblJassGame, VPos.CENTER);
+
+        GridPane.setHalignment(serverIP, HPos.CENTER);
+        GridPane.setValignment(serverIP, VPos.CENTER);
+
+        GridPane.setHalignment(startBtn, HPos.CENTER);
+        GridPane.setValignment(startBtn, VPos.CENTER);
+
         gp.add(lblJassGame, 0, 0);
         gp.add(serverIP, 0, 1);
-        gp.add(startBtn,0,2);
-
-        BorderPane bp = new BorderPane();
-        bp.setTop(mBar);
-        bp.setCenter(gp);
+        gp.add(startBtn, 0, 2);
+        gp.setBackground(new Background(new BackgroundImage(tafel, null, null, null, null)));
 
         // set up the scene
-        Scene scene = new Scene(bp);
+        Scene scene = new Scene(gp);
+        scene.getStylesheets().add(getClass().getResource("server.css").toExternalForm());
 
         // set up the stage
         stage.setTitle("NellBuebe-Server");

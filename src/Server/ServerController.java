@@ -9,8 +9,6 @@ public class ServerController {
     private ServerModel  serverModel;
     private ServerView serverView;
 
-    //private ServiceLocator serviceLocator = ServiceLocator.getServiceLocator();
-    //private Translator t = serviceLocator.getTranslator();
 
 
     public ServerController(ServerModel serverModel,ServerView serverView ){
@@ -32,5 +30,10 @@ public class ServerController {
                 System.exit(0);
             }
         });
+    }
+
+    // change lblName to Server is running
+    public void changeStartServerLabel(){
+        serverView.startBtn.setText("Server is running!");
     }
 }

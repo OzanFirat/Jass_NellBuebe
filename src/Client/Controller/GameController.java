@@ -23,6 +23,12 @@ public class GameController {
         this.model = model;
         this.gameView = gameView;
         log = JassClient.mainProgram.getLogger();
+
+
+        // method for calling chatroom from gameView
+        gameView.btnChatGame.setOnAction( e-> {
+            JassClient.mainProgram.startChat();
+        });
     }
 
     public void initializeElements(){

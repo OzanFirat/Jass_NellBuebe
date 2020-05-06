@@ -1,0 +1,12 @@
+.root {
+    -fx-alignment: center;
+    -fx-text-fill: #ffffff;
+}
+
+.server-text {
+    -fx-alignment: center;
+    -fx-text-fill: white;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}

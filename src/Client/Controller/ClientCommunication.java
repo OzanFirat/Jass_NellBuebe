@@ -139,7 +139,6 @@ public class ClientCommunication {
         // success we inform the caller that it worked
         return true;
 
-
     }
 
 
@@ -173,7 +172,7 @@ public class ClientCommunication {
 
                     switch(receivedMessage.getType()){
                         case CHATMESSAGE:
-                            // TODO Set what happens when incoming chat message
+                            JassClient.mainProgram.getChatcontroller().updateChatView(receivedMessage.getMessage());
                             logger.info("Chat Message received: "+ receivedMessage.getMessage());
                             break;
                         case LOGINREJECTED:
@@ -196,6 +195,7 @@ public class ClientCommunication {
                         case WHOISIN:
                             model.setPlayerNames(receivedMessage.getPlayerNames());
                             JassClient.mainProgram.getLobbyController().updateLobby();
+                            JassClient.mainProgram.getChatcontroller().updateChatEntry();
                             logger.info("Who is in message received");
                             break;
                         case TRUMPF:
@@ -204,8 +204,6 @@ public class ClientCommunication {
                             model.fillPlayerWithPoints();
                             break;
                         case STARTGAME:
-
-
                             // Set your cards, identify the opponents and initialize the game
                             if (model.getUserName().equals(receivedMessage.getPlayerName())) {
                                     JassClient.mainProgram.getLobbyController().setCardStyle();
@@ -226,9 +224,6 @@ public class ClientCommunication {
                                 logger.info("It's not your turn");
                                 // Create the overlay if it's not your turn
                                 JassClient.mainProgram.getGameView().showOverlayNotYourTurn();
-
-
-
                             }
                             break;
                         case CARDPLAYED:

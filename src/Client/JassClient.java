@@ -125,6 +125,17 @@ public class JassClient extends Application {
         gameOverView.stop();
     }
 
+    // methods for the chatRoom
+    public void startChat(){
+        chatView.start();
+    }
+
+    public void stopChat() {
+        if(chatView != null) {
+            chatView.stop();
+        }
+    }
+
     public Logger getLogger(){
         return log;
     }
@@ -187,5 +198,9 @@ public class JassClient extends Application {
 
     public GameOverController getGameOverController() {
         return gameOverController;
+    }
+
+    public ChatController getChatcontroller() {
+        return chatController;
     }
 }

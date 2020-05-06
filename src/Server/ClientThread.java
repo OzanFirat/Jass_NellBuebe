@@ -91,11 +91,9 @@ public class ClientThread extends Thread {
                     } else {
                        addPlayerToGame();
                     }
-
-
                     break;
-                case WHOISIN:
-
+                case CHATMESSAGE:
+                    serverModel.broadcast(new Message(Message.Type.CHATMESSAGE,getUsername()+": "+ receivedMessage.getMessage()));
                     break;
 
                 case STARTGAME:

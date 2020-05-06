@@ -24,6 +24,10 @@ public class LobbyController {
             log.info(model.getUserName() +" sent start game request");
         });
 
+        lobbyView.getBtnChat().setOnAction(e-> {
+            JassClient.mainProgram.startChat();
+        });
+
     }
 
     // TODO Call after message, not button click - Do smth to avoid NullPointerException if no value

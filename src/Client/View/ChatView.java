@@ -98,4 +98,9 @@ public class ChatView {
     public void stop() {
         chatStage.hide();
     }
+
+    // TODO Rules have to be optimized
+    public void showRule(){
+
+    }
 }

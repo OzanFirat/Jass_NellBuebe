@@ -2,6 +2,10 @@ package Client.Model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.image.ImageView;
+import  javafx.scene.image.Image;
 
 import java.util.ArrayList;
 
@@ -68,6 +72,7 @@ public class ClientModel {
         }
     }
 
+    // Getters and Setters
     public String getUserName() {
         return userName;
     }

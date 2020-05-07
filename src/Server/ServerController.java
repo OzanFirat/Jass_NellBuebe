@@ -21,6 +21,7 @@ public class ServerController {
                 //ServerMain sMain = new ServerMain();
                 //sMain.acceptConnections();
                 serverModel.startServer();
+                changeStartServerLabel();
                 serverView.startBtn.setDisable(true);
                 //serverView.startBtn.setText(t.getString("server is running"));
             }

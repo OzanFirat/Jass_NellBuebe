@@ -6,8 +6,7 @@ import Client.View.CardLabel;
 import Client.View.GameView;
 import Common.Message;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
+
 
 import java.util.logging.Logger;
 
@@ -25,9 +24,28 @@ public class GameController {
         log = JassClient.mainProgram.getLogger();
 
 
-        // method for calling chatroom from gameView
+        // eventHandling for starting chatRoom
         gameView.btnChatGame.setOnAction( e-> {
             JassClient.mainProgram.startChat();
+        });
+
+        // eventHandling for all gameInstructions
+        gameView.btngameCards.setOnAction(e->{
+            gameView.showPlayingCards();
+        });
+
+        gameView.btnTrump.setOnAction(e->{
+            gameView.showTrumpRule();
+        });
+        gameView.btnMinorSuit.setOnAction(e->{
+            gameView.showMinorSuitRule();
+        });
+
+        gameView.btnTopsDown.setOnAction(e->{
+            gameView.showTopsDownRule();
+        });
+        gameView.btnBottomsUp.setOnAction(e->{
+            gameView.showBottomsUpRule();
         });
     }
 
@@ -119,5 +137,6 @@ public class GameController {
             }
         });
     }
+
 }
 

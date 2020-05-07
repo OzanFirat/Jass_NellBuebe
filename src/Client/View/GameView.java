@@ -97,14 +97,17 @@ public class GameView {
     public Button btnChatGame;
 
     // Elements to display gameRules
-
     public Label lblGameInstruction;
 
     public Button btngameCards;
-    public Button btnNebenfarbe;
+    public Button btnMinorSuit;
     public Button btnTrump;
-    public Button btnUndeUfe;
-    public Button btnObeAbe;
+    public Button btnTopsDown;
+    public Button btnBottomsUp;
+
+    //Elements to display the languageSetting
+    ChoiceBox<String> choiceBoxLanguage;
+
 
     public GameView(Stage gameStage, ClientModel model) {
         this.gameStage = gameStage;
@@ -135,43 +138,57 @@ public class GameView {
         rootJassGame.getChildren().addAll(oppPanes);
         rootJassGame.setBackground(new Background(new BackgroundImage(background, null, null, null, null)));
 
+        // defined Chat-Elements in gameView
         btnChatGame = new Button("start Chat");
-        btnChatGame.setTranslateX(1200);
+        btnChatGame.setId("chatButton");
+        btnChatGame.setTranslateX(1100);
         btnChatGame.setTranslateY(725);
 
-
-        lblGameInstruction = new Label("game instruction");
+        // defined Rules-Elements in gameView
+        lblGameInstruction = new Label("GAME INSTRUCTION");
         lblGameInstruction.setAlignment(Pos.CENTER);
         lblGameInstruction.setId("titleRules");
         lblGameInstruction.setTranslateX(60);
         lblGameInstruction.setTranslateY(605);
 
-        btngameCards = new Button("basic principles");
+        btngameCards = new Button("PLAYING CARDS");
         btngameCards.setId("rules");
         btngameCards.setTranslateX(60);
         btngameCards.setTranslateY(625);
 
-        btnTrump = new Button("trump");
+        btnTrump = new Button("TRUMP");
         btnTrump.setId("rules");
         btnTrump.setTranslateX(60);
         btnTrump.setTranslateY(650);
 
-        btnNebenfarbe = new Button("nebenfarbe");
-        btnNebenfarbe.setId("rules");
-        btnNebenfarbe.setTranslateX(60);
-        btnNebenfarbe.setTranslateY(675);
+        btnMinorSuit = new Button("MINOR SUIT");
+        btnMinorSuit.setId("rules");
+        btnMinorSuit.setTranslateX(60);
+        btnMinorSuit.setTranslateY(675);
 
-        btnObeAbe = new Button("obeabe");
-        btnObeAbe.setId("rules");
-        btnObeAbe.setTranslateX(60);
-        btnObeAbe.setTranslateY(700);
+        btnTopsDown = new Button("TOPS-DOWN");
+        btnTopsDown.setId("rules");
+        btnTopsDown.setTranslateX(60);
+        btnTopsDown.setTranslateY(700);
 
-        btnUndeUfe = new Button("undeufe");
-        btnUndeUfe.setId("rules");
-        btnUndeUfe.setTranslateX(60);
-        btnUndeUfe.setTranslateY(725);
+        btnBottomsUp = new Button("BOTTOMS-UP");
+        btnBottomsUp.setId("rules");
+        btnBottomsUp.setTranslateX(60);
+        btnBottomsUp.setTranslateY(725);
 
-        rootJassGame.getChildren().addAll(btnChatGame,btngameCards,btnTrump,btnNebenfarbe,btnUndeUfe,btnObeAbe,lblGameInstruction);
+        // defined Rule-Elements in gameView
+        choiceBoxLanguage = new ChoiceBox<>();
+        choiceBoxLanguage.setValue("EN");
+        choiceBoxLanguage.getItems().add("EN");
+        choiceBoxLanguage.getItems().add("DE");
+        choiceBoxLanguage.setId("languageSetting");
+        choiceBoxLanguage.setTranslateX(1300);
+        choiceBoxLanguage.setTranslateY(725);
+
+
+        rootJassGame.getChildren().add(btnChatGame);
+        rootJassGame.getChildren().addAll(btngameCards,btnTrump,btnMinorSuit,btnBottomsUp,btnTopsDown,lblGameInstruction);
+        rootJassGame.getChildren().add(choiceBoxLanguage);
 
         Scene scene = new Scene(rootJassGame, sceneWidth, sceneHeight);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
@@ -602,6 +619,79 @@ public class GameView {
             }
         });
 
+    }
+
+    // methods for gameInstructions
+    public void showPlayingCards(){
+        Alert rules = new Alert(Alert.AlertType.NONE,"You can choose between a deck of German playing cards or a deck of French playing cards.\n" +
+                "\n" + "A deck of cards has 4 suits, each of which contains 9 playing cards. A total of 36 cards are used in the game. For every type of Jass game" +
+                " played on Jass.ch 3 × 3 cards are dealt, i.e. each player receives 9 cards.\n" +
+                "\n" + "The total value of all counters in the deck is 152 for Differenzler, Schieber and Coiffeur. Taking the last trick scores an additional 5 points, which means there are a total of 157 points to be won.");
+        rules.setTitle("Playing Cards");
+        Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Grundlagen_eng.jpg"));
+        ImageView pCardView= new ImageView(pCards);
+        pCardView.setFitHeight(400);
+        pCardView.setFitWidth(450);
+        rules.setGraphic(pCardView);
+        rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        rules.showAndWait();
+    }
+
+    public void showTrumpRule(){
+        Alert rules = new Alert(Alert.AlertType.NONE,"Trump\n" +
+                "\n" +
+                "The suit declared trumps beats cards of all ranks in the minor suits. " +
+                "The ranking within the trump suit as well as the point values are shown in " +
+                "the adjoining table. A higher-ranked card beats a lower-ranked one.");
+        rules.setTitle("Playing Cards");
+        Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Trumpf_Rangfolge_Kartenwerte_eng.jpg"));
+        ImageView pCardView= new ImageView(pCards);
+        pCardView.setFitHeight(400);
+        pCardView.setFitWidth(450);
+        rules.setGraphic(pCardView);
+        rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        rules.showAndWait();
+    }
+
+    public void showMinorSuitRule(){
+        Alert rules = new Alert(Alert.AlertType.NONE,"Minor suit\n" +
+                "\n" +
+                "The adjoining table shows the rankings within the minor suits as well" +
+                " as the point values. A higher-ranked card beats a lower-ranked one.");
+        rules.setTitle("Playing Cards");
+        Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Nebenfarbe_Rangfolge_Kartenwerte_eng.jpg"));
+        ImageView pCardView= new ImageView(pCards);
+        pCardView.setFitHeight(400);
+        pCardView.setFitWidth(450);
+        rules.setGraphic(pCardView);
+        rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        rules.showAndWait();
+    }
+
+    public void showTopsDownRule(){
+        Alert rules = new Alert(Alert.AlertType.NONE,"Tops-down\n" +
+                "\n" +
+                "There is no trump suit in tops-down. The adjoining table shows the ranking as well as the point values. In tops-down, Ace is highest. A higher-ranked card also beats a lower-ranked card in both tops-down and bottoms-up.");
+        Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Obenabe_Rangfolge_Kartenwerte_eng.jpg"));
+        ImageView pCardView= new ImageView(pCards);
+        pCardView.setFitHeight(400);
+        pCardView.setFitWidth(450);
+        rules.setGraphic(pCardView);
+        rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        rules.showAndWait();
+    }
+
+    public void showBottomsUpRule(){
+        Alert rules = new Alert(Alert.AlertType.NONE,"Bottoms-up\n" +
+                "\n" +
+                "There is no trump suit in bottoms-up. The adjoining table shows the ranking as well as the point values. In bottoms-up, Six is highest. A higher-ranked card also beats a lower-ranked card in both tops-down and bottoms-up.");
+        Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Udenufe_Rangfolge_Kartenwerte_eng.jpg"));
+        ImageView pCardView= new ImageView(pCards);
+        pCardView.setFitHeight(400);
+        pCardView.setFitWidth(450);
+        rules.setGraphic(pCardView);
+        rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        rules.showAndWait();
     }
 
     public Pane getRootCards() {

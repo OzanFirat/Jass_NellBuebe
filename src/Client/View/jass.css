@@ -101,3 +101,31 @@
     -fx-max-width: 150px;
     -fx-min-width: 150px;
 }
+
+#rules:hover{
+    -fx-background-color: grey;
+}
+#rules:pressed{
+    -fx-background-color: black;
+}
+
+
+#languageSetting{
+    -fx-background-color: #424242;
+}
+#languageSetting >.label{
+    -fx-text-fill: white;
+}
+
+#languageSetting .menu-item{
+    -fx-background-color: #424242;
+}
+#languageSetting .menu-item >.label{
+    -fx-text-fill: white;
+}
+
+
+#chatButton{
+    -fx-background-color: #424242;
+    -fx-text-fill: white;
+}

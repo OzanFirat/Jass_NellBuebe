@@ -31,14 +31,18 @@ public class ChatView {
     public Menu helpMenu;
     public MenuItem chatInfoItem;
 
+
+
     public ChatView(Stage chatStage, ClientModel model) {
         this.chatStage = chatStage;
         this.model = model;
-        chatStage.setTitle("Jass ChatRoom");
+
+        //chatStage.setTitle("Jass ChatRoom");
 
         messageEntry = new TextArea();
         messageEntry.setMinHeight(40);
         messageEntry.setMaxHeight(50);
+        messageEntry.setEditable(true);
 
 
         chatHistory  = new TextArea("");
@@ -49,6 +53,7 @@ public class ChatView {
 
         exitChatButton = new Button("Exit");
         sendButton = new Button("Send");
+        sendButton.setId("sendButton");
 
         HBox hB = new HBox();
         hB.getChildren().addAll(exitChatButton,sendButton);
@@ -92,15 +97,11 @@ public class ChatView {
     }
 
     public void start() {
+        chatStage.setTitle(model.getUserName());
         chatStage.show();
     }
 
     public void stop() {
         chatStage.hide();
-    }
-
-    // TODO Rules have to be optimized
-    public void showRule(){
-
     }
 }

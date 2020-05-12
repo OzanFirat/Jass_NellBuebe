@@ -3,7 +3,7 @@ package Client.Controller;
 import Client.JassClient;
 import Client.Model.ClientModel;
 import Client.View.LoginView;
-import Common.Message;
+import Common.Messages.Message;
 
 
 import java.util.logging.Logger;

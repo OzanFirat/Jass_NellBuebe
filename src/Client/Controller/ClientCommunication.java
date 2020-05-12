@@ -5,7 +5,8 @@ package Client.Controller;
 import Client.JassClient;
 import Client.Model.ClientModel;
 import Client.Model.PlayerScoreTuple;
-import Common.Message;
+import Client.View.ChatView;
+import Common.Messages.Message;
 import javafx.application.Platform;
 
 import java.io.IOException;
@@ -44,6 +45,8 @@ public class ClientCommunication {
 
     private String userName;
     private ArrayList<String> playerNames = new ArrayList<>(3);
+
+    private ChatView chatView;
 
     public void setServer(String server) {
         this.server = server;
@@ -119,7 +122,6 @@ public class ClientCommunication {
 
 
         // creating input- and outputStreams
-
         try {
             in =  new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
@@ -133,7 +135,6 @@ public class ClientCommunication {
         // creates the Thread to listen from the server
         new ListenFromServer().start();
         logger.info("ServerListener successfully started");
-
 
 
         // success we inform the caller that it worked
@@ -159,7 +160,6 @@ public class ClientCommunication {
         volatile Message receivedMessage;
 
 
-
         public void run(){
             while(true){
                 try {
@@ -169,7 +169,6 @@ public class ClientCommunication {
                         display(userName + " Exception reading Streams: "+e);
                         break;
                     }
-
                     switch(receivedMessage.getType()){
                         case CHATMESSAGE:
                             JassClient.mainProgram.getChatcontroller().updateChatView(receivedMessage.getMessage());
@@ -183,7 +182,6 @@ public class ClientCommunication {
                             // TODO Set what happens when incoming login accepted Message
                             model.setUserName(receivedMessage.getUserName());
                             Platform.runLater(new Runnable() {
-
                                 @Override
                                 public void run() {
                                     JassClient.mainProgram.stopLogin();
@@ -224,6 +222,7 @@ public class ClientCommunication {
                                 logger.info("It's not your turn");
                                 // Create the overlay if it's not your turn
                                 JassClient.mainProgram.getGameView().showOverlayNotYourTurn();
+                                // gameInstruction needs tp be optimized  here
                             }
                             break;
                         case CARDPLAYED:

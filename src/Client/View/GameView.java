@@ -12,7 +12,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -33,7 +32,7 @@ public class GameView {
     Pane rootCards;
     Pane cardsPlayedByOpponents;
     ArrayList<Pane> oppPanes;
-    Pane overlayNotYourTurn;
+    HBox overlayNotYourTurn;
     Pane underlayYourCards;
     Pane underlayCardsInMiddle;
     Pane paneScoreTable;
@@ -74,7 +73,7 @@ public class GameView {
     public ArrayList<CardLabel> yourCards = new ArrayList<>(9);
     public double xStartPoint = 314.375;
     public double yStartingPoint = 630;
-    public double xSpace = 85.25;
+    public double xSpaceCards = 5.4999;
 
     // enum to define the style of the cards (DE/FR)
     private CardLabel.Style style;
@@ -85,6 +84,7 @@ public class GameView {
     private double cardWidth = 81.25;
     private double cardHeight = 130;
     private double spaceToEdge = 50;
+
 
     // lenght and width of the scene
     private final double sceneWidth = 1400;
@@ -113,6 +113,7 @@ public class GameView {
         this.gameStage = gameStage;
         this.model = model;
 
+
         // set style of cards default to FR
         style = CardLabel.Style.FR;
 
@@ -129,7 +130,7 @@ public class GameView {
         paneScoreTable = new Pane();
 
         vBoxTrumpf = new VBox(10);
-        overlayNotYourTurn = new Pane();
+        overlayNotYourTurn = new HBox(xSpaceCards);
 
         createUnderlayYourCards();
         createUnderlayCardsInMiddle();
@@ -139,7 +140,7 @@ public class GameView {
         rootJassGame.setBackground(new Background(new BackgroundImage(background, null, null, null, null)));
 
         // defined Chat-Elements in gameView
-        btnChatGame = new Button("start Chat");
+        btnChatGame = new Button("CHAT");
         btnChatGame.setId("chatButton");
         btnChatGame.setTranslateX(1100);
         btnChatGame.setTranslateY(725);
@@ -212,12 +213,14 @@ public class GameView {
         rootJassGame.getChildren().remove(n);
     }
 
+
+    // card placement
     public void createYourCards () {
         for (int i = 0; i < model.getYourCards().size(); i++){
             CardLabel c = new CardLabel(model.getYourCards().get(i).toString(), style);
             yourCards.add(c);
             c.setTranslateY(yStartingPoint);
-            c.setTranslateX(xStartPoint + (i*xSpace));
+            c.setTranslateX(xStartPoint + (i* xSpaceCards) +(i*cardWidth)+ 0.85);
         }
         rootCards.getChildren().addAll(yourCards);
     }
@@ -225,9 +228,7 @@ public class GameView {
     // creates an overlay to enable cards if it's not your turn
     public void createOverlayNotYourTurn() {
 
-
         Platform.runLater(new Runnable(){
-
             @Override
             public void run() {
 
@@ -235,12 +236,13 @@ public class GameView {
 
                     for (int i = 0; i < model.getYourCards().size(); i++) {
                         Rectangle rect = new Rectangle(cardWidth, cardHeight);
-                        rect.setTranslateY(yStartingPoint);
-                        rect.setTranslateX(xStartPoint + (i * xSpace));
                         rect.setFill(Color.rgb(0, 0, 0, 0.5));
                         rectanglesOverlay.add(rect);
                     }
                 overlayNotYourTurn.getChildren().addAll(rectanglesOverlay);
+                overlayNotYourTurn.setTranslateX(xStartPoint);
+                overlayNotYourTurn.setTranslateY(yStartingPoint);
+
             }
         });
     }
@@ -269,17 +271,18 @@ public class GameView {
     }
 
     public void createUnderlayYourCards() {
-        underlayYourCards = new Pane();
+        underlayYourCards = new HBox(xSpaceCards);
         ArrayList<Rectangle> list = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             Rectangle rect = new Rectangle(cardWidth, cardHeight);
-            rect.setTranslateY(yStartingPoint);
-            rect.setTranslateX(xStartPoint + (i * xSpace));
             rect.setFill(Color.rgb(0, 0, 0, 0.5));
             list.add(rect);
         }
         underlayYourCards.getChildren().addAll(list);
+        underlayYourCards.setTranslateX(xStartPoint);
+        underlayYourCards.setTranslateY(yStartingPoint);
         rootJassGame.getChildren().add(underlayYourCards);
+
     }
 
     public void createUnderlayCardsInMiddle() {
@@ -622,85 +625,152 @@ public class GameView {
     }
 
     // methods for gameInstructions
-    public void showPlayingCards(){
-        Alert rules = new Alert(Alert.AlertType.NONE,"You can choose between a deck of German playing cards or a deck of French playing cards.\n" +
-                "\n" + "A deck of cards has 4 suits, each of which contains 9 playing cards. A total of 36 cards are used in the game. For every type of Jass game" +
-                " played on Jass.ch 3 × 3 cards are dealt, i.e. each player receives 9 cards.\n" +
-                "\n" + "The total value of all counters in the deck is 152 for Differenzler, Schieber and Coiffeur. Taking the last trick scores an additional 5 points, which means there are a total of 157 points to be won.");
-        rules.setTitle("Playing Cards");
-        Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Grundlagen_eng.jpg"));
-        ImageView pCardView= new ImageView(pCards);
-        pCardView.setFitHeight(400);
-        pCardView.setFitWidth(450);
-        rules.setGraphic(pCardView);
-        rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
-        rules.showAndWait();
+    public void showPlayingCards() {
+        if (choiceBoxLanguage.getValue() == "EN") {
+            Alert rules = new Alert(Alert.AlertType.NONE, "You can choose between a deck of German playing cards or a deck of French playing cards.\n" +
+                    "\n" + "A deck of cards has 4 suits, each of which contains 9 playing cards. A total of 36 cards are used in the game. For every type of Jass game" +
+                    " played on Jass.ch 3 × 3 cards are dealt, i.e. each player receives 9 cards.\n" +
+                    "\n" + "The total value of all counters in the deck is 152 for Differenzler, Schieber and Coiffeur. Taking the last trick scores an additional 5 points, which means there are a total of 157 points to be won.");
+            rules.setTitle("Playing Cards");
+            Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Grundlagen_eng.jpg"));
+            ImageView pCardView = new ImageView(pCards);
+            pCardView.setFitHeight(400);
+            pCardView.setFitWidth(450);
+            rules.setGraphic(pCardView);
+            rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            rules.showAndWait();
+        } else {
+            Alert rules = new Alert(Alert.AlertType.NONE, "Sie können zwischen einem Kartenset mit deutschen Farben (deutsches Blatt) und einem Kartenset mit französischen Farben (französisches Blatt) wählen.\n" +
+                    "\n" + "Ein Kartenset besteht aus 4 Farben und jede Farbe umfasst 9 Spielkarten. Insgesamt sind 36 Karten im Spiel. Bei jeder auf Jass.ch gespielten Jass-Art werden 3 × 3 Karten verteilt, d.h. jeder Spieler erhält 9 Karten.\n" +
+                    "\n" + "Beim Differenzler, Schieber und Coiffeur ergibt das Punktetotal der Karten 152 Punkte und fünf Punkte für den letzten Stich. Insgesamt sind also 157 Punkte im Spiel.");
+            rules.setTitle("Spielkarten");
+            Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Grundlagen_de.jpg"));
+
+            ImageView pCardView = new ImageView(pCards);
+            pCardView.setFitHeight(400);
+            pCardView.setFitWidth(450);
+            rules.setGraphic(pCardView);
+            rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            rules.showAndWait();
+        }
     }
 
     public void showTrumpRule(){
-        Alert rules = new Alert(Alert.AlertType.NONE,"Trump\n" +
-                "\n" +
-                "The suit declared trumps beats cards of all ranks in the minor suits. " +
-                "The ranking within the trump suit as well as the point values are shown in " +
-                "the adjoining table. A higher-ranked card beats a lower-ranked one.");
-        rules.setTitle("Playing Cards");
-        Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Trumpf_Rangfolge_Kartenwerte_eng.jpg"));
-        ImageView pCardView= new ImageView(pCards);
-        pCardView.setFitHeight(400);
-        pCardView.setFitWidth(450);
-        rules.setGraphic(pCardView);
-        rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
-        rules.showAndWait();
+        if (choiceBoxLanguage.getValue() == "EN") {
+            Alert rules = new Alert(Alert.AlertType.NONE, "Trump\n" +
+                    "\n" +
+                    "The suit declared trumps beats cards of all ranks in the minor suits. " +
+                    "The ranking within the trump suit as well as the point values are shown in " +
+                    "the adjoining table. A higher-ranked card beats a lower-ranked one.");
+            rules.setTitle("Trump");
+            Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Trumpf_Rangfolge_Kartenwerte_eng.jpg"));
+            ImageView pCardView = new ImageView(pCards);
+            pCardView.setFitHeight(400);
+            pCardView.setFitWidth(450);
+            rules.setGraphic(pCardView);
+            rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            rules.showAndWait();
+        }else {
+            Alert rules = new Alert(Alert.AlertType.NONE, "Trumpf\n" +
+                    "\n" + "Wenn eine Farbe als Trumpffarbe angesagt ist, dann sticht die Trumpffarbe " +
+                    "jeden Rang einer Nebenfarbe. Die Rangfolge innerhalb der Trumpffarbe sowie die Punktwerte " +
+                    "gelten gemäss der nebenstehenden Abbildung. Eine höhere Karte sticht eine tiefere Karte.");
+            rules.setTitle("Trumpf");
+            Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Trumpf_Rangfolge_Kartenwerte_de.jpg"));
+            ImageView pCardView = new ImageView(pCards);
+            pCardView.setFitHeight(400);
+            pCardView.setFitWidth(450);
+            rules.setGraphic(pCardView);
+            rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            rules.showAndWait();
+        }
     }
 
     public void showMinorSuitRule(){
-        Alert rules = new Alert(Alert.AlertType.NONE,"Minor suit\n" +
-                "\n" +
-                "The adjoining table shows the rankings within the minor suits as well" +
-                " as the point values. A higher-ranked card beats a lower-ranked one.");
-        rules.setTitle("Playing Cards");
-        Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Nebenfarbe_Rangfolge_Kartenwerte_eng.jpg"));
-        ImageView pCardView= new ImageView(pCards);
-        pCardView.setFitHeight(400);
-        pCardView.setFitWidth(450);
-        rules.setGraphic(pCardView);
-        rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
-        rules.showAndWait();
+        if (choiceBoxLanguage.getValue() == "EN") {
+            Alert rules = new Alert(Alert.AlertType.NONE, "Minor suit\n" +
+                    "\n" +
+                    "The adjoining table shows the rankings within the minor suits as well" +
+                    " as the point values. A higher-ranked card beats a lower-ranked one.");
+            rules.setTitle("Minor suit");
+            Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Nebenfarbe_Rangfolge_Kartenwerte_eng.jpg"));
+            ImageView pCardView = new ImageView(pCards);
+            pCardView.setFitHeight(400);
+            pCardView.setFitWidth(450);
+            rules.setGraphic(pCardView);
+            rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            rules.showAndWait();
+        }else{
+            Alert rules = new Alert(Alert.AlertType.NONE, "Nebenfarbe\n" +
+                    "\n" +
+                    "Die Rangfolge innerhalb der Nebenfarben sowie die Punktwerte gelten gemäss der nebenstehenden Abbildung. Eine höhere Karte sticht eine tiefere Karte.");
+            rules.setTitle("Nebenfarbe");
+            Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Nebenfarbe_Rangfolge_Kartenwerte_de.jpg"));
+            ImageView pCardView = new ImageView(pCards);
+            pCardView.setFitHeight(400);
+            pCardView.setFitWidth(450);
+            rules.setGraphic(pCardView);
+            rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            rules.showAndWait();
+        }
     }
 
     public void showTopsDownRule(){
-        Alert rules = new Alert(Alert.AlertType.NONE,"Tops-down\n" +
-                "\n" +
-                "There is no trump suit in tops-down. The adjoining table shows the ranking as well as the point values. In tops-down, Ace is highest. A higher-ranked card also beats a lower-ranked card in both tops-down and bottoms-up.");
-        Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Obenabe_Rangfolge_Kartenwerte_eng.jpg"));
-        ImageView pCardView= new ImageView(pCards);
-        pCardView.setFitHeight(400);
-        pCardView.setFitWidth(450);
-        rules.setGraphic(pCardView);
-        rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
-        rules.showAndWait();
+        if (choiceBoxLanguage.getValue() == "EN") {
+            Alert rules = new Alert(Alert.AlertType.NONE, "Tops-down\n" +
+                    "\n" +
+                    "There is no trump suit in tops-down. The adjoining table shows the ranking as well as the point values. In tops-down, Ace is highest. A higher-ranked card also beats a lower-ranked card in both tops-down and bottoms-up.");
+            rules.setTitle("Tops-down");
+            Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Obenabe_Rangfolge_Kartenwerte_eng.jpg"));
+            ImageView pCardView = new ImageView(pCards);
+            pCardView.setFitHeight(400);
+            pCardView.setFitWidth(450);
+            rules.setGraphic(pCardView);
+            rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            rules.showAndWait();
+        }else{
+            Alert rules = new Alert(Alert.AlertType.NONE, "Obenabe\n" +
+                    "\n" +
+                    "Beim Obenabe gibt es keine Trumpffarbe. Die Rangfolge sowie die Punktwerte gelten gemäss der nebenstehenden Abbildung. Beim Obenabe ist das Ass die höchste Stechkarte. Auch beim Obenabe und Undenufe gilt, dass eine höhere Karte eine tiefere Karte sticht.");
+            rules.setTitle("Obenabe");
+            Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Obenabe_Rangfolge_Kartenwerte_de.jpg"));
+            ImageView pCardView = new ImageView(pCards);
+            pCardView.setFitHeight(400);
+            pCardView.setFitWidth(450);
+            rules.setGraphic(pCardView);
+            rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            rules.showAndWait();
+        }
     }
 
     public void showBottomsUpRule(){
-        Alert rules = new Alert(Alert.AlertType.NONE,"Bottoms-up\n" +
-                "\n" +
-                "There is no trump suit in bottoms-up. The adjoining table shows the ranking as well as the point values. In bottoms-up, Six is highest. A higher-ranked card also beats a lower-ranked card in both tops-down and bottoms-up.");
-        Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Udenufe_Rangfolge_Kartenwerte_eng.jpg"));
-        ImageView pCardView= new ImageView(pCards);
-        pCardView.setFitHeight(400);
-        pCardView.setFitWidth(450);
-        rules.setGraphic(pCardView);
-        rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
-        rules.showAndWait();
+        if (choiceBoxLanguage.getValue() == "EN") {
+            Alert rules = new Alert(Alert.AlertType.NONE, "Bottoms-up\n" +
+                    "\n" +
+                    "There is no trump suit in bottoms-up. The adjoining table shows the ranking as well as the point values. In bottoms-up, Six is highest. A higher-ranked card also beats a lower-ranked card in both tops-down and bottoms-up.");
+            rules.setTitle("Bottoms-up");
+            Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Udenufe_Rangfolge_Kartenwerte_eng.jpg"));
+            ImageView pCardView = new ImageView(pCards);
+            pCardView.setFitHeight(400);
+            pCardView.setFitWidth(450);
+            rules.setGraphic(pCardView);
+            rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            rules.showAndWait();
+        }else{
+            Alert rules = new Alert(Alert.AlertType.NONE, "Udenufe\n" +
+                    "\n" +
+                    "Beim Undenufe gibt es keine Trumpffarbe. Die Rangfolge sowie die Punktwerte gelten gemäss der nebenstehenden Abbildung. Beim Undenufe ist hingegen die 6 die stärkste Stechkarte. Auch beim Obenabe und Undenufe gilt, dass eine höhere Karte eine tiefere Karte sticht.");
+            rules.setTitle("Udenufe");
+            Image pCards = new Image(getClass().getClassLoader().getResourceAsStream("images/Jass-Udenufe_Rangfolge_Kartenwerte_de.jpg"));
+            ImageView pCardView = new ImageView(pCards);
+            pCardView.setFitHeight(400);
+            pCardView.setFitWidth(450);
+            rules.setGraphic(pCardView);
+            rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            rules.showAndWait();
+        }
     }
 
-    public Pane getRootCards() {
-        return rootCards;
-    }
-
-    public void setRootCards(Pane rootCards) {
-        this.rootCards = rootCards;
-    }
 
     public ArrayList<Pane> getOppPanes() {
         return oppPanes;
@@ -721,4 +791,5 @@ public class GameView {
     public void setStyle(CardLabel.Style style) {
         this.style = style;
     }
+
 }

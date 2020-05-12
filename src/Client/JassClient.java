@@ -47,7 +47,6 @@ public class JassClient extends Application {
         }
     }
 
-
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -81,7 +80,6 @@ public class JassClient extends Application {
         gameController = new GameController(model, gameView);
         log.info("Game View MVC erstellt");
 
-
         // ********* GameOver View MVC
         Stage gameOverStage = new Stage();
         gameOverView = new GameOverView(gameOverStage, model);
@@ -99,7 +97,6 @@ public class JassClient extends Application {
     public void stopLogin(){
         loginView.stop();
     }
-
 
     public void startLobby(){
         lobbyView.start();
@@ -134,7 +131,28 @@ public class JassClient extends Application {
         chatView.start();
     }
 
+    // methods for gameInstruction
+    public void startPlayCardInfo(){
+        gameView.showPlayingCards();
+    }
+
     /**
+    public void startTrumpRuleInfo(){
+        gameView.showTrumpRule();
+    }
+    public void startMinorSuitInfo(){
+        gameView.showMinorSuitRule();
+    }
+    public void startTopsDownInfo(){
+        gameView.showTopsDownRule();
+    }
+    public void startBottomsUpInfo(){
+        gameView.showBottomsUpRule();
+    }
+    **/
+
+
+
     // methods for gameInstructions
     public void showPlayingCards(){
         Alert rules = new Alert(Alert.AlertType.NONE,"You can choose between a deck of German playing cards or a deck of French playing cards.\n" +
@@ -207,7 +225,8 @@ public class JassClient extends Application {
         rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
         rules.showAndWait();
     }
-    **/
+
+
     public void stopChat() {
         if(chatView != null) {
             chatView.stop();

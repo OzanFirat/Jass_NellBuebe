@@ -1,12 +1,13 @@
 package Server;
 
-import Common.Message;
+import Common.Messages.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.logging.Logger;
+
 
 public class ClientThread extends Thread {
     private Logger logger;
@@ -31,6 +32,8 @@ public class ClientThread extends Thread {
 
     // Create a serverModel to send messages to clients
     private ServerModel serverModel;
+
+
 
     // Constructor
     ClientThread(Socket socket) {
@@ -110,6 +113,7 @@ public class ClientThread extends Thread {
                         serverModel.broadcast(new Message(Message.Type.YOURTURN, gameModel.getCurrentPlayer().getPlayerName()));
                         break;
                     }
+
                 case CARDPLAYED:
                     // Logger in the server to see which player has played which card
                     for (int i = 0; i < gameModel.getPlayers().size(); i++) {

@@ -1,7 +1,7 @@
 package Server;
 
 
-import Common.Message;
+import Common.Messages.Message;
 
 import java.io.*;
 import java.net.ServerSocket;

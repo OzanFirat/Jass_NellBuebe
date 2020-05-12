@@ -105,7 +105,7 @@ public class LobbyView {
         cbCardStyle = new ChoiceBox<>(FXCollections.observableArrayList("DE", "FR"));
         lblCardStyle.setTranslateX(350);
         lblCardStyle.setTranslateY(80);
-        cbCardStyle.setTranslateX(610);
+        cbCardStyle.setTranslateX(620);
         cbCardStyle.setTranslateY(80);
 
         root.getChildren().addAll(lblCardStyle, cbCardStyle);

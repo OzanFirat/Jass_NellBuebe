@@ -3,8 +3,7 @@ package Client.Controller;
 import Client.JassClient;
 import Client.Model.ClientModel;
 import Client.View.ChatView;
-import Common.Message;
-import javafx.scene.input.KeyEvent;
+import Common.Messages.Message;
 
 import java.util.logging.Logger;
 
@@ -19,46 +18,46 @@ public class ChatController {
         log = JassClient.mainProgram.getLogger();
 
 
-    chatView.sendButton.setOnAction(e-> {
-        sendMessage();
-        chatView.messageEntry.setText("");
-    });
+        chatView.sendButton.setOnAction(e-> {
+            sendMessage();
+        });
 
         chatView.exitChatButton.setOnAction(e->{
-        JassClient.mainProgram.stopChat();
-    });
+            JassClient.mainProgram.stopChat();
+        });
 
 
-    // key events for the chatView in gameScene
-        chatView.messageEntry.setOnKeyReleased(e->{
-        switch (e.getCode()){
-            case ESCAPE:
-                JassClient.mainProgram.stopChat();
-                break;
-            case ENTER:
-                sendMessage();
-                chatView.messageEntry.setText("");
-        }
-        e.consume();
-    });
+        // key events for the chatView in gameScene
+        chatView.messageEntry.setOnKeyPressed(e->{
+            switch (e.getCode()){
+                case ESCAPE:
+                    JassClient.mainProgram.stopChat();
+                    break;
+                case ENTER:
+                    sendMessage();
+                case BACK_SPACE:
+                    chatView.messageEntry.deletePreviousChar();
+            }
+            e.consume();
+        });
 
-        chatView.getScene().setOnKeyReleased(e-> {
-        switch (e.getCode()){
-            case ESCAPE:
-                JassClient.mainProgram.stopChat();
-                break;
-            case ENTER:
-                sendMessage();
-                chatView.messageEntry.setText("");
-        }
-        e.consume();
-    });
-}
+        chatView.getScene().setOnKeyPressed(e-> {
+            switch (e.getCode()){
+                case ESCAPE:
+                    JassClient.mainProgram.stopChat();
+                    break;
+                case ENTER:
+                    sendMessage();
+            }
+            e.consume();
+        });
+    }
     public void sendMessage(){
         ClientCommunication cc = ClientCommunication.getInstance();
         Message msg = new Message(Message.Type.CHATMESSAGE, chatView.messageEntry.getText());
         cc.sendMessage(msg);
         log.info("The following message has been successfully sent" + chatView.messageEntry.getText());
+        chatView.messageEntry.setText("");
     }
 
     public void updateChatView(String s ){
@@ -69,12 +68,6 @@ public class ChatController {
         chatView.chatHistory.setText("");
         for (String s : model.getPlayerNames()) {
             chatView.chatHistory.appendText(s + " has entered the chat \n");
-            System.out.println(s);
         }
     }
-
-    public void handle(KeyEvent kEvt) {
-        // TODO all keyEvent comes here by Levin
-    }
-
 }

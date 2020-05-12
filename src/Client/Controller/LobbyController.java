@@ -4,7 +4,7 @@ import Client.JassClient;
 import Client.Model.ClientModel;
 import Client.View.CardLabel;
 import Client.View.LobbyView;
-import Common.Message;
+import Common.Messages.Message;
 
 import java.util.logging.Logger;
 

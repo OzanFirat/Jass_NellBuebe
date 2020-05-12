@@ -56,7 +56,7 @@ public class ServerView {
         mBar.getMenus().addAll(serverMenu, languageMenu, helpMenu);
 
         // initializing all GUI elements
-        lblJassGame = new Label("JASS_GAME-SERVER");
+        lblJassGame = new Label("JASS GAME SERVER");
         lblJassGame.setFont(Font.font("Comic Sans MS", 20));
         lblJassGame.getStyleClass().add("server-text");
 

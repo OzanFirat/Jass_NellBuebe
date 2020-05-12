@@ -4,7 +4,7 @@ import Client.JassClient;
 import Client.Model.ClientModel;
 import Client.View.CardLabel;
 import Client.View.GameView;
-import Common.Message;
+import Common.Messages.Message;
 import javafx.application.Platform;
 
 
@@ -22,7 +22,6 @@ public class GameController {
         this.model = model;
         this.gameView = gameView;
         log = JassClient.mainProgram.getLogger();
-
 
         // eventHandling for starting chatRoom
         gameView.btnChatGame.setOnAction( e-> {
@@ -48,6 +47,30 @@ public class GameController {
             gameView.showBottomsUpRule();
         });
     }
+
+    /**
+    public void handleRuleAction(){
+        gameView.btngameCards.setOnAction(e->{
+            JassClient.mainProgram.startPlayCardInfo();
+        });
+
+        gameView.btnTrump.setOnAction(e->{
+            JassClient.mainProgram.startTrumpRuleInfo();
+        });
+        gameView.btnMinorSuit.setOnAction(e->{
+            JassClient.mainProgram.startMinorSuitInfo();
+        });
+
+        gameView.btnTopsDown.setOnAction(e->{
+            JassClient.mainProgram.startTopsDownInfo();
+        });
+        gameView.btnBottomsUp.setOnAction(e->{
+            JassClient.mainProgram.startBottomsUpInfo();
+        });
+    }
+
+    **/
+
 
     public void initializeElements(){
         updateYourCards();
@@ -84,6 +107,8 @@ public class GameController {
         gameView.addToRootJassGame(gameView.lblWinner3);
         gameView.addToRootJassGame(gameView.lblWinner4);
     }
+
+
 
     public void handleCardAction(){
         Platform.runLater( new Runnable() {

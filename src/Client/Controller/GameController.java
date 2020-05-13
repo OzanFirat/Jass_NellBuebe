@@ -5,6 +5,8 @@ import Client.Model.ClientModel;
 import Client.View.CardLabel;
 import Client.View.GameView;
 import Common.Messages.Message;
+import Common.ServiceLocator;
+import Common.Translator;
 import javafx.application.Platform;
 
 
@@ -16,6 +18,10 @@ public class GameController {
     private Logger log;
     CardLabel card;
     public ClientCommunication clientCommunication = ClientCommunication.getInstance();
+
+
+    private ServiceLocator sl = ServiceLocator.getServiceLocator();
+    private Translator t = sl.getTranslator();
 
 
     public GameController(ClientModel model, GameView gameView) {
@@ -108,8 +114,6 @@ public class GameController {
         gameView.addToRootJassGame(gameView.lblWinner4);
     }
 
-
-
     public void handleCardAction(){
         Platform.runLater( new Runnable() {
             @Override
@@ -154,14 +158,16 @@ public class GameController {
         });
     }
 
+    // TODO needs to be optimized for Translation (eng,de)
     public void updateGameHistory(String playerName) {
+        //Translator t = sl.getTranslator();
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                //gameView.gameHistory.appendText(t.getString("Game-Info: "+playerName+" has won the round\n"));
                 gameView.gameHistory.appendText("Game-Info: "+playerName+" has won the round\n");
             }
         });
     }
-
 }
 

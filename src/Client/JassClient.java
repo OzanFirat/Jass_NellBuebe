@@ -3,6 +3,9 @@ package Client;
 import Client.Controller.*;
 import Client.Model.ClientModel;
 import Client.View.*;
+import Common.Configuration;
+import Common.ServiceLocator;
+import Common.Translator;
 import javafx.application.Application;
 import javafx.application.Platform;
 
@@ -34,6 +37,7 @@ public class JassClient extends Application {
     private GameOverController gameOverController;
 
     private ClientModel model;
+    private ServiceLocator sl;
 
     public static void main(String[] args) {
         launch(args);
@@ -49,6 +53,12 @@ public class JassClient extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        // serviceLocator to hold our resources
+        sl = ServiceLocator.getServiceLocator();
+        sl.setConfiguration(new Configuration());
+        String language  = sl.getConfiguration().getOption("language");
+        sl.setTranslator(new Translator(language));
 
         // ******** Login View MVC
         model = new ClientModel();

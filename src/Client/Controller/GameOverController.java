@@ -10,13 +10,8 @@ public class GameOverController {
     private GameOverView gameOverView;
 
 
-
     public GameOverController(ClientModel model, GameOverView gameOverView) {
         this.model = model;
         this.gameOverView = gameOverView;
     }
-
-
-
-
 }

@@ -1,6 +1,6 @@
 package Common;
 
-import Client.JassClient;
+import Resources.resource;
 
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -24,13 +24,14 @@ public class ServiceLocator {
 
     // Application-global constants
     final private Class<?> APP_CLASS = Client.JassClient.class;
+    final private Class<?> APP_RESOURCES = Resources.resource.class;
     final private String APP_NAME = "Nellbuebe";
 
     // Supported locales (for translations)
-    final private Locale[] locales = new Locale[] { new Locale("en"), new Locale("de") };
+    final private Locale[] locales = new Locale[] { new Locale("en"), new Locale("de", "DE") };
 
     // Resources
-    private Logger logger;
+    private Logger logger = Logger.getLogger("");
     private Configuration configuration;
     private Translator translator;
 
@@ -88,6 +89,10 @@ public class ServiceLocator {
 
     public void setTranslator(Translator translator) {
         this.translator = translator;
+    }
+
+    public Class<?> getAPP_RESOURCES() {
+        return APP_RESOURCES;
     }
 }
 

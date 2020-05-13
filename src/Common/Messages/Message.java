@@ -26,7 +26,6 @@ public class Message implements Serializable {
     public enum Type {WHOISIN, CHATMESSAGE, LOGOUT, LOGIN, LOGINREJECTED, LOGINACCEPTED,
                             TRUMPF, STARTGAME, YOURTURN, CARDPLAYED, ROUNDFINISHED, GAMEFINISHED}
 
-
     private Type type;
     private String message;
     private String userName;

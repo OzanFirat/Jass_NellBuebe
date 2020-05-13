@@ -1,5 +1,8 @@
 package Server;
 
+import Common.Configuration;
+import Common.ServiceLocator;
+import Common.Translator;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -20,6 +23,7 @@ public class ServerMain  extends Application {
     //logger for notifications
     protected Logger log = Logger.getLogger("");
     public static ServerMain sMain;
+    private ServiceLocator sl;
 
     public static void main(String[] args){
         launch(args);
@@ -43,7 +47,11 @@ public class ServerMain  extends Application {
     public void start(Stage primaryStage) throws Exception {
 
 
-        // TODO needs to be optimized by LEVIN !!!!!!!!
+        // serviceLocator to hold our resources
+        sl = ServiceLocator.getServiceLocator();
+        sl.setConfiguration(new Configuration());
+        String language  = sl.getConfiguration().getOption("language");
+        sl.setTranslator(new Translator(language));
 
 
         serverModel = new ServerModel(55555);

@@ -1,6 +1,8 @@
 package Client.View;
 
 import Client.Model.ClientModel;
+import Common.ServiceLocator;
+import Common.Translator;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -17,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class GameView {
     private Stage gameStage;
@@ -113,6 +116,9 @@ public class GameView {
         this.gameStage = gameStage;
         this.model = model;
 
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+
 
         // set style of cards default to FR
         style = CardLabel.Style.FR;
@@ -140,7 +146,7 @@ public class GameView {
         rootJassGame.setBackground(new Background(new BackgroundImage(background, null, null, null, null)));
 
         // defined Chat-Elements in gameView
-        btnChatGame = new Button("CHAT");
+        btnChatGame = new Button(t.getString("game.button.chatroom"));
         btnChatGame.setId("chatButton");
         btnChatGame.setTranslateX(1100);
         btnChatGame.setTranslateY(725);
@@ -191,6 +197,20 @@ public class GameView {
         rootJassGame.getChildren().addAll(btngameCards,btnTrump,btnMinorSuit,btnBottomsUp,btnTopsDown,lblGameInstruction);
         rootJassGame.getChildren().add(choiceBoxLanguage);
 
+        choiceBoxLanguage.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue)-> {
+            sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
+            sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
+            updateGameViewTexts();
+        });
+
+        /**
+        choiceBoxLanguage.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue)-> {
+            sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
+            sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
+            updateGameViewTexts();
+        });
+        **/
+
         Scene scene = new Scene(rootJassGame, sceneWidth, sceneHeight);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
         gameStage.setScene(scene);
@@ -212,7 +232,6 @@ public class GameView {
     public void removeFromRootJassGame(Node n) {
         rootJassGame.getChildren().remove(n);
     }
-
 
     // card placement
     public void createYourCards () {
@@ -466,8 +485,6 @@ public class GameView {
         });
     }
 
-
-
     public void createTrumpfElements() {
         // Getting the image and label to display the trumpf done
         lblTrumpf = new Label("Trumpf");
@@ -485,9 +502,8 @@ public class GameView {
         vBoxTrumpf.setTranslateY(spaceToEdge);
     }
 
-
     // TableView to show the score during the game
-   public void createTableViewScore() {
+    public void createTableViewScore() {
        tvScoreTable = new TableView();
        tvcName = new TableColumn("PlayerName");
        tvcPoints = new TableColumn("Points");
@@ -513,7 +529,6 @@ public class GameView {
        paneScoreTable.getChildren().addAll(rect, tvScoreTable);
    }
 
-
     public void createGameHistory() {
         gameHistory = new TextArea("");
         gameHistory.setMaxWidth(300);
@@ -524,8 +539,6 @@ public class GameView {
         rootJassGame.getChildren().add(gameHistory);
 
     }
-
-
 
     public void doAnimationPlayYourCard (CardLabel card) {
         card.setTranslateX(xMiddle - (cardWidth/2));
@@ -792,4 +805,11 @@ public class GameView {
         this.style = style;
     }
 
+    protected void updateGameViewTexts(){
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+
+        // Menus
+        btnChatGame.setText(t.getString("game.button.chatroom"));
+    }
 }

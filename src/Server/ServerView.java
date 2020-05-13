@@ -1,16 +1,18 @@
 package Server;
 
+import Common.ServiceLocator;
+import Common.Translator;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.util.Locale;
+import java.util.logging.Logger;
 
 
 public class ServerView {
@@ -19,20 +21,21 @@ public class ServerView {
     private ServerModel model;
 
     //Labels
-    Label serverIP;
-    Label lblJassGame;
+    private Label lblServerIP;
+    private Label lblJassGame;
 
     // Buttons
-    Button startBtn;
+    Button btnStartServer;
+
+
+    // MenuBar
+    MenuBar mBar;
 
     // Menus
-    Menu serverMenu;
     Menu languageMenu;
     Menu helpMenu;
 
-    //MenuItems
-    MenuItem DEItem;
-    MenuItem ENGItem;
+
 
     //Define the image for the background in serverView
     private Image tafel = new Image(getClass().getClassLoader().getResourceAsStream("images/tafel.jpg"));
@@ -41,31 +44,30 @@ public class ServerView {
     public ServerView(Stage stage, ServerModel model) {
         this.stage = stage;
 
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+        Logger log = sl.getLogger();
+
         // initializing the menuBar
-        MenuBar mBar = new MenuBar();
-        serverMenu = new Menu("File");
-        languageMenu = new Menu("Language");
-        helpMenu = new Menu("Help");
+        mBar = new MenuBar();
+        languageMenu = new Menu(t.getString("server.menu.language"));
+        helpMenu = new Menu(t.getString("server.menu.help"));
 
-        // Inititalizing MenuItems
-        DEItem = new MenuItem("DE");
-        ENGItem = new MenuItem("ENG");
-
-        serverMenu.getItems().addAll();
-        languageMenu.getItems().addAll(DEItem, ENGItem);
-        mBar.getMenus().addAll(serverMenu, languageMenu, helpMenu);
+        mBar.getMenus().addAll(languageMenu, helpMenu);
 
         // initializing all GUI elements
-        lblJassGame = new Label("JASS GAME SERVER");
+        lblJassGame = new Label(t.getString("server.label.JassGameServer"));
         lblJassGame.setFont(Font.font("Comic Sans MS", 20));
         lblJassGame.getStyleClass().add("server-text");
 
-        serverIP = new Label("Server-IP: 127.0.0.1");
-        serverIP.setFont(Font.font("Comic Sans MS", 20));
-        serverIP.getStyleClass().add("server-text");
+        lblServerIP = new Label(t.getString("server.label.serverIP"));
+        lblServerIP.setFont(Font.font("Comic Sans MS", 20));
+        lblServerIP.getStyleClass().add("server-text");
 
-        startBtn = new Button("start Server");
-        startBtn.setFont(Font.font("Comic Sans MS", 15));
+        btnStartServer = new Button(t.getString("server.button.startServer"));
+
+
+        btnStartServer.setFont(Font.font("Comic Sans MS", 15));
 
 
         GridPane gp = new GridPane();
@@ -74,37 +76,80 @@ public class ServerView {
         GridPane.setHalignment(lblJassGame, HPos.CENTER);
         GridPane.setValignment(lblJassGame, VPos.CENTER);
 
-        GridPane.setHalignment(serverIP, HPos.CENTER);
-        GridPane.setValignment(serverIP, VPos.CENTER);
+        GridPane.setHalignment(lblServerIP, HPos.CENTER);
+        GridPane.setValignment(lblServerIP, VPos.CENTER);
 
-        GridPane.setHalignment(startBtn, HPos.CENTER);
-        GridPane.setValignment(startBtn, VPos.CENTER);
+        GridPane.setHalignment(btnStartServer, HPos.CENTER);
+        GridPane.setValignment(btnStartServer, VPos.CENTER);
+
 
         gp.add(lblJassGame, 0, 0);
-        gp.add(serverIP, 0, 1);
-        gp.add(startBtn, 0, 2);
-        gp.setBackground(new Background(new BackgroundImage(tafel, null, null, null, null)));
+        gp.add(lblServerIP, 0, 1);
+        gp.add(btnStartServer, 0, 2);
+
+        HBox hb = new HBox(gp);
+        hb.setTranslateX(50);
+        hb.setTranslateY(120);
+
+        BorderPane bp = new BorderPane(hb,mBar, null, null,null);
+
+
+        bp.setBackground(new Background(new BackgroundImage(tafel, null, null, null, null)));
+
+
+
+        // generating languageSettings with serviceLocator for serverView
+        for (Locale loc : sl.getLocales()) {
+            MenuItem language = new MenuItem(loc.getLanguage());
+            languageMenu.getItems().add(language);
+            language.setOnAction(event -> {
+                sl.getConfiguration().setLocalOption("Language", loc.getLanguage());
+                sl.setTranslator(new Translator(loc.getLanguage()));
+                updateServerViewTexts();
+            });
+        }
+
 
         // set up the scene
-        Scene scene = new Scene(gp);
+        Scene scene = new Scene(bp);
         scene.getStylesheets().add(getClass().getResource("server.css").toExternalForm());
 
         // set up the stage
         stage.setTitle("NellBuebe-Server");
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.setHeight(400);
         stage.setWidth(300);
 
     }
 
+    protected void updateServerViewTexts(){
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+
+        // Menus
+        languageMenu.setText(t.getString("server.menu.language"));
+        helpMenu.setText(t.getString("server.menu.help"));
+
+        //Labels and Buttons
+        lblJassGame.setText(t.getString("server.label.JassGameServer"));
+        lblServerIP.setText(t.getString("server.label.serverIP"));
+        if(btnStartServer.isDisabled()){
+            btnStartServer.setText(t.getString("server.button.runningServer"));
+        }else{
+            btnStartServer.setText(t.getString("server.button.startServer"));
+        }
+    }
+
     public void start(){
         stage.show();
     }
-
     public void stop(){
         stage.hide();
     }
     public Stage getStage() {
         return stage;
     }
+
+
 }

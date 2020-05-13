@@ -1,5 +1,7 @@
 package Server;
 
+import Common.ServiceLocator;
+import Common.Translator;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.WindowEvent;
@@ -9,20 +11,21 @@ public class ServerController {
     private ServerModel  serverModel;
     private ServerView serverView;
 
-
+    private ServiceLocator sl = ServiceLocator.getServiceLocator();
+    private Translator t = sl.getTranslator();
 
     public ServerController(ServerModel serverModel,ServerView serverView ){
         this.serverModel = serverModel;
         this.serverView = serverView;
 
-        serverView.startBtn.setOnAction(new EventHandler<ActionEvent>() {
+        serverView.btnStartServer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 //ServerMain sMain = new ServerMain();
                 //sMain.acceptConnections();
                 serverModel.startServer();
+                serverView.btnStartServer.setDisable(true);
                 changeStartServerLabel();
-                serverView.startBtn.setDisable(true);
                 //serverView.startBtn.setText(t.getString("server is running"));
             }
         });
@@ -33,8 +36,11 @@ public class ServerController {
         });
     }
 
-    // change lblName to Server is running
+
+    // change lblName to "Server is running" or "Server läuft"
     public void changeStartServerLabel(){
-        serverView.startBtn.setText("Server is running!");
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+        serverView.btnStartServer.setText(t.getString("server.button.runningServer"));
     }
 }

@@ -2,6 +2,7 @@ package Server;
 
 
 import Common.Messages.Message;
+import Common.ServiceLocator;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -14,8 +15,11 @@ public class ServerModel {
     // arrayList for threads of the clients
     private ArrayList<ClientThread> clientThreads;
 
+
+    ServiceLocator sl = ServiceLocator.getServiceLocator();
+
     // Initializing Logger
-    private Logger logger = ServerMain.sMain.getLogger();
+    private Logger logger = sl.getLogger();
 
 
     // declaration of the MAX and MIN player for the JassGame

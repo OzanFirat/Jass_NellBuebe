@@ -104,9 +104,9 @@ public class SettingsView {
 
     private void loadTrumpfImages(){
         Image imgClubs = new Image(getClass().getClassLoader().getResourceAsStream("images/clubs.png"));
-        Image imgDiamonds = new Image(getClass().getClassLoader().getResourceAsStream("images/diamonds.png"));
+        Image imgDiamonds = new Image(getClass().getClassLoader().getResourceAsStream("images/spades.png"));
         Image imgHearts = new Image(getClass().getClassLoader().getResourceAsStream("images/hearts.png"));
-        Image imgSpades = new Image(getClass().getClassLoader().getResourceAsStream("images/spades.png"));
+        Image imgSpades = new Image(getClass().getClassLoader().getResourceAsStream("images/diamonds.png"));
 
         imvTrumpfIcons.get(0).setImage(imgClubs);
         imvTrumpfIcons.get(1).setImage(imgHearts);

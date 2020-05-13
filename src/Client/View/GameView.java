@@ -39,6 +39,7 @@ public class GameView {
     Pane underlayYourCards;
     Pane underlayCardsInMiddle;
     Pane paneScoreTable;
+    VBox boxTrumpfChoice;
 
     //Elements to display the opponents
     public Label lblPlayer2Name;
@@ -51,6 +52,10 @@ public class GameView {
     public Label lblWinner3;
     public Label lblWinner4;
 
+    // Elements to display trumpf choice
+    private ArrayList<TrumpfLabel> listTrumpfLabels;
+    private Label titleChooseTrumpf;
+
     // ArrayList to handle the CardLabels (played Cards) of the opponents;
     public ArrayList<CardLabel> cardsPlayedByOpps;
     public CardLabel c0;
@@ -58,6 +63,8 @@ public class GameView {
     public CardLabel c2;
 
     public TextArea gameHistory;
+
+
 
     // ArrayList to save the rectangles of the overlay - needed to remove them when it's your turn
     private ArrayList<Rectangle> rectanglesOverlay;
@@ -76,7 +83,7 @@ public class GameView {
     public ArrayList<CardLabel> yourCards = new ArrayList<>(9);
     public double xStartPoint = 314.375;
     public double yStartingPoint = 630;
-    public double xSpaceCards = 5.4999;
+    public double xSpaceCards = 5;
 
     // enum to define the style of the cards (DE/FR)
     private CardLabel.Style style;
@@ -84,7 +91,7 @@ public class GameView {
     // some numbers to place & size the elements right
     private double xMiddle = 700;
     private double yMiddle = 400;
-    private double cardWidth = 81.25;
+    private double cardWidth = 81;
     private double cardHeight = 130;
     private double spaceToEdge = 50;
 
@@ -233,13 +240,52 @@ public class GameView {
         rootJassGame.getChildren().remove(n);
     }
 
+    public void createTrumpfChoice() {
+        Platform.runLater( new Runnable() {
+            public void run() {
+                boxTrumpfChoice = new VBox(50);
+                boxTrumpfChoice.setMinWidth(400);
+                boxTrumpfChoice.setMinHeight(300);
+                boxTrumpfChoice.setTranslateX(xMiddle - 200);
+                boxTrumpfChoice.setTranslateY(yMiddle - 150);
+
+                listTrumpfLabels = new ArrayList<>();
+
+                TrumpfLabel hearts = new TrumpfLabel("hearts", style);
+                TrumpfLabel clubs = new TrumpfLabel("clubs", style);
+                TrumpfLabel diamonds = new TrumpfLabel("diamonds", style);
+                TrumpfLabel spades = new TrumpfLabel("spades", style);
+
+                listTrumpfLabels.add(hearts);
+                listTrumpfLabels.add(clubs);
+                listTrumpfLabels.add(diamonds);
+                listTrumpfLabels.add(spades);
+
+                HBox container = new HBox(20);
+
+                container.setAlignment(Pos.CENTER);
+                container.getChildren().addAll(listTrumpfLabels);
+
+                titleChooseTrumpf = new Label("Choose Trumpf for the game");
+                titleChooseTrumpf.getStyleClass().add("login-text");
+
+
+                boxTrumpfChoice.getChildren().addAll(titleChooseTrumpf, container);
+                boxTrumpfChoice.setAlignment(Pos.CENTER);
+                boxTrumpfChoice.getStyleClass().add("trumpf-choice");
+
+                rootJassGame.getChildren().add(boxTrumpfChoice);
+            }
+        });
+    }
+
     // card placement
     public void createYourCards () {
         for (int i = 0; i < model.getYourCards().size(); i++){
             CardLabel c = new CardLabel(model.getYourCards().get(i).toString(), style);
             yourCards.add(c);
             c.setTranslateY(yStartingPoint);
-            c.setTranslateX(xStartPoint + (i* xSpaceCards) +(i*cardWidth)+ 0.85);
+            c.setTranslateX(xStartPoint + (i* xSpaceCards) +(i*cardWidth));
         }
         rootCards.getChildren().addAll(yourCards);
     }
@@ -811,5 +857,13 @@ public class GameView {
 
         // Menus
         btnChatGame.setText(t.getString("game.button.chatroom"));
+    }
+
+    public ArrayList<TrumpfLabel> getListTrumpfLabels() {
+        return listTrumpfLabels;
+    }
+
+    public VBox getBoxTrumpfChoice() {
+        return boxTrumpfChoice;
     }
 }

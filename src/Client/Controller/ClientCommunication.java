@@ -196,21 +196,32 @@ public class ClientCommunication {
                             JassClient.mainProgram.getChatcontroller().updateChatEntry();
                             logger.info("Who is in message received");
                             break;
+                        case STARTGAME:
+                            // initialize the game
+                            model.fillOppPlayerList();
+                            // fill the ObservableList to show the updated scores during the game
+                            model.fillPlayerWithPoints();
+                            JassClient.mainProgram.getGameController().initializeGame();
+                            if (model.getUserName().equals(receivedMessage.getPlayerName())) {
+                                JassClient.mainProgram.getGameView().createTrumpfChoice();
+                                JassClient.mainProgram.getGameController().handleTrumpfChoiceAction();
+                            }
+                            break;
+                        case DEALCARDS:
+                            // Set your cards and put the opponents in the right order to display in view
+                            if (model.getUserName().equals(receivedMessage.getPlayerName())) {
+                                JassClient.mainProgram.getLobbyController().setCardStyle();
+                                model.setYourCards(receivedMessage.getArrayList());
+                                logger.info(userName +" has received his cards");
+
+                                logger.info("The game has launched");
+                                JassClient.mainProgram.getGameController().updateYourCards();
+                            }
+                            break;
                         case TRUMPF:
                             model.setTrumpf(receivedMessage.getTrumpf());
                             // fill the ObservableList to show the updated scores during the game
-                            model.fillPlayerWithPoints();
-                            break;
-                        case STARTGAME:
-                            // Set your cards, identify the opponents and initialize the game
-                            if (model.getUserName().equals(receivedMessage.getPlayerName())) {
-                                    JassClient.mainProgram.getLobbyController().setCardStyle();
-                                    model.setYourCards(receivedMessage.getArrayList());
-                                    logger.info(userName +" has received his cards");
-                                    model.fillOppPlayerList();
-                                    JassClient.mainProgram.getGameController().initializeGame();
-                                    logger.info("The game has launched");
-                            }
+                            JassClient.mainProgram.getGameController().updateTrumpfElements();
                             break;
                         case YOURTURN:
                             if (receivedMessage.getCurrentPlayer().equals(model.getUserName())) {

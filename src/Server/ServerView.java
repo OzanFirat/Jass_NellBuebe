@@ -71,6 +71,7 @@ public class ServerView {
 
 
         GridPane gp = new GridPane();
+        gp.setVgap(10);
 
         // To align horizontally and vertically in the cell
         GridPane.setHalignment(lblJassGame, HPos.CENTER);

@@ -2,6 +2,7 @@ package Server;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 public class GameModel {
     private static GameModel gameModel;
@@ -33,7 +34,6 @@ public class GameModel {
         currentRound = null;
         allPlayedRounds = new ArrayList<>(9);
         indexOfCurrentPlayer = 0;
-        trumpf = Card.Suit.Hearts;
         deck = new DeckOfCards();
     }
 
@@ -43,6 +43,12 @@ public class GameModel {
             players.add(p);
             currentPlayer = players.get(0);
         }
+    }
+
+    public void setRandomStartPlayer() {
+        Random rand = new Random();
+        int determiner = rand.nextInt(4);
+        currentPlayer = players.get(determiner);
     }
 
     public boolean checkIfFourPlayers(){
@@ -75,7 +81,7 @@ public class GameModel {
 
         // set currentWinner if null to avoid NullPointerException - currentPlayer gets overridden after first round so this has no effect on game results
         if (currentWinner == null) {
-            currentWinner = players.get(0);
+            currentWinner = currentPlayer;
         }
 
         switch (currentWinner.getId()) {
@@ -111,6 +117,23 @@ public class GameModel {
         }
         currentRound = new Round(trumpf);
         roundCounter++;
+    }
+
+    public void setTrumpf(String trumpf) {
+        switch (trumpf) {
+            case "hearts":
+                this.trumpf = Card.Suit.Hearts;
+                break;
+            case "clubs":
+                this.trumpf = Card.Suit.Clubs;
+                break;
+            case "diamonds":
+                this.trumpf = Card.Suit.Diamonds;
+                break;
+            case "spades":
+                this.trumpf = Card.Suit.Spades;
+                break;
+        }
     }
 
     public void moveToNextPlayer() {
@@ -276,9 +299,5 @@ public class GameModel {
 
     public Card.Suit getTrumpf() {
         return trumpf;
-    }
-
-    public void setTrumpf(Card.Suit trumpf) {
-        this.trumpf = trumpf;
     }
 }

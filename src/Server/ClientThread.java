@@ -102,17 +102,23 @@ public class ClientThread extends Thread {
                 case STARTGAME:
                     if (gameModel.checkIfFourPlayers()) {
                         gameModel.dealCardsToPlayer();
-                        gameModel.createRound();
-                        serverModel.broadcast(new Message(Message.Type.TRUMPF, gameModel.getTrumpf().toString()));
+                        gameModel.setRandomStartPlayer();
+                        serverModel.broadcast(new Message(Message.Type.STARTGAME, gameModel.getCurrentPlayer().getPlayerName()));
                         for (int i = 0; i < gameModel.getNumOfPlayers(); i++) {
-                            serverModel.broadcast(new Message(Message.Type.STARTGAME, gameModel.getPlayers().get(i).getPlayerName(), gameModel.getPlayers().get(i).getHandCards()));
+                            serverModel.broadcast(new Message(Message.Type.DEALCARDS, gameModel.getPlayers().get(i).getPlayerName(), gameModel.getPlayers().get(i).getHandCards()));
                         }
                         logger.info("The cards were sent to the clients");
-                        gameModel.setStartPlayer();
                         gameModel.putPlayersInOrder();
-                        serverModel.broadcast(new Message(Message.Type.YOURTURN, gameModel.getCurrentPlayer().getPlayerName()));
-                        break;
+
                     }
+                    break;
+
+                case TRUMPF:
+                    gameModel.setTrumpf(receivedMessage.getTrumpf());
+                    gameModel.createRound();
+                    serverModel.broadcast(new Message(Message.Type.TRUMPF, gameModel.getTrumpf().toString()));
+                    serverModel.broadcast(new Message(Message.Type.YOURTURN, gameModel.getCurrentPlayer().getPlayerName()));
+                    break;
 
                 case CARDPLAYED:
                     // Logger in the server to see which player has played which card
@@ -134,6 +140,7 @@ public class ClientThread extends Thread {
                             logger.info("the round is finished");
                             logger.info(gameModel.getCurrentWinner().getPlayerName()+" has won the round");
                             // This Thread has to sleep to let the clients see the played cards for a while
+                            serverModel.broadcast(new Message(Message.Type.YOURTURN, "Nobody"));
                             try {
                                 Thread.sleep(4000);
                             } catch (InterruptedException e) {
@@ -145,6 +152,7 @@ public class ClientThread extends Thread {
                                     serverModel.broadcast(new Message(Message.Type.ROUNDFINISHED, p.getPlayerName(), p.getPointCounter()));
                                 }
                             }
+                            serverModel.broadcast(new Message(Message.Type.YOURTURN, gameModel.getCurrentWinner().getPlayerName()));
                             gameModel.putPlayersInOrder();
                             gameModel.createRound();
                             logger.info("The next round has been created");

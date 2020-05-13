@@ -4,6 +4,7 @@ import Client.JassClient;
 import Client.Model.ClientModel;
 import Client.View.CardLabel;
 import Client.View.GameView;
+import Client.View.TrumpfLabel;
 import Common.Messages.Message;
 import Common.ServiceLocator;
 import Common.Translator;
@@ -79,9 +80,7 @@ public class GameController {
 
 
     public void initializeElements(){
-        updateYourCards();
         updateOpponentLabels();
-        updateTrumpfElements();
         gameView.createGameHistory();
         gameView.createOverlayNotYourTurn();
         gameView.createTableViewScore();
@@ -98,11 +97,19 @@ public class GameController {
     }
 
     public void updateTrumpfElements(){
-        gameView.createTrumpfElements();
+        Platform.runLater(new Runnable() {
+            public void run() {
+                gameView.createTrumpfElements();
+            }
+        });
     }
 
     public void updateYourCards() {
-        gameView.createYourCards();
+        Platform.runLater(new Runnable() {
+            public void run() {
+                gameView.createYourCards();
+            }
+        });
     }
 
     public void updateOpponentLabels() {
@@ -112,6 +119,27 @@ public class GameController {
         gameView.addToRootJassGame(gameView.lblWinner2);
         gameView.addToRootJassGame(gameView.lblWinner3);
         gameView.addToRootJassGame(gameView.lblWinner4);
+    }
+
+    public void handleTrumpfChoiceAction() {
+        Platform.runLater(new Runnable() {
+            public void run() {
+                for (TrumpfLabel lbl : gameView.getListTrumpfLabels()) {
+                    lbl.setOnMouseEntered( e -> {
+                        lbl.getStyleClass().add("trumpf-labels");
+                    });
+
+                    lbl.setOnMouseExited(e -> {
+                        lbl.getStyleClass().clear();
+                    });
+
+                    lbl.setOnMouseClicked( e -> {
+                        clientCommunication.sendMessage(new Message(Message.Type.TRUMPF, lbl.getName()));
+                        gameView.removeFromRootJassGame(gameView.getBoxTrumpfChoice());
+                    });
+                }
+            }
+        });
     }
 
     public void handleCardAction(){

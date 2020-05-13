@@ -25,6 +25,20 @@
     -fx-border-width: 10px;
 }
 
+.trumpf-choice {
+    -fx-background-color: black;
+    -fx-border-width: 10px;
+    -fx-border-color: #424242;
+    -fx-border-style: solid;
+}
+
+.trumpf-labels {
+    -fx-cursor: hand;
+    -fx-border-style: dashed;
+    -fx-border-color: burlywood;
+    -fx-border-width: 5px;
+}
+
 .text-area {
     -fx-font-family: "Comic Sans MS";
     -fx-font-size: 14px;

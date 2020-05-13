@@ -104,6 +104,7 @@ public class GameOverView {
         tvScoreTable.setMaxHeight(140);
         tvScoreTable.setMaxWidth(155);
 
+
         tvScoreTable.setItems(model.getPlayerWithPoints());
 
         tvScoreTable.setTranslateX(600);

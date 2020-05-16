@@ -12,19 +12,19 @@ import java.util.ArrayList;
 public class Message implements Serializable {
 
     // there are different type of messages sent by the clients
-    // Receive Players connected to the server as a List TODO
+    // Receive Players connected to the server as a List
     // Message an ordinary text message in a chatroom for conversations
     // Clients can disconnect themselves from the server TODO
     // Clients can connect themselves from the LoginWindow to the server
-    // Server can accept the connections from the clients unit the max players are 4 TODO
+    // Server can accept the connections from the clients unit the max players are 4
     // Server can show a message if client loses connection to server TODO
     // Server can announce if the Game has started
     // Server can give turns for the currentPlayer who has to play
     // Server can give action by a GameAction from Player
     // Server rejects startGame if players are too less
 
-    public enum Type {WHOISIN, CHATMESSAGE, LOGOUT, LOGIN, LOGINREJECTED, LOGINACCEPTED, DEALCARDS,
-                            TRUMPF, STARTGAME, YOURTURN, CARDPLAYED, ROUNDFINISHED, GAMEFINISHED}
+    public enum Type {WHOISIN, CHATMESSAGE, LOGOUT, LOGIN, LOGINREJECTED, LOGINACCEPTED,DEALCARDS,TRUMPF,
+        STARTGAME, YOURTURN, CARDPLAYED, ROUNDFINISHED, GAMEFINISHED, STARTGAMEREJECTED, LOGINREJECTEDTOOMANYPLAYERS}
 
     private Type type;
     private String message;
@@ -38,6 +38,11 @@ public class Message implements Serializable {
     private String playerName;
     private int pointsOfRound;
     private String trumpf;
+
+
+
+    private int playerCount;
+
 
     // Messages for player entering the game
     public Message(Message.Type type, String message) {
@@ -69,6 +74,7 @@ public class Message implements Serializable {
                 break;
             case GAMEFINISHED:
                 this.winnerName = message;
+                break;
         }
         this.message = message;
     }
@@ -101,6 +107,17 @@ public class Message implements Serializable {
         this.type = type;
         this.playerName = playerName;
         this.pointsOfRound = points;
+    }
+
+    // message for too less plasyers
+    public Message(Message.Type type, int value){
+        this.type = type; ;
+
+        switch(type){
+            case STARTGAMEREJECTED:
+                this.playerCount = value;
+                break;
+        }
     }
 
     public Type getType() {
@@ -191,12 +208,17 @@ public class Message implements Serializable {
         this.pointsOfRound = pointsOfRound;
     }
 
-    public String getTrumpf() {
+
+    public String getTrumpf(){
         return trumpf;
     }
 
-    public void setTrumpf(String trumpf) {
+    public int getPlayerCount() {
+        return playerCount;
+    }
+
+    public void setTrumpf(){
         this.trumpf = trumpf;
     }
-}
 
+}

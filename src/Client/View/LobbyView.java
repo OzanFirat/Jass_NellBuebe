@@ -1,6 +1,8 @@
 package Client.View;
 
 import Client.Model.ClientModel;
+import Common.ServiceLocator;
+import Common.Translator;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -36,9 +38,23 @@ public class LobbyView {
 
     private Pane root;
 
+    //Elements to display the languageSetting
+    public ChoiceBox<String> choiceBoxLanguageLobbyView;
+
     public LobbyView(Stage lobbyStage, ClientModel model) {
         this.stage = lobbyStage;
         this.model = model;
+
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+
+        // defined languages
+        choiceBoxLanguageLobbyView = new ChoiceBox<>();
+        choiceBoxLanguageLobbyView.setValue("DE");
+        choiceBoxLanguageLobbyView.getItems().add("EN");
+        choiceBoxLanguageLobbyView.getItems().add("DE");
+        choiceBoxLanguageLobbyView.setTranslateX(620);
+        choiceBoxLanguageLobbyView.setTranslateY(355);
 
         root = new Pane();
         createBackgroundImage();
@@ -46,6 +62,18 @@ public class LobbyView {
         createLobbyTextArea();
         createTitle();
         createChoiceBoxCardStyle();
+
+        choiceBoxLanguageLobbyView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+            if (newValue == "DE" || newValue == "GER") {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[1].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[1].getLanguage()));
+                updateLobbyViewTexts();
+            } else {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
+                updateLobbyViewTexts();
+            }
+        });
 
         Scene scene = new Scene(root, 700, 400);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
@@ -65,12 +93,15 @@ public class LobbyView {
         imvBackground = new ImageView(background);
         imvBackground.setFitHeight(400);
         imvBackground.setFitWidth(700);
-        root.getChildren().add(imvBackground);
+        root.getChildren().addAll(imvBackground, choiceBoxLanguageLobbyView);
     }
 
     private void createButtons() {
-        btnStart = new Button("Start Game");
-        btnExit = new Button("Exit");
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+
+        btnStart = new Button(t.getString("lobby.btn.Start"));
+        btnExit = new Button(t.getString("lobby.btn.Exit"));
         btnChat = new Button("Chat");
 
         containerButtons = new HBox(50);
@@ -100,7 +131,10 @@ public class LobbyView {
     }
 
     private void createChoiceBoxCardStyle() {
-        lblCardStyle = new Label("Choose the style of the cards");
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+
+        lblCardStyle = new Label(t.getString("lobby.lbl.CardStyle"));
         lblCardStyle.getStyleClass().add("login-text");
         cbCardStyle = new ChoiceBox<>(FXCollections.observableArrayList("DE", "FR"));
         lblCardStyle.setTranslateX(350);
@@ -133,5 +167,15 @@ public class LobbyView {
 
     public void setCbCardStyle(ChoiceBox cbCardStyle) {
         this.cbCardStyle = cbCardStyle;
+    }
+
+    protected void updateLobbyViewTexts() {
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+
+        btnStart.setText(t.getString("lobby.btn.Start"));
+        btnExit.setText(t.getString("lobby.btn.Exit"));
+        lblCardStyle.setText(t.getString("lobby.lbl.CardStyle"));
+
     }
 }

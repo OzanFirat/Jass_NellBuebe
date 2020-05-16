@@ -1,6 +1,8 @@
 package Client.View;
 
 import Client.Model.ClientModel;
+import Common.ServiceLocator;
+import Common.Translator;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -32,12 +34,24 @@ public class ChatView {
     public MenuItem chatInfoItem;
 
 
+    //Elements to display the languageSetting
+    public ChoiceBox<String> choiceBoxLanguageChatView;
+
 
     public ChatView(Stage chatStage, ClientModel model) {
         this.chatStage = chatStage;
         this.model = model;
 
-        //chatStage.setTitle("Jass ChatRoom");
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+
+        // defined languages
+        choiceBoxLanguageChatView = new ChoiceBox<>();
+        choiceBoxLanguageChatView.setValue("DE");
+        choiceBoxLanguageChatView.getItems().add("EN");
+        choiceBoxLanguageChatView.getItems().add("DE");
+        choiceBoxLanguageChatView.setTranslateX(300);
+
 
         messageEntry = new TextArea();
         messageEntry.setMinHeight(40);
@@ -49,32 +63,32 @@ public class ChatView {
         chatHistory.setMinHeight(400);
         chatHistory.setMaxHeight(450);
         chatHistory.setEditable(false);
-        enterMessageLbl = new Label("Input Message: ");
+        enterMessageLbl = new Label(t.getString("chat.lbl.enterMessage"));
 
-        exitChatButton = new Button("Exit");
-        sendButton = new Button("Send");
+        exitChatButton = new Button(t.getString("chat.lbl.exitButton"));
+        sendButton = new Button(t.getString("chat.lbl.sendButton"));
         sendButton.setId("sendButton");
 
         HBox hB = new HBox();
-        hB.getChildren().addAll(exitChatButton,sendButton);
+        hB.getChildren().addAll(exitChatButton,sendButton, choiceBoxLanguageChatView);
 
         VBox vb = new VBox();
         vb.getChildren().addAll(chatHistory,enterMessageLbl,messageEntry,hB);
 
-        mBar = new MenuBar();
-
-        settingMenu = new Menu("Settings");
-        languageEngItem = new MenuItem("ENG");
-        languageGerItem = new MenuItem("GER");
-        settingMenu.getItems().addAll(languageEngItem,languageGerItem);
-
-        helpMenu = new Menu("Help");
-        chatInfoItem = new MenuItem("Info");
-        helpMenu.getItems().add(chatInfoItem);
-
         BorderPane bp = new BorderPane();
-        bp.setTop(mBar);
         bp.setCenter(vb);
+
+        choiceBoxLanguageChatView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+            if (newValue == "DE" || newValue == "GER") {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[1].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[1].getLanguage()));
+                updatChatViewViewTexts();
+            } else {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
+                updatChatViewViewTexts();
+            }
+        });
 
         scene = new Scene(bp);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
@@ -103,5 +117,16 @@ public class ChatView {
 
     public void stop() {
         chatStage.hide();
+    }
+
+    protected void updatChatViewViewTexts() {
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+
+        // Menus
+        enterMessageLbl.setText(t.getString("chat.lbl.enterMessage"));
+        exitChatButton.setText(t.getString("chat.lbl.exitButton"));
+        sendButton.setText(t.getString("chat.lbl.sendButton"));
+
     }
 }

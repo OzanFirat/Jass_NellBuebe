@@ -1,9 +1,13 @@
 package Client.View;
 
+import Client.JassClient;
 import Client.Model.ClientModel;
 import Common.ServiceLocator;
 import Common.Translator;
+import Server.ClientThread;
+import Server.ServerModel;
 import javafx.animation.TranslateTransition;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -18,12 +22,16 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.security.auth.callback.ConfirmationCallback;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Optional;
 
 public class GameView {
     private Stage gameStage;
     private ClientModel model;
+    private ServerModel sm;
+
 
     // Root for the JassGame
     Pane rootJassGame;
@@ -61,10 +69,7 @@ public class GameView {
     public CardLabel c0;
     public CardLabel c1;
     public CardLabel c2;
-
     public TextArea gameHistory;
-
-
 
     // ArrayList to save the rectangles of the overlay - needed to remove them when it's your turn
     private ArrayList<Rectangle> rectanglesOverlay;
@@ -83,7 +88,7 @@ public class GameView {
     public ArrayList<CardLabel> yourCards = new ArrayList<>(9);
     public double xStartPoint = 314.375;
     public double yStartingPoint = 630;
-    public double xSpaceCards = 5;
+    public double xSpaceCards = 5.4999;
 
     // enum to define the style of the cards (DE/FR)
     private CardLabel.Style style;
@@ -91,7 +96,7 @@ public class GameView {
     // some numbers to place & size the elements right
     private double xMiddle = 700;
     private double yMiddle = 400;
-    private double cardWidth = 81;
+    private double cardWidth = 81.25;
     private double cardHeight = 130;
     private double spaceToEdge = 50;
 
@@ -116,7 +121,9 @@ public class GameView {
     public Button btnBottomsUp;
 
     //Elements to display the languageSetting
-    ChoiceBox<String> choiceBoxLanguage;
+    public ChoiceBox<String> choiceBoxLanguageGameView;
+
+    private Button button;
 
 
     public GameView(Stage gameStage, ClientModel model) {
@@ -135,7 +142,7 @@ public class GameView {
         rootCards = new Pane();
         cardsPlayedByOpponents = new Pane();
         oppPanes = new ArrayList<>(3);
-        for (int i = 0; i < 3; i++){
+        for (int i = 0; i < 3; i++) {
             Pane pane = new Pane();
             oppPanes.add(pane);
         }
@@ -159,64 +166,65 @@ public class GameView {
         btnChatGame.setTranslateY(725);
 
         // defined Rules-Elements in gameView
-        lblGameInstruction = new Label("GAME INSTRUCTION");
+        lblGameInstruction = new Label(t.getString("game.lbl.gameInstruction"));
         lblGameInstruction.setAlignment(Pos.CENTER);
         lblGameInstruction.setId("titleRules");
         lblGameInstruction.setTranslateX(60);
         lblGameInstruction.setTranslateY(605);
 
-        btngameCards = new Button("PLAYING CARDS");
+        btngameCards = new Button(t.getString("game.button.playingCards"));
         btngameCards.setId("rules");
         btngameCards.setTranslateX(60);
         btngameCards.setTranslateY(625);
 
-        btnTrump = new Button("TRUMP");
+        btnTrump = new Button(t.getString("game.button.trump"));
         btnTrump.setId("rules");
         btnTrump.setTranslateX(60);
         btnTrump.setTranslateY(650);
 
-        btnMinorSuit = new Button("MINOR SUIT");
+        btnMinorSuit = new Button(t.getString("game.button.minorSuit"));
         btnMinorSuit.setId("rules");
         btnMinorSuit.setTranslateX(60);
         btnMinorSuit.setTranslateY(675);
 
-        btnTopsDown = new Button("TOPS-DOWN");
+        btnTopsDown = new Button(t.getString("game.button.topsDown"));
         btnTopsDown.setId("rules");
         btnTopsDown.setTranslateX(60);
         btnTopsDown.setTranslateY(700);
 
-        btnBottomsUp = new Button("BOTTOMS-UP");
+        btnBottomsUp = new Button(t.getString("game.button.bottomsUp"));
         btnBottomsUp.setId("rules");
         btnBottomsUp.setTranslateX(60);
         btnBottomsUp.setTranslateY(725);
 
-        // defined Rule-Elements in gameView
-        choiceBoxLanguage = new ChoiceBox<>();
-        choiceBoxLanguage.setValue("EN");
-        choiceBoxLanguage.getItems().add("EN");
-        choiceBoxLanguage.getItems().add("DE");
-        choiceBoxLanguage.setId("languageSetting");
-        choiceBoxLanguage.setTranslateX(1300);
-        choiceBoxLanguage.setTranslateY(725);
+        // defined languages
+        choiceBoxLanguageGameView = new ChoiceBox<>();
+        choiceBoxLanguageGameView.setValue("DE");
+        choiceBoxLanguageGameView.getItems().add("EN");
+        choiceBoxLanguageGameView.getItems().add("DE");
+        choiceBoxLanguageGameView.setId("languageSetting");
+        choiceBoxLanguageGameView.setTranslateX(1300);
+        choiceBoxLanguageGameView.setTranslateY(725);
+
+
 
 
         rootJassGame.getChildren().add(btnChatGame);
-        rootJassGame.getChildren().addAll(btngameCards,btnTrump,btnMinorSuit,btnBottomsUp,btnTopsDown,lblGameInstruction);
-        rootJassGame.getChildren().add(choiceBoxLanguage);
+        rootJassGame.getChildren().addAll(btngameCards, btnTrump, btnMinorSuit, btnBottomsUp, btnTopsDown, lblGameInstruction);
+        rootJassGame.getChildren().add(choiceBoxLanguageGameView);
 
-        choiceBoxLanguage.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue)-> {
-            sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
-            sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
-            updateGameViewTexts();
+        choiceBoxLanguageGameView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+            if (newValue == "DE" || newValue == "GER") {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[1].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[1].getLanguage()));
+                updateGameViewTexts();
+            } else {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
+                updateGameViewTexts();
+            }
         });
 
-        /**
-        choiceBoxLanguage.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue)-> {
-            sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
-            sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
-            updateGameViewTexts();
-        });
-        **/
 
         Scene scene = new Scene(rootJassGame, sceneWidth, sceneHeight);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
@@ -224,11 +232,23 @@ public class GameView {
         gameStage.setTitle("Jass by NellBuebe");
     }
 
-    public void start(){
+    public void start() {
+
+        gameStage.setOnCloseRequest(e -> {
+            e.consume();
+            showConfirmationCloseGame();
+        });
+
+        button = new Button("Close Game");
+        button.setOnAction(e-> showConfirmationCloseGame());
+
+        StackPane layout = new StackPane();
+        layout.getChildren().add(button);
+
         gameStage.show();
     }
 
-    public void stop(){
+    public void stop() {
         gameStage.hide();
     }
 
@@ -239,6 +259,22 @@ public class GameView {
     public void removeFromRootJassGame(Node n) {
         rootJassGame.getChildren().remove(n);
     }
+
+
+    // needs to be optimized TODO
+    public void showConfirmationCloseGame(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit Game");
+        alert.setHeaderText("Leaving... :(");
+        alert.setContentText("Are you sure u want to exit, game can't  be proceeded anymore");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            Platform.exit();
+            System.exit(0);
+        }
+    }
+
 
     public void createTrumpfChoice() {
         Platform.runLater( new Runnable() {
@@ -280,12 +316,12 @@ public class GameView {
     }
 
     // card placement
-    public void createYourCards () {
-        for (int i = 0; i < model.getYourCards().size(); i++){
+    public void createYourCards() {
+        for (int i = 0; i < model.getYourCards().size(); i++) {
             CardLabel c = new CardLabel(model.getYourCards().get(i).toString(), style);
             yourCards.add(c);
             c.setTranslateY(yStartingPoint);
-            c.setTranslateX(xStartPoint + (i* xSpaceCards) +(i*cardWidth));
+            c.setTranslateX(xStartPoint + (i * xSpaceCards) + (i * cardWidth) + 0.85);
         }
         rootCards.getChildren().addAll(yourCards);
     }
@@ -293,17 +329,17 @@ public class GameView {
     // creates an overlay to enable cards if it's not your turn
     public void createOverlayNotYourTurn() {
 
-        Platform.runLater(new Runnable(){
+        Platform.runLater(new Runnable() {
             @Override
             public void run() {
 
                 rectanglesOverlay = new ArrayList<>();
 
-                    for (int i = 0; i < model.getYourCards().size(); i++) {
-                        Rectangle rect = new Rectangle(cardWidth, cardHeight);
-                        rect.setFill(Color.rgb(0, 0, 0, 0.5));
-                        rectanglesOverlay.add(rect);
-                    }
+                for (int i = 0; i < model.getYourCards().size(); i++) {
+                    Rectangle rect = new Rectangle(cardWidth, cardHeight);
+                    rect.setFill(Color.rgb(0, 0, 0, 0.5));
+                    rectanglesOverlay.add(rect);
+                }
                 overlayNotYourTurn.getChildren().addAll(rectanglesOverlay);
                 overlayNotYourTurn.setTranslateX(xStartPoint);
                 overlayNotYourTurn.setTranslateY(yStartingPoint);
@@ -314,10 +350,10 @@ public class GameView {
 
     // add the overlay to the root
     public void showOverlayNotYourTurn() {
-        Platform.runLater( new Runnable() {
+        Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                if(!rootJassGame.getChildren().contains(overlayNotYourTurn)) {
+                if (!rootJassGame.getChildren().contains(overlayNotYourTurn)) {
                     rootJassGame.getChildren().add(overlayNotYourTurn);
                 }
             }
@@ -362,21 +398,21 @@ public class GameView {
         listRectangle.get(0).setTranslateX(xMiddle + 80);
         listRectangle.get(0).setTranslateY(yMiddle - cardWidth);
 
-        listRectangle.get(1).setTranslateX(xMiddle - (cardWidth/2));
+        listRectangle.get(1).setTranslateX(xMiddle - (cardWidth / 2));
         listRectangle.get(1).setTranslateY(yMiddle - cardHeight - 20);
 
         listRectangle.get(2).setRotate(270);
         listRectangle.get(2).setTranslateX(xMiddle - 160);
         listRectangle.get(2).setTranslateY(yMiddle - cardWidth);
 
-        listRectangle.get(3).setTranslateX(xMiddle - (cardWidth/2));
+        listRectangle.get(3).setTranslateX(xMiddle - (cardWidth / 2));
         listRectangle.get(3).setTranslateY(yMiddle + 10);
 
         underlayCardsInMiddle.getChildren().addAll(listRectangle);
         rootJassGame.getChildren().add(underlayCardsInMiddle);
     }
 
-    public void createPlayer2(){
+    public void createPlayer2() {
 
         // Create the image (back of card) to display player
         Image back = new Image(getClass().getClassLoader().getResourceAsStream("images/myAvatar_1.png"));
@@ -392,7 +428,7 @@ public class GameView {
         lblWinner2 = new Label("Winner");
         lblWinner2.setRotate(90);
         lblWinner2.setTranslateX(1100);
-        lblWinner2.setTranslateY(yMiddle - (cardWidth /2));
+        lblWinner2.setTranslateY(yMiddle - (cardWidth / 2));
         lblWinner2.getStyleClass().add("login-text");
         lblWinner2.setVisible(false);
 
@@ -410,7 +446,7 @@ public class GameView {
         oppPanes.get(0).setTranslateY(yMiddle - cardWidth);
     }
 
-    public void createPlayer3(){
+    public void createPlayer3() {
 
         // Create the image (back of card) to display player
         Image back = new Image(getClass().getClassLoader().getResourceAsStream("images/myAvatar_2.png"));
@@ -442,7 +478,7 @@ public class GameView {
         oppPanes.get(1).setTranslateY(spaceToEdge);
     }
 
-    public void createPlayer4(){
+    public void createPlayer4() {
 
         // Create the image (back of card) to display player
         Image back = new Image(getClass().getClassLoader().getResourceAsStream("images/myAvatar_3.png"));
@@ -457,7 +493,7 @@ public class GameView {
 
         lblWinner4 = new Label("Winner");
         lblWinner4.setTranslateX(180);
-        lblWinner4.setTranslateY(yMiddle- (cardWidth/2));
+        lblWinner4.setTranslateY(yMiddle - (cardWidth / 2));
         lblWinner4.setRotate(270);
         lblWinner4.getStyleClass().add("login-text");
         lblWinner4.setVisible(false);
@@ -472,13 +508,13 @@ public class GameView {
 
         // Place the pane at the right place
         oppPanes.get(2).setRotate(270);
-        oppPanes.get(2).setTranslateX(spaceToEdge+20);
+        oppPanes.get(2).setTranslateX(spaceToEdge + 20);
         oppPanes.get(2).setTranslateY(yMiddle - cardWidth);
     }
 
-    public void updateCardsPlayedByOpps (String cardName, int indexOfCurrentPlayer) {
+    public void updateCardsPlayedByOpps(String cardName, int indexOfCurrentPlayer) {
         // cardsPlayedByOpponents.getChildren().removeAll(cardsPlayedByOpps);
-        Platform.runLater( new Runnable() {
+        Platform.runLater(new Runnable() {
 
             @Override
             public void run() {
@@ -507,7 +543,7 @@ public class GameView {
                         // Place the card for the player on the right side
                         c1 = new CardLabel(cardName, style);
 
-                        c1.setTranslateX(xMiddle - (cardWidth/2));
+                        c1.setTranslateX(xMiddle - (cardWidth / 2));
                         c1.setTranslateY(yMiddle - cardHeight - 20);
 
                         cardsPlayedByOpps.set(indexOfCurrentPlayer, c1);
@@ -526,14 +562,16 @@ public class GameView {
                         break;
                 }
 
-                System.out.println("Card to be placed is: "+cardName);
+                System.out.println("Card to be placed is: " + cardName);
             }
         });
     }
 
     public void createTrumpfElements() {
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
         // Getting the image and label to display the trumpf done
-        lblTrumpf = new Label("Trumpf");
+        lblTrumpf = new Label(t.getString("game.lbl.trump"));
         lblTrumpf.setMinWidth(70);
         lblTrumpf.getStyleClass().add("login-text");
 
@@ -550,30 +588,32 @@ public class GameView {
 
     // TableView to show the score during the game
     public void createTableViewScore() {
-       tvScoreTable = new TableView();
-       tvcName = new TableColumn("PlayerName");
-       tvcPoints = new TableColumn("Points");
-       tvScoreTable.getColumns().addAll(tvcName, tvcPoints);
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+        tvScoreTable = new TableView();
+        tvcName = new TableColumn(t.getString("game.tableColumn.tvcName"));
+        tvcPoints = new TableColumn(t.getString("game.tableColumn.tvcPoint"));
+        tvScoreTable.getColumns().addAll(tvcName, tvcPoints);
 
-       tvcName.setCellValueFactory(new PropertyValueFactory<>("name"));
-       tvcPoints.setCellValueFactory(new PropertyValueFactory<>("points"));
+        tvcName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tvcPoints.setCellValueFactory(new PropertyValueFactory<>("points"));
 
-       tvScoreTable.setMaxHeight(140);
-       tvScoreTable.setMaxWidth(155);
+        tvScoreTable.setMaxHeight(140);
+        tvScoreTable.setMaxWidth(155);
 
-       tvScoreTable.setItems(model.getPlayerWithPoints());
+        tvScoreTable.setItems(model.getPlayerWithPoints());
 
-       tvScoreTable.setTranslateX(1100);
-       tvScoreTable.setTranslateY(spaceToEdge);
+        tvScoreTable.setTranslateX(1100);
+        tvScoreTable.setTranslateY(spaceToEdge);
 
-       // Create a rectangle to fill gap between frame and table
-       Rectangle rect = new Rectangle(155, 140);
-       rect.setTranslateX(1100);
-       rect.setTranslateY(spaceToEdge);
-       rect.setFill(Color.BLACK);
+        // Create a rectangle to fill gap between frame and table
+        Rectangle rect = new Rectangle(155, 140);
+        rect.setTranslateX(1100);
+        rect.setTranslateY(spaceToEdge);
+        rect.setFill(Color.BLACK);
 
-       paneScoreTable.getChildren().addAll(rect, tvScoreTable);
-   }
+        paneScoreTable.getChildren().addAll(rect, tvScoreTable);
+    }
 
     public void createGameHistory() {
         gameHistory = new TextArea("");
@@ -583,11 +623,10 @@ public class GameView {
         gameHistory.setTranslateY(50);
         gameHistory.setEditable(false);
         rootJassGame.getChildren().add(gameHistory);
-
     }
 
-    public void doAnimationPlayYourCard (CardLabel card) {
-        card.setTranslateX(xMiddle - (cardWidth/2));
+    public void doAnimationPlayYourCard(CardLabel card) {
+        card.setTranslateX(xMiddle - (cardWidth / 2));
         card.setTranslateY(yMiddle + 10);
 
         /*
@@ -600,7 +639,7 @@ public class GameView {
          */
     }
 
-    public void doAnimationPlayCard2 (CardLabel card) {
+    public void doAnimationPlayCard2(CardLabel card) {
         TranslateTransition animation = new TranslateTransition();
         animation.setDuration(Duration.seconds(1));
         animation.setNode(card);
@@ -608,20 +647,20 @@ public class GameView {
         animation.play();
     }
 
-    public void doAnimationPlayCard3 (CardLabel card) {
+    public void doAnimationPlayCard3(CardLabel card) {
         TranslateTransition animation = new TranslateTransition();
         animation.setDuration(Duration.seconds(1));
         animation.setNode(card);
-        animation.setToY(yMiddle-10);
+        animation.setToY(yMiddle - 10);
         animation.play();
     }
 
-    public void removeCardsInMiddle () {
-        Platform.runLater(new Runnable(){
+    public void removeCardsInMiddle() {
+        Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                for (CardLabel card : yourCards){
-                    if (card.getTranslateX() == xMiddle - (cardWidth/2) && card.getTranslateY() == yMiddle + 10) {
+                for (CardLabel card : yourCards) {
+                    if (card.getTranslateX() == xMiddle - (cardWidth / 2) && card.getTranslateY() == yMiddle + 10) {
                         rootCards.getChildren().remove(card);
                     }
                 }
@@ -635,9 +674,9 @@ public class GameView {
         cardsPlayedByOpponents.getChildren().addAll(playedCards);
     }
 
-    private ImageView loadTrumpfImage(){
+    private ImageView loadTrumpfImage() {
         String fileName = model.getTrumpf();
-        if (style.equals(CardLabel.Style.DE)){
+        if (style.equals(CardLabel.Style.DE)) {
             fileName += "_de";
         }
         fileName += ".png";
@@ -650,7 +689,7 @@ public class GameView {
     }
 
     public void showRoundWinner(String winnerName) {
-        Platform.runLater( new Runnable() {
+        Platform.runLater(new Runnable() {
             public void run() {
                 if (winnerName.equals(model.getOppPlayerNames().get(0))) {
                     lblWinner2.setVisible(true);
@@ -667,7 +706,7 @@ public class GameView {
     }
 
     public void hideRoundWinner(String winnerName) {
-        Platform.runLater( new Runnable() {
+        Platform.runLater(new Runnable() {
             public void run() {
                 if (winnerName.equals(model.getOppPlayerNames().get(0))) {
                     lblWinner2.setVisible(false);
@@ -685,7 +724,7 @@ public class GameView {
 
     // methods for gameInstructions
     public void showPlayingCards() {
-        if (choiceBoxLanguage.getValue() == "EN") {
+        if (choiceBoxLanguageGameView.getValue() == "EN") {
             Alert rules = new Alert(Alert.AlertType.NONE, "You can choose between a deck of German playing cards or a deck of French playing cards.\n" +
                     "\n" + "A deck of cards has 4 suits, each of which contains 9 playing cards. A total of 36 cards are used in the game. For every type of Jass game" +
                     " played on Jass.ch 3 × 3 cards are dealt, i.e. each player receives 9 cards.\n" +
@@ -714,8 +753,8 @@ public class GameView {
         }
     }
 
-    public void showTrumpRule(){
-        if (choiceBoxLanguage.getValue() == "EN") {
+    public void showTrumpRule() {
+        if (choiceBoxLanguageGameView.getValue() == "EN") {
             Alert rules = new Alert(Alert.AlertType.NONE, "Trump\n" +
                     "\n" +
                     "The suit declared trumps beats cards of all ranks in the minor suits. " +
@@ -729,7 +768,7 @@ public class GameView {
             rules.setGraphic(pCardView);
             rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
             rules.showAndWait();
-        }else {
+        } else {
             Alert rules = new Alert(Alert.AlertType.NONE, "Trumpf\n" +
                     "\n" + "Wenn eine Farbe als Trumpffarbe angesagt ist, dann sticht die Trumpffarbe " +
                     "jeden Rang einer Nebenfarbe. Die Rangfolge innerhalb der Trumpffarbe sowie die Punktwerte " +
@@ -745,8 +784,8 @@ public class GameView {
         }
     }
 
-    public void showMinorSuitRule(){
-        if (choiceBoxLanguage.getValue() == "EN") {
+    public void showMinorSuitRule() {
+        if (choiceBoxLanguageGameView.getValue() == "EN") {
             Alert rules = new Alert(Alert.AlertType.NONE, "Minor suit\n" +
                     "\n" +
                     "The adjoining table shows the rankings within the minor suits as well" +
@@ -759,7 +798,7 @@ public class GameView {
             rules.setGraphic(pCardView);
             rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
             rules.showAndWait();
-        }else{
+        } else {
             Alert rules = new Alert(Alert.AlertType.NONE, "Nebenfarbe\n" +
                     "\n" +
                     "Die Rangfolge innerhalb der Nebenfarben sowie die Punktwerte gelten gemäss der nebenstehenden Abbildung. Eine höhere Karte sticht eine tiefere Karte.");
@@ -774,8 +813,8 @@ public class GameView {
         }
     }
 
-    public void showTopsDownRule(){
-        if (choiceBoxLanguage.getValue() == "EN") {
+    public void showTopsDownRule() {
+        if (choiceBoxLanguageGameView.getValue() == "EN") {
             Alert rules = new Alert(Alert.AlertType.NONE, "Tops-down\n" +
                     "\n" +
                     "There is no trump suit in tops-down. The adjoining table shows the ranking as well as the point values. In tops-down, Ace is highest. A higher-ranked card also beats a lower-ranked card in both tops-down and bottoms-up.");
@@ -787,7 +826,7 @@ public class GameView {
             rules.setGraphic(pCardView);
             rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
             rules.showAndWait();
-        }else{
+        } else {
             Alert rules = new Alert(Alert.AlertType.NONE, "Obenabe\n" +
                     "\n" +
                     "Beim Obenabe gibt es keine Trumpffarbe. Die Rangfolge sowie die Punktwerte gelten gemäss der nebenstehenden Abbildung. Beim Obenabe ist das Ass die höchste Stechkarte. Auch beim Obenabe und Undenufe gilt, dass eine höhere Karte eine tiefere Karte sticht.");
@@ -802,8 +841,8 @@ public class GameView {
         }
     }
 
-    public void showBottomsUpRule(){
-        if (choiceBoxLanguage.getValue() == "EN") {
+    public void showBottomsUpRule() {
+        if (choiceBoxLanguageGameView.getValue() == "EN") {
             Alert rules = new Alert(Alert.AlertType.NONE, "Bottoms-up\n" +
                     "\n" +
                     "There is no trump suit in bottoms-up. The adjoining table shows the ranking as well as the point values. In bottoms-up, Six is highest. A higher-ranked card also beats a lower-ranked card in both tops-down and bottoms-up.");
@@ -815,7 +854,7 @@ public class GameView {
             rules.setGraphic(pCardView);
             rules.getDialogPane().getButtonTypes().add(ButtonType.OK);
             rules.showAndWait();
-        }else{
+        } else {
             Alert rules = new Alert(Alert.AlertType.NONE, "Udenufe\n" +
                     "\n" +
                     "Beim Undenufe gibt es keine Trumpffarbe. Die Rangfolge sowie die Punktwerte gelten gemäss der nebenstehenden Abbildung. Beim Undenufe ist hingegen die 6 die stärkste Stechkarte. Auch beim Obenabe und Undenufe gilt, dass eine höhere Karte eine tiefere Karte sticht.");
@@ -851,14 +890,6 @@ public class GameView {
         this.style = style;
     }
 
-    protected void updateGameViewTexts(){
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
-
-        // Menus
-        btnChatGame.setText(t.getString("game.button.chatroom"));
-    }
-
     public ArrayList<TrumpfLabel> getListTrumpfLabels() {
         return listTrumpfLabels;
     }
@@ -866,4 +897,22 @@ public class GameView {
     public VBox getBoxTrumpfChoice() {
         return boxTrumpfChoice;
     }
+
+    protected void updateGameViewTexts() {
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+
+        // Menus
+        btnChatGame.setText(t.getString("game.button.chatroom"));
+        lblGameInstruction.setText(t.getString("game.lbl.gameInstruction"));
+        btngameCards.setText(t.getString("game.button.playingCards"));
+        btnTrump.setText(t.getString("game.button.trump"));
+        btnMinorSuit.setText(t.getString("game.button.minorSuit"));
+        btnTopsDown.setText(t.getString("game.button.topsDown"));
+        btnBottomsUp.setText(t.getString("game.button.bottomsUp"));
+        tvcName.setText(t.getString("game.tableColumn.tvcName"));
+        tvcPoints.setText(t.getString("game.tableColumn.tvcPoint"));
+        lblTrumpf.setText(t.getString("game.lbl.trump"));
+    }
+
 }

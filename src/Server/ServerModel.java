@@ -3,6 +3,7 @@ package Server;
 
 import Common.Messages.Message;
 import Common.ServiceLocator;
+import javafx.application.Platform;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -22,8 +23,7 @@ public class ServerModel {
     private Logger logger = sl.getLogger();
 
 
-    // declaration of the MAX and MIN player for the JassGame
-    private final int MIN_PLAYER = 0;
+    // declaration of the MAX player for the JassGame
     private final int MAX_PLAYER = 4;
 
 
@@ -95,25 +95,15 @@ public class ServerModel {
                 }
             }
         };
+
         Thread t = new Thread(r, "ServerSocket");
         t.start();
-    }
 
-
-    // TODO OPTIMIZE EVERYTHING BELOW !!!!!!!!!!!!  @LEVIN
-
-
-    // neeeds to be optimized
-    //checks at the login and on startgame if there are enough, but not to many players
-    protected boolean checkCountPlayers(int arraySize) {
-        if (arraySize == MIN_PLAYER || arraySize > MAX_PLAYER) {
-            return false;
-        }
-        return true;
     }
 
     // method to broadcast a message to all clients
     public synchronized void broadcast(Message message) {
+
         // loop in reverse order in case we would have lost a client
         for (ClientThread t : clientThreads) {
             t.writeMessage(message);
@@ -121,7 +111,7 @@ public class ServerModel {
     }
 
     public synchronized String getPlayerByName(String name) {
-       return playerNames.stream().filter(player -> player.equals(name)).toString();
+        return playerNames.stream().filter(player -> player.equals(name)).toString();
     }
 
     public synchronized void addPlayerByName(String name){
@@ -135,5 +125,13 @@ public class ServerModel {
     public void setPlayerNames(ArrayList<String> playerNames) {
         this.playerNames = playerNames;
     }
-}
 
+    // needs to be optimized TODO
+    public void closeAllThreads(){
+        for ( ClientThread t : clientThreads) {
+
+            Platform.exit();
+            System.exit(0);
+        }
+    }
+}

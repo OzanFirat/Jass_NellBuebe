@@ -55,31 +55,8 @@ public class GameController {
         });
     }
 
-    /**
-    public void handleRuleAction(){
-        gameView.btngameCards.setOnAction(e->{
-            JassClient.mainProgram.startPlayCardInfo();
-        });
-
-        gameView.btnTrump.setOnAction(e->{
-            JassClient.mainProgram.startTrumpRuleInfo();
-        });
-        gameView.btnMinorSuit.setOnAction(e->{
-            JassClient.mainProgram.startMinorSuitInfo();
-        });
-
-        gameView.btnTopsDown.setOnAction(e->{
-            JassClient.mainProgram.startTopsDownInfo();
-        });
-        gameView.btnBottomsUp.setOnAction(e->{
-            JassClient.mainProgram.startBottomsUpInfo();
-        });
-    }
-
-    **/
-
-
     public void initializeElements(){
+
         updateOpponentLabels();
         gameView.createGameHistory();
         gameView.createOverlayNotYourTurn();
@@ -142,6 +119,8 @@ public class GameController {
         });
     }
 
+
+
     public void handleCardAction(){
         Platform.runLater( new Runnable() {
             @Override
@@ -186,14 +165,12 @@ public class GameController {
         });
     }
 
-    // TODO needs to be optimized for Translation (eng,de)
     public void updateGameHistory(String playerName) {
-        //Translator t = sl.getTranslator();
+
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                //gameView.gameHistory.appendText(t.getString("Game-Info: "+playerName+" has won the round\n"));
-                gameView.gameHistory.appendText("Game-Info: "+playerName+" has won the round\n");
+                gameView.gameHistory.appendText(t.getString("game.gameHistory.info1")+ playerName+ " "+(t.getString("game.gameHistory.info2")));
             }
         });
     }

@@ -2,7 +2,9 @@ package Client.Controller;
 
 import Client.JassClient;
 import Client.Model.ClientModel;
+import Client.View.CardLabel;
 import Client.View.SettingsView;
+import Common.Messages.Message;
 
 import java.util.logging.Logger;
 
@@ -10,38 +12,33 @@ public class SettingsController {
     private ClientModel model;
     private SettingsView settingsView;
     private Logger log;
+    private ClientCommunication cc = ClientCommunication.getInstance();
 
     public SettingsController(ClientModel model, SettingsView settingsView) {
         this.model = model;
         this.settingsView = settingsView;
         log = JassClient.mainProgram.getLogger();
 
-        settingsView.btnChooseTrumpf.get(0).setOnMouseClicked( e -> {
-            // model.setTrumpf(Card.Suit.Clubs);
-            log.info("Trumpf Selected -> Clubs");
-        });
-
-        settingsView.btnChooseTrumpf.get(1).setOnMouseClicked( e -> {
-            // model.setTrumpf(Card.Suit.Hearts);
-            log.info("Trumpf Selected -> Hearts");
-        });
-
-        settingsView.btnChooseTrumpf.get(2).setOnMouseClicked( e -> {
-            // model.setTrumpf(Card.Suit.Diamonds);
-            log.info("Trumpf Selected -> Diamonds");
-        });
-
-        settingsView.btnChooseTrumpf.get(3).setOnMouseClicked( e -> {
-            // model.setTrumpf(Card.Suit.Diamonds);
-            log.info("Trumpf selected -> Spades");
-        });
-
         settingsView.btnStartGame.setOnAction( e -> {
-            // model.createGame();
-            JassClient.mainProgram.startGame();
-            JassClient.mainProgram.stopSettings();
-            log.info("Game has started");
+            int maxPoints = (int) settingsView.getCbMaxPoints().getValue();
+            cc.sendMessage(new Message(Message.Type.STARTGAME, maxPoints));
+            settingsView.stop();
         });
 
+    }
+
+    public void setCardStyle() {
+        if (settingsView.getCbCardStyle().getValue() != null) {
+            switch (settingsView.getCbCardStyle().getValue().toString()) {
+                case "FR":
+                    JassClient.mainProgram.getGameView().setStyle(CardLabel.Style.FR);
+                    break;
+                case "DE":
+                    JassClient.mainProgram.getGameView().setStyle(CardLabel.Style.DE);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + settingsView.getCbCardStyle().getValue());
+            }
+        }
     }
 }

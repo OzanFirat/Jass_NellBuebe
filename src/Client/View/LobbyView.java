@@ -5,10 +5,7 @@ import Common.ServiceLocator;
 import Common.Translator;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -20,21 +17,20 @@ public class LobbyView {
     private Stage stage;
     private ClientModel model;
 
+    ServiceLocator sl;
+    Translator t;
+
     private Label lblTitle;
 
     private TextArea playersInLobby;
 
     private HBox containerButtons;
     private Button btnStart = new Button("Start Game");
-    private Button btnExit = new Button("Exit");
+    private Button btnSettings = new Button("Exit");
     private Button btnChat = new Button("Chat");
 
     private Image background;
     private ImageView imvBackground;
-
-    private ChoiceBox cbCardStyle;
-    private Label lblCardStyle;
-
 
     private Pane root;
 
@@ -45,35 +41,16 @@ public class LobbyView {
         this.stage = lobbyStage;
         this.model = model;
 
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
-
-        // defined languages
-        choiceBoxLanguageLobbyView = new ChoiceBox<>();
-        choiceBoxLanguageLobbyView.setValue("DE");
-        choiceBoxLanguageLobbyView.getItems().add("EN");
-        choiceBoxLanguageLobbyView.getItems().add("DE");
-        choiceBoxLanguageLobbyView.setTranslateX(620);
-        choiceBoxLanguageLobbyView.setTranslateY(355);
+        sl = ServiceLocator.getServiceLocator();
+        t = sl.getTranslator();
 
         root = new Pane();
         createBackgroundImage();
         createButtons();
         createLobbyTextArea();
         createTitle();
-        createChoiceBoxCardStyle();
+        createCBLanguage();
 
-        choiceBoxLanguageLobbyView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
-            if (newValue == "DE" || newValue == "GER") {
-                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[1].getLanguage());
-                sl.setTranslator(new Translator(sl.getLocales()[1].getLanguage()));
-                updateLobbyViewTexts();
-            } else {
-                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
-                sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
-                updateLobbyViewTexts();
-            }
-        });
 
         Scene scene = new Scene(root, 700, 400);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
@@ -88,12 +65,39 @@ public class LobbyView {
         stage.hide();
     }
 
+    public void setStageTitle() {
+        stage.setTitle("Lobby - " +model.getUserName());
+    }
+
+    private void createCBLanguage() {
+        // defined languages
+        choiceBoxLanguageLobbyView = new ChoiceBox<>();
+        choiceBoxLanguageLobbyView.setValue("DE");
+        choiceBoxLanguageLobbyView.getItems().add("EN");
+        choiceBoxLanguageLobbyView.getItems().add("DE");
+        choiceBoxLanguageLobbyView.setTranslateX(580);
+        choiceBoxLanguageLobbyView.setTranslateY(120);
+
+        choiceBoxLanguageLobbyView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+            if (newValue == "DE" || newValue == "GER") {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[1].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[1].getLanguage()));
+                updateLobbyViewTexts();
+            } else {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
+                updateLobbyViewTexts();
+            }
+        });
+        root.getChildren().add(choiceBoxLanguageLobbyView);
+    }
+
     private void createBackgroundImage() {
         background = new Image(getClass().getClassLoader().getResourceAsStream("images/login_background_medium.jpg"));
         imvBackground = new ImageView(background);
         imvBackground.setFitHeight(400);
         imvBackground.setFitWidth(700);
-        root.getChildren().addAll(imvBackground, choiceBoxLanguageLobbyView);
+        root.getChildren().addAll(imvBackground);
     }
 
     private void createButtons() {
@@ -101,11 +105,11 @@ public class LobbyView {
         Translator t = sl.getTranslator();
 
         btnStart = new Button(t.getString("lobby.btn.Start"));
-        btnExit = new Button(t.getString("lobby.btn.Exit"));
+        btnSettings = new Button(t.getString("lobby.btn.Settings"));
         btnChat = new Button("Chat");
 
         containerButtons = new HBox(50);
-        containerButtons.getChildren().addAll(btnExit, btnChat, btnStart);
+        containerButtons.getChildren().addAll(btnSettings, btnChat, btnStart);
         containerButtons.setTranslateX(350);
         containerButtons.setTranslateY(300);
         root.getChildren().add(containerButtons);
@@ -117,7 +121,7 @@ public class LobbyView {
         playersInLobby.setTranslateX(350);
         playersInLobby.setTranslateY(160);
         playersInLobby.setMaxHeight(120);
-        playersInLobby.setMaxWidth(250);
+        playersInLobby.setMaxWidth(280);
         root.getChildren().add(playersInLobby);
     }
 
@@ -130,27 +134,20 @@ public class LobbyView {
         root.getChildren().add(lblTitle);
     }
 
-    private void createChoiceBoxCardStyle() {
+    protected void updateLobbyViewTexts() {
         ServiceLocator sl = ServiceLocator.getServiceLocator();
         Translator t = sl.getTranslator();
 
-        lblCardStyle = new Label(t.getString("lobby.lbl.CardStyle"));
-        lblCardStyle.getStyleClass().add("login-text");
-        cbCardStyle = new ChoiceBox<>(FXCollections.observableArrayList("DE", "FR"));
-        lblCardStyle.setTranslateX(350);
-        lblCardStyle.setTranslateY(80);
-        cbCardStyle.setTranslateX(620);
-        cbCardStyle.setTranslateY(80);
-
-        root.getChildren().addAll(lblCardStyle, cbCardStyle);
+        btnStart.setText(t.getString("lobby.btn.Start"));
+        btnSettings.setText(t.getString("lobby.btn.Settings"));
     }
 
     public Button getBtnStart() {
         return btnStart;
     }
 
-    public Button getBtnExit() {
-        return btnExit;
+    public Button getBtnSettings() {
+        return btnSettings;
     }
 
     public Button getBtnChat() {
@@ -161,21 +158,7 @@ public class LobbyView {
         return playersInLobby;
     }
 
-    public ChoiceBox getCbCardStyle() {
-        return cbCardStyle;
-    }
 
-    public void setCbCardStyle(ChoiceBox cbCardStyle) {
-        this.cbCardStyle = cbCardStyle;
-    }
 
-    protected void updateLobbyViewTexts() {
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
 
-        btnStart.setText(t.getString("lobby.btn.Start"));
-        btnExit.setText(t.getString("lobby.btn.Exit"));
-        lblCardStyle.setText(t.getString("lobby.lbl.CardStyle"));
-
-    }
 }

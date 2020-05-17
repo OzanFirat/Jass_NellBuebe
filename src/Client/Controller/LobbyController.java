@@ -35,23 +35,13 @@ public class LobbyController {
             JassClient.mainProgram.startChat();
         });
 
+        lobbyView.getBtnSettings().setOnAction( e-> {
+            JassClient.mainProgram.getSettingsView().setSettingStageTitle();
+            JassClient.mainProgram.startSettings();
+        });
+
     }
 
-    // TODO Call after message, not button click - Do smth to avoid NullPointerException if no value
-    public void setCardStyle() {
-        if (lobbyView.getCbCardStyle().getValue() != null) {
-            switch (lobbyView.getCbCardStyle().getValue().toString()) {
-                case "FR":
-                    JassClient.mainProgram.getGameView().setStyle(CardLabel.Style.FR);
-                    break;
-                case "DE":
-                    JassClient.mainProgram.getGameView().setStyle(CardLabel.Style.DE);
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + lobbyView.getCbCardStyle().getValue());
-            }
-        }
-    }
 
     public void updateLobby() {
         lobbyView.getPlayersInLobby().setText("");

@@ -20,6 +20,9 @@ public class LoginView {
     private Stage stage;
     private ClientModel model;
 
+    ServiceLocator sl = ServiceLocator.getServiceLocator();
+    Translator t = sl.getTranslator();
+
     protected GridPane gridLogin;
     private Pane root;
 
@@ -37,43 +40,24 @@ public class LoginView {
     //Elements to display the languageSetting
     private ChoiceBox<String> choiceBoxLanguageLoginView;
 
+    private int sceneWidth = 570;
+    private int sceneHeight = 330;
+
 
     public LoginView(Stage stage, ClientModel model){
         this.stage = stage;
         this.model = model;
 
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-
-        // defined languages
-        choiceBoxLanguageLoginView = new ChoiceBox<>();
-        choiceBoxLanguageLoginView.setValue("DE");
-        choiceBoxLanguageLoginView.getItems().add("EN");
-        choiceBoxLanguageLoginView.getItems().add("DE");
-        choiceBoxLanguageLoginView.setTranslateX(480);
-        choiceBoxLanguageLoginView.setTranslateY(258);
-
-
         root = new Pane();
+        createChoiceBoxLanguage();
+        createBackground();
+        createLoginGrid();
 
-
-        choiceBoxLanguageLoginView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
-            if (newValue == "DE" || newValue == "GER") {
-                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[1].getLanguage());
-                sl.setTranslator(new Translator(sl.getLocales()[1].getLanguage()));
-                updateLoginViewTexts();
-            } else {
-                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
-                sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
-                updateLoginViewTexts();
-            }
-        });
-
-        Scene scene = new Scene(root, 570, 331);
+        Scene scene = new Scene(root, sceneWidth, sceneHeight);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("Jass by NellBuebe - Log In");
-        createBackground();
-        createLoginGrid();
+
     }
 
     public void start(){
@@ -87,15 +71,34 @@ public class LoginView {
     private void createBackground(){
         background = new Image(getClass().getClassLoader().getResourceAsStream("images/login_background_medium.jpg"));
         imvBackground = new ImageView(background);
-        imvBackground.setFitWidth(570);
-        imvBackground.setFitHeight(331);
+        imvBackground.setFitWidth(sceneWidth);
+        imvBackground.setFitHeight(sceneHeight);
         root.getChildren().add(imvBackground);
     }
 
-    private void createLoginGrid() {
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
+    private void createChoiceBoxLanguage() {
+        // defined languages
+        choiceBoxLanguageLoginView = new ChoiceBox<>();
+        choiceBoxLanguageLoginView.setValue("DE");
+        choiceBoxLanguageLoginView.getItems().add("EN");
+        choiceBoxLanguageLoginView.getItems().add("DE");
 
+        choiceBoxLanguageLoginView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+            if (newValue == "DE" || newValue == "GER") {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[1].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[1].getLanguage()));
+                t = sl.getTranslator();
+                updateLoginViewTexts();
+            } else {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
+                t = sl.getTranslator();
+                updateLoginViewTexts();
+            }
+        });
+    }
+
+    private void createLoginGrid() {
         gridLogin = new GridPane();
         gridLogin.setHgap(20);
         gridLogin.setVgap(20);
@@ -106,12 +109,13 @@ public class LoginView {
         lblIpAddress = new Label(t.getString("login.lbl.IpAddress"));
         inputIpAdress.setText("127.0.0.1");
         btnLogIn.setText(t.getString("login.btn.Login"));
-        btnLogIn.setTranslateX(0);
+        btnLogIn.setAlignment(Pos.CENTER_RIGHT);
 
         lblWelcome.getStyleClass().add("login-text");
         lblUserName.getStyleClass().add("login-text");
         lblIpAddress.getStyleClass().add("login-text");
         inputIpAdress.getStyleClass().add("login-text");
+
 
         gridLogin.add(lblWelcome, 0, 0, 2, 1);
         gridLogin.add(lblUserName, 0, 1);
@@ -119,12 +123,13 @@ public class LoginView {
         gridLogin.add(inputUserName, 1, 1);
         gridLogin.add(inputIpAdress, 1, 2);
         gridLogin.add(btnLogIn, 1, 3);
+        gridLogin.add(choiceBoxLanguageLoginView, 0, 3);
 
         gridLogin.setTranslateX(240);
         gridLogin.setTranslateY(100);
 
 
-        root.getChildren().addAll(gridLogin, choiceBoxLanguageLoginView);
+        root.getChildren().addAll(gridLogin);
     }
     protected void updateLoginViewTexts() {
         ServiceLocator sl = ServiceLocator.getServiceLocator();

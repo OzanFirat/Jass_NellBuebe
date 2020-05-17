@@ -30,7 +30,9 @@ import java.util.Optional;
 public class GameView {
     private Stage gameStage;
     private ClientModel model;
-    private ServerModel sm;
+
+    ServiceLocator sl = ServiceLocator.getServiceLocator();
+    Translator t = sl.getTranslator();
 
 
     // Root for the JassGame
@@ -43,7 +45,7 @@ public class GameView {
     Pane rootCards;
     Pane cardsPlayedByOpponents;
     ArrayList<Pane> oppPanes;
-    HBox overlayNotYourTurn;
+    Pane overlayNotYourTurn;
     Pane underlayYourCards;
     Pane underlayCardsInMiddle;
     Pane paneScoreTable;
@@ -85,10 +87,10 @@ public class GameView {
     private TableColumn tvcPoints;
 
     // ArrayList for the playable Cards
-    public ArrayList<CardLabel> yourCards = new ArrayList<>(9);
-    public double xStartPoint = 314.375;
+    public ArrayList<CardLabel> yourCards;
+    public double xStartPoint = 315;
     public double yStartingPoint = 630;
-    public double xSpaceCards = 5.4999;
+    public double xSpaceCards = 5;
 
     // enum to define the style of the cards (DE/FR)
     private CardLabel.Style style;
@@ -96,7 +98,7 @@ public class GameView {
     // some numbers to place & size the elements right
     private double xMiddle = 700;
     private double yMiddle = 400;
-    private double cardWidth = 81.25;
+    private double cardWidth = 80;
     private double cardHeight = 130;
     private double spaceToEdge = 50;
 
@@ -130,10 +132,6 @@ public class GameView {
         this.gameStage = gameStage;
         this.model = model;
 
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
-
-
         // set style of cards default to FR
         style = CardLabel.Style.FR;
 
@@ -148,83 +146,19 @@ public class GameView {
         }
 
         paneScoreTable = new Pane();
-
-        vBoxTrumpf = new VBox(10);
-        overlayNotYourTurn = new HBox(xSpaceCards);
+        overlayNotYourTurn = new Pane();
 
         createUnderlayYourCards();
         createUnderlayCardsInMiddle();
+        createChoiceBoxLanguage();
+        createChatButton();
+        createGameInstructions();
 
-        rootJassGame.getChildren().addAll(rootCards, vBoxTrumpf, cardsPlayedByOpponents, overlayNotYourTurn, paneScoreTable);
+        registerForShutDown();
+
+        rootJassGame.getChildren().addAll(rootCards, cardsPlayedByOpponents, overlayNotYourTurn, paneScoreTable);
         rootJassGame.getChildren().addAll(oppPanes);
         rootJassGame.setBackground(new Background(new BackgroundImage(background, null, null, null, null)));
-
-        // defined Chat-Elements in gameView
-        btnChatGame = new Button(t.getString("game.button.chatroom"));
-        btnChatGame.setId("chatButton");
-        btnChatGame.setTranslateX(1100);
-        btnChatGame.setTranslateY(725);
-
-        // defined Rules-Elements in gameView
-        lblGameInstruction = new Label(t.getString("game.lbl.gameInstruction"));
-        lblGameInstruction.setAlignment(Pos.CENTER);
-        lblGameInstruction.setId("titleRules");
-        lblGameInstruction.setTranslateX(60);
-        lblGameInstruction.setTranslateY(605);
-
-        btngameCards = new Button(t.getString("game.button.playingCards"));
-        btngameCards.setId("rules");
-        btngameCards.setTranslateX(60);
-        btngameCards.setTranslateY(625);
-
-        btnTrump = new Button(t.getString("game.button.trump"));
-        btnTrump.setId("rules");
-        btnTrump.setTranslateX(60);
-        btnTrump.setTranslateY(650);
-
-        btnMinorSuit = new Button(t.getString("game.button.minorSuit"));
-        btnMinorSuit.setId("rules");
-        btnMinorSuit.setTranslateX(60);
-        btnMinorSuit.setTranslateY(675);
-
-        btnTopsDown = new Button(t.getString("game.button.topsDown"));
-        btnTopsDown.setId("rules");
-        btnTopsDown.setTranslateX(60);
-        btnTopsDown.setTranslateY(700);
-
-        btnBottomsUp = new Button(t.getString("game.button.bottomsUp"));
-        btnBottomsUp.setId("rules");
-        btnBottomsUp.setTranslateX(60);
-        btnBottomsUp.setTranslateY(725);
-
-        // defined languages
-        choiceBoxLanguageGameView = new ChoiceBox<>();
-        choiceBoxLanguageGameView.setValue("DE");
-        choiceBoxLanguageGameView.getItems().add("EN");
-        choiceBoxLanguageGameView.getItems().add("DE");
-        choiceBoxLanguageGameView.setId("languageSetting");
-        choiceBoxLanguageGameView.setTranslateX(1300);
-        choiceBoxLanguageGameView.setTranslateY(725);
-
-
-
-
-        rootJassGame.getChildren().add(btnChatGame);
-        rootJassGame.getChildren().addAll(btngameCards, btnTrump, btnMinorSuit, btnBottomsUp, btnTopsDown, lblGameInstruction);
-        rootJassGame.getChildren().add(choiceBoxLanguageGameView);
-
-        choiceBoxLanguageGameView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
-            if (newValue == "DE" || newValue == "GER") {
-                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[1].getLanguage());
-                sl.setTranslator(new Translator(sl.getLocales()[1].getLanguage()));
-                updateGameViewTexts();
-            } else {
-                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
-                sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
-                updateGameViewTexts();
-            }
-        });
-
 
         Scene scene = new Scene(rootJassGame, sceneWidth, sceneHeight);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
@@ -232,21 +166,12 @@ public class GameView {
         gameStage.setTitle("Jass by NellBuebe");
     }
 
+
     public void start() {
-
-        gameStage.setOnCloseRequest(e -> {
-            e.consume();
-            showConfirmationCloseGame();
-        });
-
-        button = new Button("Close Game");
-        button.setOnAction(e-> showConfirmationCloseGame());
-
-        StackPane layout = new StackPane();
-        layout.getChildren().add(button);
-
         gameStage.show();
     }
+
+
 
     public void stop() {
         gameStage.hide();
@@ -260,20 +185,24 @@ public class GameView {
         rootJassGame.getChildren().remove(n);
     }
 
-
-    // needs to be optimized TODO
-    public void showConfirmationCloseGame(){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Exit Game");
-        alert.setHeaderText("Leaving... :(");
-        alert.setContentText("Are you sure u want to exit, game can't  be proceeded anymore");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            Platform.exit();
-            System.exit(0);
-        }
+    public void setStageTitle(String name) {
+        gameStage.setTitle(t.getString("game.stage.title")+" "+name);
     }
+
+    private void registerForShutDown() {
+        gameStage.setOnCloseRequest(e -> {
+            e.consume();
+            showConfirmationCloseGame();
+        });
+
+        button = new Button("Close Game");
+        button.setOnAction(e-> showConfirmationCloseGame());
+
+        StackPane layout = new StackPane();
+        layout.getChildren().add(button);
+    }
+
+
 
 
     public void createTrumpfChoice() {
@@ -317,11 +246,13 @@ public class GameView {
 
     // card placement
     public void createYourCards() {
-        for (int i = 0; i < model.getYourCards().size(); i++) {
+        yourCards = new ArrayList<>();
+
+        for (int i = 0; i < model.getYourCards().size(); i++){
             CardLabel c = new CardLabel(model.getYourCards().get(i).toString(), style);
             yourCards.add(c);
             c.setTranslateY(yStartingPoint);
-            c.setTranslateX(xStartPoint + (i * xSpaceCards) + (i * cardWidth) + 0.85);
+            c.setTranslateX(xStartPoint + (i* xSpaceCards) +(i*cardWidth));
         }
         rootCards.getChildren().addAll(yourCards);
     }
@@ -336,12 +267,12 @@ public class GameView {
                 rectanglesOverlay = new ArrayList<>();
 
                 for (int i = 0; i < model.getYourCards().size(); i++) {
-                    Rectangle rect = new Rectangle(cardWidth, cardHeight);
+                    Rectangle rect = new Rectangle(cardWidth + 1, cardHeight);
                     rect.setFill(Color.rgb(0, 0, 0, 0.5));
                     rectanglesOverlay.add(rect);
+                    rect.setTranslateX(xStartPoint + (i* xSpaceCards) +(i*cardWidth));
                 }
                 overlayNotYourTurn.getChildren().addAll(rectanglesOverlay);
-                overlayNotYourTurn.setTranslateX(xStartPoint);
                 overlayNotYourTurn.setTranslateY(yStartingPoint);
 
             }
@@ -426,15 +357,13 @@ public class GameView {
         lblPlayer2Name.getStyleClass().add("oppName");
 
         lblWinner2 = new Label("Winner");
-        lblWinner2.setRotate(90);
-        lblWinner2.setTranslateX(1100);
-        lblWinner2.setTranslateY(yMiddle - (cardWidth / 2));
-        lblWinner2.getStyleClass().add("login-text");
+        lblWinner2.getStyleClass().add("winner-text");
         lblWinner2.setVisible(false);
+        lblWinner2.setMinWidth(imvPlayer2.getFitWidth());
 
         // Create the container to add back and player name
         VBox container = new VBox();
-        container.getChildren().addAll(lblPlayer2Name, imvPlayer2);
+        container.getChildren().addAll(lblPlayer2Name, imvPlayer2, lblWinner2);
 
         // Add the ArrayList Cardlabel and the container (name and image) to the pane
 
@@ -460,14 +389,13 @@ public class GameView {
         lblPlayer3Name.getStyleClass().add("oppName");
 
         lblWinner3 = new Label("Winner");
-        lblWinner3.setTranslateY(180);
-        lblWinner3.setTranslateX(xMiddle - 25);
-        lblWinner3.getStyleClass().add("login-text");
+        lblWinner3.getStyleClass().add("winner-text");
         lblWinner3.setVisible(false);
+        lblWinner3.setMinWidth(imvPlayer3.getFitWidth());
 
         // Create the container to add back and player name
         VBox container = new VBox();
-        container.getChildren().addAll(lblPlayer3Name, imvPlayer3);
+        container.getChildren().addAll(lblPlayer3Name, imvPlayer3, lblWinner3);
 
         // Add the ArrayList Cardlabel and the container (name and image) to the pane
 
@@ -492,15 +420,13 @@ public class GameView {
         lblPlayer4Name.getStyleClass().add("oppName");
 
         lblWinner4 = new Label("Winner");
-        lblWinner4.setTranslateX(180);
-        lblWinner4.setTranslateY(yMiddle - (cardWidth / 2));
-        lblWinner4.setRotate(270);
-        lblWinner4.getStyleClass().add("login-text");
+        lblWinner4.getStyleClass().add("winner-text");
         lblWinner4.setVisible(false);
+        lblWinner4.setMinWidth(imvPlayer4.getFitWidth());
 
         // Create the container to add back and player name
         VBox container = new VBox();
-        container.getChildren().addAll(lblPlayer4Name, imvPlayer4);
+        container.getChildren().addAll(lblPlayer4Name, imvPlayer4, lblWinner4);
 
         // Add the ArrayList Cardlabel and the container (name and image) to the pane
 
@@ -508,7 +434,7 @@ public class GameView {
 
         // Place the pane at the right place
         oppPanes.get(2).setRotate(270);
-        oppPanes.get(2).setTranslateX(spaceToEdge + 20);
+        oppPanes.get(2).setTranslateX(spaceToEdge+20);
         oppPanes.get(2).setTranslateY(yMiddle - cardWidth);
     }
 
@@ -568,8 +494,7 @@ public class GameView {
     }
 
     public void createTrumpfElements() {
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
+        vBoxTrumpf = new VBox(10);
         // Getting the image and label to display the trumpf done
         lblTrumpf = new Label(t.getString("game.lbl.trump"));
         lblTrumpf.setMinWidth(70);
@@ -584,12 +509,11 @@ public class GameView {
         vBoxTrumpf.getChildren().addAll(lblTrumpf, imgContainer);
         vBoxTrumpf.setTranslateX(950);
         vBoxTrumpf.setTranslateY(spaceToEdge);
+        rootJassGame.getChildren().add(vBoxTrumpf);
     }
 
     // TableView to show the score during the game
     public void createTableViewScore() {
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
         tvScoreTable = new TableView();
         tvcName = new TableColumn(t.getString("game.tableColumn.tvcName"));
         tvcPoints = new TableColumn(t.getString("game.tableColumn.tvcPoint"));
@@ -598,8 +522,8 @@ public class GameView {
         tvcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tvcPoints.setCellValueFactory(new PropertyValueFactory<>("points"));
 
-        tvScoreTable.setMaxHeight(140);
-        tvScoreTable.setMaxWidth(155);
+        tvScoreTable.setMaxHeight(141);
+        tvScoreTable.setMaxWidth(160);
 
         tvScoreTable.setItems(model.getPlayerWithPoints());
 
@@ -607,7 +531,7 @@ public class GameView {
         tvScoreTable.setTranslateY(spaceToEdge);
 
         // Create a rectangle to fill gap between frame and table
-        Rectangle rect = new Rectangle(155, 140);
+        Rectangle rect = new Rectangle(160, 141);
         rect.setTranslateX(1100);
         rect.setTranslateY(spaceToEdge);
         rect.setFill(Color.BLACK);
@@ -625,34 +549,9 @@ public class GameView {
         rootJassGame.getChildren().add(gameHistory);
     }
 
-    public void doAnimationPlayYourCard(CardLabel card) {
+    public void doPlayYourCard(CardLabel card) {
         card.setTranslateX(xMiddle - (cardWidth / 2));
         card.setTranslateY(yMiddle + 10);
-
-        /*
-        TranslateTransition animation = new TranslateTransition();
-        animation.setDuration(Duration.seconds(1));
-        animation.setNode(card);
-        animation.setToX();
-        animation.setToY(yMiddle + 10);
-        animation.play();
-         */
-    }
-
-    public void doAnimationPlayCard2(CardLabel card) {
-        TranslateTransition animation = new TranslateTransition();
-        animation.setDuration(Duration.seconds(1));
-        animation.setNode(card);
-        animation.setToX(850);
-        animation.play();
-    }
-
-    public void doAnimationPlayCard3(CardLabel card) {
-        TranslateTransition animation = new TranslateTransition();
-        animation.setDuration(Duration.seconds(1));
-        animation.setNode(card);
-        animation.setToY(yMiddle - 10);
-        animation.play();
     }
 
     public void removeCardsInMiddle() {
@@ -720,6 +619,91 @@ public class GameView {
             }
         });
 
+    }
+
+    public void createChoiceBoxLanguage() {
+        // defined languages
+        choiceBoxLanguageGameView = new ChoiceBox<>();
+        choiceBoxLanguageGameView.setValue("DE");
+        choiceBoxLanguageGameView.getItems().add("EN");
+        choiceBoxLanguageGameView.getItems().add("DE");
+        choiceBoxLanguageGameView.setId("languageSetting");
+        choiceBoxLanguageGameView.setTranslateX(1300);
+        choiceBoxLanguageGameView.setTranslateY(725);
+
+        choiceBoxLanguageGameView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+            if (newValue == "DE" || newValue == "GER") {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[1].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[1].getLanguage()));
+                t = sl.getTranslator();
+                updateGameViewTexts();
+            } else {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
+                t = sl.getTranslator();
+                updateGameViewTexts();
+            }
+        });
+        rootJassGame.getChildren().add(choiceBoxLanguageGameView);
+    }
+
+    private void createChatButton() {
+        // defined Chat-Elements in gameView
+        btnChatGame = new Button(t.getString("game.button.chatroom"));
+        btnChatGame.setId("chatButton");
+        btnChatGame.setTranslateX(1100);
+        btnChatGame.setTranslateY(725);
+        rootJassGame.getChildren().add(btnChatGame);
+    }
+
+    private void createGameInstructions() {
+        // defined Rules-Elements in gameView
+        lblGameInstruction = new Label(t.getString("game.lbl.gameInstruction"));
+        lblGameInstruction.setAlignment(Pos.CENTER);
+        lblGameInstruction.setId("titleRules");
+        lblGameInstruction.setTranslateX(60);
+        lblGameInstruction.setTranslateY(605);
+
+        btngameCards = new Button(t.getString("game.button.playingCards"));
+        btngameCards.setId("rules");
+        btngameCards.setTranslateX(60);
+        btngameCards.setTranslateY(625);
+
+        btnTrump = new Button(t.getString("game.button.trump"));
+        btnTrump.setId("rules");
+        btnTrump.setTranslateX(60);
+        btnTrump.setTranslateY(650);
+
+        btnMinorSuit = new Button(t.getString("game.button.minorSuit"));
+        btnMinorSuit.setId("rules");
+        btnMinorSuit.setTranslateX(60);
+        btnMinorSuit.setTranslateY(675);
+
+        btnTopsDown = new Button(t.getString("game.button.topsDown"));
+        btnTopsDown.setId("rules");
+        btnTopsDown.setTranslateX(60);
+        btnTopsDown.setTranslateY(700);
+
+        btnBottomsUp = new Button(t.getString("game.button.bottomsUp"));
+        btnBottomsUp.setId("rules");
+        btnBottomsUp.setTranslateX(60);
+        btnBottomsUp.setTranslateY(725);
+
+        rootJassGame.getChildren().addAll(btngameCards, btnTrump, btnMinorSuit, btnBottomsUp, btnTopsDown, lblGameInstruction);
+    }
+
+    // needs to be optimized TODO
+    public void showConfirmationCloseGame(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit Game");
+        alert.setHeaderText("Leaving... :(");
+        alert.setContentText("Are you sure u want to exit, game can't  be proceeded anymore");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            Platform.exit();
+            System.exit(0);
+        }
     }
 
     // methods for gameInstructions
@@ -869,6 +853,32 @@ public class GameView {
         }
     }
 
+    protected void updateGameViewTexts() {
+        // Menus
+        btnChatGame.setText(t.getString("game.button.chatroom"));
+        lblGameInstruction.setText(t.getString("game.lbl.gameInstruction"));
+        btngameCards.setText(t.getString("game.button.playingCards"));
+        btnTrump.setText(t.getString("game.button.trump"));
+        btnMinorSuit.setText(t.getString("game.button.minorSuit"));
+        btnTopsDown.setText(t.getString("game.button.topsDown"));
+        btnBottomsUp.setText(t.getString("game.button.bottomsUp"));
+        tvcName.setText(t.getString("game.tableColumn.tvcName"));
+        tvcPoints.setText(t.getString("game.tableColumn.tvcPoint"));
+        lblTrumpf.setText(t.getString("game.lbl.trump"));
+    }
+
+    public void showAlertGameFinished(String leader) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Alert gameFinished = new Alert(Alert.AlertType.INFORMATION);
+                gameFinished.setTitle("The Game is finished");
+                gameFinished.setHeaderText("All Cards are played, the current leader is "+leader);
+                gameFinished.setContentText("The next game round is about to start");
+                gameFinished.showAndWait();
+            }
+        });
+    }
 
     public ArrayList<Pane> getOppPanes() {
         return oppPanes;
@@ -898,21 +908,7 @@ public class GameView {
         return boxTrumpfChoice;
     }
 
-    protected void updateGameViewTexts() {
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
-
-        // Menus
-        btnChatGame.setText(t.getString("game.button.chatroom"));
-        lblGameInstruction.setText(t.getString("game.lbl.gameInstruction"));
-        btngameCards.setText(t.getString("game.button.playingCards"));
-        btnTrump.setText(t.getString("game.button.trump"));
-        btnMinorSuit.setText(t.getString("game.button.minorSuit"));
-        btnTopsDown.setText(t.getString("game.button.topsDown"));
-        btnBottomsUp.setText(t.getString("game.button.bottomsUp"));
-        tvcName.setText(t.getString("game.tableColumn.tvcName"));
-        tvcPoints.setText(t.getString("game.tableColumn.tvcPoint"));
-        lblTrumpf.setText(t.getString("game.lbl.trump"));
+    public VBox getvBoxTrumpf() {
+        return vBoxTrumpf;
     }
-
 }

@@ -1,15 +1,18 @@
 package Client.View;
 
 import Client.Model.ClientModel;
+import Common.ServiceLocator;
+import Common.Translator;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
@@ -19,9 +22,12 @@ public class SettingsView {
     private Stage settingsStage;
     private ClientModel model;
 
+    ServiceLocator sl = ServiceLocator.getServiceLocator();
+    Translator t = sl.getTranslator();
+
     private Pane rootSettings = new Pane();
 
-    public HBox cntChooseTrumpf;
+    private GridPane grid;
     public ArrayList<ImageView> imvTrumpfIcons = new ArrayList<ImageView>(4);
     public Button btnStartGame;
     private Rectangle rect;
@@ -30,23 +36,26 @@ public class SettingsView {
     public int xMiddle = 700;
     public int yMiddle = 400;
 
+    private ChoiceBox cbMaxPoints;
+    private Label lblChooseMaxPoints;
+    private ChoiceBox cbCardStyle;
+    private Label lblCardStyle;
+    private Label lblTitle;
+
     // lenght and width of the scene
-    private final double sceneWidth = 1400;
-    private final double sceneHeight = 800;
+    private final double sceneWidth = 700;
+    private final double sceneHeight = 400;
 
     //Define the image for the background
-    private Image background = new Image(getClass().getClassLoader().getResourceAsStream("images/background_1400x800.png"));
+    private Image background = new Image(getClass().getClassLoader().getResourceAsStream("images/login_background_medium.jpg"));
 
     public SettingsView(Stage settingsStage, ClientModel model) {
         this.settingsStage = settingsStage;
         this.model = model;
 
-        rect = createBackgroundRect();
-        cntChooseTrumpf = createChooseTrumpf();
-        btnStartGame = createBtnStartGame();
-
-        rootSettings.getChildren().addAll(rect, cntChooseTrumpf, btnStartGame);
-        rootSettings.setBackground(new Background(new BackgroundImage(background, null, null, null, null)));
+        createBackgroundImage();
+        createGridPane();
+        rootSettings.getChildren().add(grid);
 
         Scene scene = new Scene(rootSettings, sceneWidth, sceneHeight);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
@@ -59,58 +68,70 @@ public class SettingsView {
     }
 
     public void stop(){
-        settingsStage.hide();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                settingsStage.hide();
+            }
+        });
     }
 
-    private Rectangle createBackgroundRect(){
-        Rectangle rect = new Rectangle(xMiddle, yMiddle);
-        rect.setTranslateY(yMiddle - (yMiddle/2));
-        rect.setTranslateX(xMiddle - (xMiddle/2));
-        return rect;
+    public void setSettingStageTitle() {
+        settingsStage.setTitle(t.getString("settings.title")+" - " + model.getUserName());
     }
 
-    private Button createBtnStartGame(){
-        Button btn = new Button("Start");
-        btn.setTranslateX(xMiddle + 200);
-        btn.setTranslateY(yMiddle + 150);
-        return btn;
+    private void createBackgroundImage() {
+        background = new Image(getClass().getClassLoader().getResourceAsStream("images/background_plain.png"));
+        ImageView imvBackground = new ImageView(background);
+        imvBackground.setFitHeight(400);
+        imvBackground.setFitWidth(700);
+        rootSettings.getChildren().add(imvBackground);
     }
 
-    public HBox createChooseTrumpf(){
-        HBox box = new HBox(10);
-        for (int i = 0; i < 4; i++){
-            ImageView imv = new ImageView();
-            imvTrumpfIcons.add(imv);
+    public void createGridPane() {
+        grid = new GridPane();
+        grid.setVgap(20);
+        grid.setHgap(5);
+        grid.setAlignment(Pos.CENTER);
 
-            Button btn = new Button();
-            btn.setGraphic(imvTrumpfIcons.get(i));
-            btnChooseTrumpf.add(btn);
-        }
-        loadTrumpfImages();
+        lblTitle = new Label("Settings");
+        grid.add(lblTitle, 0, 0);
+        lblTitle.getStyleClass().add("login-text");
 
-        for (ImageView imv : imvTrumpfIcons) {
-            imv.setFitWidth(70);
-            imv.setFitHeight(70);
-        }
+        lblCardStyle = new Label(t.getString("lobby.lbl.CardStyle"));
+        cbCardStyle = new ChoiceBox<>(FXCollections.observableArrayList("DE", "FR"));
+        lblCardStyle.getStyleClass().add("login-text");
 
+        grid.add(lblCardStyle, 0, 1);
+        grid.add(cbCardStyle, 1, 1);
 
+        lblChooseMaxPoints = new Label("Choose at how many points the game should end");
+        lblChooseMaxPoints.getStyleClass().add("login-text");
+        cbMaxPoints = new ChoiceBox<>(FXCollections.observableArrayList(100, 1000, 1500));
 
-        box.setTranslateX(500);
-        box.setTranslateY(365);
-        box.getChildren().addAll(btnChooseTrumpf);
-        box.setAlignment(Pos.CENTER);
-        return box;
+        grid.add(lblChooseMaxPoints, 0, 2);
+        grid.add(cbMaxPoints, 1, 2);
+
+        btnStartGame = new Button("Start Game");
+        grid.add(btnStartGame, 1, 3);
     }
 
-    private void loadTrumpfImages(){
-        Image imgClubs = new Image(getClass().getClassLoader().getResourceAsStream("images/clubs.png"));
-        Image imgDiamonds = new Image(getClass().getClassLoader().getResourceAsStream("images/spades.png"));
-        Image imgHearts = new Image(getClass().getClassLoader().getResourceAsStream("images/hearts.png"));
-        Image imgSpades = new Image(getClass().getClassLoader().getResourceAsStream("images/diamonds.png"));
 
-        imvTrumpfIcons.get(0).setImage(imgClubs);
-        imvTrumpfIcons.get(1).setImage(imgHearts);
-        imvTrumpfIcons.get(2).setImage(imgDiamonds);
-        imvTrumpfIcons.get(3).setImage(imgSpades);
+
+
+    public ChoiceBox getCbMaxPoints() {
+        return cbMaxPoints;
+    }
+
+    public void setCbMaxPoints(ChoiceBox cbMaxPoints) {
+        this.cbMaxPoints = cbMaxPoints;
+    }
+
+    public ChoiceBox getCbCardStyle() {
+        return cbCardStyle;
+    }
+
+    public void setCbCardStyle(ChoiceBox cbCardStyle) {
+        this.cbCardStyle = cbCardStyle;
     }
 }

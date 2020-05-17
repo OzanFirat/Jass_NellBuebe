@@ -24,23 +24,20 @@ public class Message implements Serializable {
     // Server rejects startGame if players are too less
 
     public enum Type {WHOISIN, CHATMESSAGE, LOGOUT, LOGIN, LOGINREJECTED, LOGINACCEPTED,DEALCARDS,TRUMPF,
-        STARTGAME, YOURTURN, CARDPLAYED, ROUNDFINISHED, GAMEFINISHED, STARTGAMEREJECTED, LOGINREJECTEDTOOMANYPLAYERS}
+        STARTGAME, YOURTURN, CARDPLAYED, ROUNDFINISHED, GAMEFINISHED, STARTGAMEREJECTED, LOGINREJECTEDTOOMANYPLAYERS, MAXPOINTSREACHED}
 
     private Type type;
     private String message;
     private String userName;
     private String cardString;
     private volatile ArrayList<?> arrayList;
-    private volatile String winnerName;
+    private String winnerName;
     private String currentPlayer;
     private volatile ArrayList<String> playerNames;
-    private String lastPlayedCard = "";
     private String playerName;
     private int pointsOfRound;
     private String trumpf;
-
-
-
+    private int maxPoints;
     private int playerCount;
 
 
@@ -75,6 +72,8 @@ public class Message implements Serializable {
             case GAMEFINISHED:
                 this.winnerName = message;
                 break;
+            case MAXPOINTSREACHED:
+                this.winnerName = message;
         }
         this.message = message;
     }
@@ -116,6 +115,9 @@ public class Message implements Serializable {
         switch(type){
             case STARTGAMEREJECTED:
                 this.playerCount = value;
+                break;
+            case STARTGAME:
+                this.maxPoints = value;
                 break;
         }
     }
@@ -184,14 +186,6 @@ public class Message implements Serializable {
         this.playerNames = playerNames;
     }
 
-    public String getLastPlayedCard() {
-        return lastPlayedCard;
-    }
-
-    public void setLastPlayedCard(String lastPlayedCard) {
-        this.lastPlayedCard = lastPlayedCard;
-    }
-
     public String getPlayerName() {
         return playerName;
     }
@@ -219,6 +213,14 @@ public class Message implements Serializable {
 
     public void setTrumpf(){
         this.trumpf = trumpf;
+    }
+
+    public int getMaxPoints() {
+        return maxPoints;
+    }
+
+    public void setMaxPoints(int maxPoints) {
+        this.maxPoints = maxPoints;
     }
 
 }

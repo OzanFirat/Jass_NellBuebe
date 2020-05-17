@@ -20,6 +20,10 @@ public class GameModel {
     private int currentRoundPoints;
     private Card.Suit trumpf;
     private ArrayList<Round> allPlayedRounds;
+    private int maxPoints;
+    private Player startPlayer;
+    private int indexOfStartPlayer;
+    private int allCardsPlayedCounter;
 
     public static GameModel getGameModel() {
         if (gameModel == null){
@@ -49,6 +53,8 @@ public class GameModel {
         Random rand = new Random();
         int determiner = rand.nextInt(4);
         currentPlayer = players.get(determiner);
+        startPlayer = currentPlayer;
+        indexOfStartPlayer = determiner;
     }
 
     public boolean checkIfFourPlayers(){
@@ -60,6 +66,9 @@ public class GameModel {
     }
 
     public void dealCardsToPlayer() {
+        if (allCardsPlayedCounter != 0) {
+            deck = new DeckOfCards();
+        }
         for (Player p : players) {
             for (int i = 0; i < currentPlayer.getHANDSIZE(); i++) {
                 p.addCard(deck.dealCard());
@@ -136,6 +145,15 @@ public class GameModel {
         }
     }
 
+    public void moveToNextStartPlayer() {
+        if (indexOfStartPlayer == 3) {
+            indexOfStartPlayer = 0;
+        } else {
+            indexOfStartPlayer++;
+        }
+        currentPlayer = players.get(indexOfStartPlayer);
+    }
+
     public void moveToNextPlayer() {
         if (indexOfCurrentPlayer == 3) {
             indexOfCurrentPlayer = 0;
@@ -147,7 +165,7 @@ public class GameModel {
 
     public boolean checkIfRoundFull() {
         boolean full = false;
-        if (currentRound.getTurns().size() == 3){
+        if (currentRound.getTurns().size() == numOfPlayers){
             full = true;
         }
         return full;
@@ -188,9 +206,10 @@ public class GameModel {
 
     public boolean checkIfGameFinished() {
         boolean finished = false;
-        if (roundCounter == 10) {
+        if (playingOrder.get(3).getHandCards().size() == 0){
             finished = true;
         }
+        allCardsPlayedCounter++;
         return finished;
     }
 
@@ -203,6 +222,16 @@ public class GameModel {
         }
         String winnerName = winner.getPlayerName();
         return winnerName;
+    }
+
+    public boolean checkIfMaxPointsReached() {
+        boolean check = false;
+        for (Player p : players) {
+            if (p.getPointCounter() >= maxPoints) {
+                check = true;
+            }
+        }
+        return check;
     }
 
     public int getNumOfPlayers() {
@@ -299,5 +328,13 @@ public class GameModel {
 
     public Card.Suit getTrumpf() {
         return trumpf;
+    }
+
+    public int getMaxPoints() {
+        return maxPoints;
+    }
+
+    public void setMaxPoints(int maxPoints) {
+        this.maxPoints = maxPoints;
     }
 }

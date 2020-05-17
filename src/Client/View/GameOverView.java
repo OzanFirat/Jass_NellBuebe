@@ -1,11 +1,10 @@
 package Client.View;
 
+import Client.JassClient;
 import Client.Model.ClientModel;
-import Client.Model.PlayerScoreTuple;
 import Common.ServiceLocator;
 import Common.Translator;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -14,11 +13,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import java.util.function.Consumer;
+import java.util.Optional;
 
 public class GameOverView {
     private Stage gameOverStage;
     private ClientModel model;
+
+    ServiceLocator sl = ServiceLocator.getServiceLocator();
+    Translator t = sl.getTranslator();
 
     private Scene sceneGameOver;
 
@@ -51,9 +53,6 @@ public class GameOverView {
         this.gameOverStage = gameOverStage;
         this.model = model;
 
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
-
         btnExit = new Button (t.getString("gameOver.btn.Exit"));
         title = new Label (t.getString("gameOver.lbl.Title"));
         lblResult = new Label(t.getString("gameOver.lbl.Results"));
@@ -66,7 +65,7 @@ public class GameOverView {
 
         root = new Pane();
         createBackgroundImage();
-        placeLabels();
+        createLabels();
         placeButton();
 
         rootTable = new Pane();
@@ -77,10 +76,12 @@ public class GameOverView {
             if (newValue == "DE" || newValue == "GER") {
                 sl.getConfiguration().setLocalOption("Language", sl.getLocales()[1].getLanguage());
                 sl.setTranslator(new Translator(sl.getLocales()[1].getLanguage()));
+                t = sl.getTranslator();
                 updateGameOverViewTexts();
             } else {
                 sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
                 sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
+                t = sl.getTranslator();
                 updateGameOverViewTexts();
             }
         });
@@ -91,6 +92,18 @@ public class GameOverView {
 
     }
 
+    public void start() {
+        gameOverStage.show();
+    }
+
+    public void stop() {
+        gameOverStage.hide();
+    }
+
+    public void setGameOverStageTitle() {
+        gameOverStage.setTitle(t.getString("gameOver.stage.title") +" "+model.getUserName());
+    }
+
     private void createBackgroundImage() {
         background = new Image(getClass().getClassLoader().getResourceAsStream("images/login_background_medium.jpg"));
         imvBackground = new ImageView(background);
@@ -99,14 +112,13 @@ public class GameOverView {
         root.getChildren().add(imvBackground);
     }
 
-    private void placeLabels() {
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
-
+    private void createLabels() {
+        title = new Label (t.getString("gameOver.lbl.Title"));
         title.setTranslateX(600);
         title.setTranslateY(100);
         title.getStyleClass().add("login-text");
 
+        lblResult = new Label(t.getString("gameOver.lbl.Results"));
         lblResult.setTranslateX(600);
         lblResult.setTranslateY(220);
         lblResult.getStyleClass().add("login-text");
@@ -136,8 +148,6 @@ public class GameOverView {
     }
 
     public void createTableView() {
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
 
         tvScoreTable = new TableView();
         tvcName = new TableColumn(t.getString("gameOver.tableView.Name"));
@@ -147,8 +157,8 @@ public class GameOverView {
         tvcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tvcPoints.setCellValueFactory(new PropertyValueFactory<>("points"));
 
-        tvScoreTable.setMaxHeight(140);
-        tvScoreTable.setMaxWidth(155);
+        tvScoreTable.setMaxHeight(142);
+        tvScoreTable.setMaxWidth(160);
 
         tvScoreTable.setItems(model.getPlayerWithPoints());
 
@@ -158,35 +168,28 @@ public class GameOverView {
         rootTable.getChildren().add(tvScoreTable);
     }
 
-    /*private void findWinner() {
-        PlayerScoreTuple winner = model.getPlayerWithPoints().get(0);
-        for (PlayerScoreTuple pst : model.getPlayerWithPoints()) {
-            winner = pst.comparePoints(winner);
-        }
-        lblWinner.setText("Winner: "+winner.getName().toString());
-    }
-     */
-
-    public void start() {
-        gameOverStage.show();
-    }
-
-    public void stop() {
-        gameOverStage.hide();
-    }
-
     public void setWinner(String winnerName) {
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
-
         lblWinner.setText(t.getString("gameOver.lbl.Winner"));
         lblWinnerName.setText(""+ winnerName);
     }
 
-    protected void updateGameOverViewTexts() {
+    public void showAlertGameOver(String winner) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Alert gameOver = new Alert(Alert.AlertType.INFORMATION);
+                gameOver.setTitle("Game Over");
+                gameOver.setHeaderText("The game is over - Max Points are reached");
+                gameOver.setContentText("Click OK to go to Game Over window");
+                Optional<ButtonType> result = gameOver.showAndWait();
+                if (result.isPresent()) {
+                    JassClient.mainProgram.getGameController().changeToGameOverScene(winner);
+                }
+            }
+        });
+    }
 
-        ServiceLocator sl = ServiceLocator.getServiceLocator();
-        Translator t = sl.getTranslator();
+    protected void updateGameOverViewTexts() {
 
         btnExit.setText(t.getString("gameOver.btn.Exit"));
         title.setText(t.getString("gameOver.lbl.Title"));

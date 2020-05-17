@@ -41,7 +41,6 @@ public class LoginController {
         });
     }
 
-
     private void connectToServer(){
         cc.setServer(loginView.inputIpAdress.getText());
         cc.setUserName(loginView.inputUserName.getText());
@@ -126,6 +125,7 @@ public class LoginController {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                JassClient.mainProgram.getLobbyView().setStageTitle();
                 JassClient.mainProgram.stopLogin();
                 JassClient.mainProgram.startLobby();
             }

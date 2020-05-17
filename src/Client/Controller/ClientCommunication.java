@@ -49,10 +49,6 @@ public class ClientCommunication {
         this.server = server;
     }
 
-
-    private ClientCommunication() {
-    }
-
     public static synchronized ClientCommunication getInstance() {
         if (ClientCommunication.instance == null) {
             ClientCommunication.instance = new ClientCommunication();
@@ -155,7 +151,7 @@ public class ClientCommunication {
      */
     class ListenFromServer extends Thread {
         volatile Message receivedMessage;
-
+        int gameCounter = 0;
 
         public void run() {
             while (true) {
@@ -192,27 +188,42 @@ public class ClientCommunication {
                             JassClient.mainProgram.getChatcontroller().updateChatEntry();
                             logger.info("Who is in message received");
                             break;
+
+                        case STARTGAMEREJECTED:
+                            logger.info("StartGame rejected");
+                            int playerCount = receivedMessage.getPlayerCount();
+                            logger.info("Number of Players: " + playerCount);
+                            if(playerCount <= 3)
+                                JassClient.mainProgram.getLobbyController().showAlertLessPlayer();
+                            break;
+
+                        case STARTGAME:
+                            // initialize the game
+
+                            if (gameCounter == 0) {
+                                model.fillOppPlayerList();
+                                // fill the ObservableList to show the updated scores during the game
+                                model.fillPlayerWithPoints();
+                                JassClient.mainProgram.getGameController().initializeGame();
+                                JassClient.mainProgram.getSettingsView().stop();
+                            }
+
+                            if (model.getUserName().equals(receivedMessage.getPlayerName())) {
+                                JassClient.mainProgram.getGameView().createTrumpfChoice();
+                                JassClient.mainProgram.getGameController().handleTrumpfChoiceAction();
+                            }
+                            gameCounter++;
+                            break;
+
                         case TRUMPF:
                             model.setTrumpf(receivedMessage.getTrumpf());
                             // fill the ObservableList to show the updated scores during the game
                             JassClient.mainProgram.getGameController().updateTrumpfElements();
                             break;
-                        case STARTGAME:
-                            // initialize the game
-                            model.fillOppPlayerList();
-                            // fill the ObservableList to show the updated scores during the game
-                            model.fillPlayerWithPoints();
-                            JassClient.mainProgram.getGameController().initializeGame();
-                            if (model.getUserName().equals(receivedMessage.getPlayerName())) {
-                                JassClient.mainProgram.getGameView().createTrumpfChoice();
-                                JassClient.mainProgram.getGameController().handleTrumpfChoiceAction();
-                                logger.info("The game has launched");
-                            }
-                            break;
                         case DEALCARDS:
                             // Set your cards and put the opponents in the right order to display in view
                             if (model.getUserName().equals(receivedMessage.getPlayerName())) {
-                                JassClient.mainProgram.getLobbyController().setCardStyle();
+                                JassClient.mainProgram.getSettingsController().setCardStyle();
                                 model.setYourCards(receivedMessage.getArrayList());
                                 logger.info(userName +" has received his cards");
 
@@ -220,15 +231,7 @@ public class ClientCommunication {
                                 JassClient.mainProgram.getGameController().updateYourCards();
                             }
                             break;
-                        case STARTGAMEREJECTED:
-                            logger.info("StartGame rejected");
-                            int playerCount = receivedMessage.getPlayerCount();
-                            logger.info("Number of Players: " + playerCount);
-                            if(playerCount <= 3)
-                                JassClient.mainProgram.getLobbyController().showAlertLessPlayer();
-                            if(playerCount >= 4)
-                                JassClient.mainProgram.getLoginController().showAlertTooManyPlayers();
-                            break;
+
                         case YOURTURN:
                             if (receivedMessage.getCurrentPlayer().equals(model.getUserName())) {
                                 logger.info("It's your turn - " + model.getUserName());
@@ -242,6 +245,7 @@ public class ClientCommunication {
                                 // gameInstruction needs tp be optimized  here
                             }
                             break;
+
                         case CARDPLAYED:
                             for (int i = 0; i < model.getOppPlayerNames().size(); i++) {
                                 if (receivedMessage.getCurrentPlayer().equals(model.getOppPlayerNames().get(i))) {
@@ -251,6 +255,7 @@ public class ClientCommunication {
                                 }
                             }
                             break;
+
                         case ROUNDFINISHED:
                             System.out.println("The Winner of the round is: " + receivedMessage.getPlayerName());
                             for (PlayerScoreTuple p : model.getPlayerWithPoints()) {
@@ -269,11 +274,13 @@ public class ClientCommunication {
                             JassClient.mainProgram.getGameController().updateGameHistory(receivedMessage.getPlayerName());
                             JassClient.mainProgram.getGameView().removeCardsInMiddle();
                             break;
+
                         case GAMEFINISHED:
-                            JassClient.mainProgram.getGameController().changeToGameOverScene(receivedMessage.getWinnerName());
-                            // TODO handle the rest of message types
+                            JassClient.mainProgram.getGameView().showAlertGameFinished(receivedMessage.getWinnerName());
                             break;
 
+                        case MAXPOINTSREACHED:
+                            JassClient.mainProgram.getGameOverView().showAlertGameOver(receivedMessage.getWinnerName());
                         default:
                             logger.info("no cases occurred");
 

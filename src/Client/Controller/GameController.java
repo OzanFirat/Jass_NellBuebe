@@ -17,12 +17,14 @@ public class GameController {
     private ClientModel model;
     private GameView gameView;
     private Logger log;
-    CardLabel card;
+
     public ClientCommunication clientCommunication = ClientCommunication.getInstance();
 
 
     private ServiceLocator sl = ServiceLocator.getServiceLocator();
     private Translator t = sl.getTranslator();
+
+    boolean firstRound = true;
 
 
     public GameController(ClientModel model, GameView gameView) {
@@ -56,11 +58,11 @@ public class GameController {
     }
 
     public void initializeElements(){
-
         updateOpponentLabels();
         gameView.createGameHistory();
         gameView.createOverlayNotYourTurn();
         gameView.createTableViewScore();
+        gameView.setStageTitle(model.getUserName());
     }
 
     public void initializeGame(){
@@ -76,7 +78,13 @@ public class GameController {
     public void updateTrumpfElements(){
         Platform.runLater(new Runnable() {
             public void run() {
-                gameView.createTrumpfElements();
+                if (firstRound) {
+                    gameView.createTrumpfElements();
+                    firstRound = false;
+                } else {
+                    gameView.removeFromRootJassGame(gameView.getvBoxTrumpf());
+                    gameView.createTrumpfElements();
+                }
             }
         });
     }
@@ -93,9 +101,6 @@ public class GameController {
         gameView.createPlayer2();
         gameView.createPlayer3();
         gameView.createPlayer4();
-        gameView.addToRootJassGame(gameView.lblWinner2);
-        gameView.addToRootJassGame(gameView.lblWinner3);
-        gameView.addToRootJassGame(gameView.lblWinner4);
     }
 
     public void handleTrumpfChoiceAction() {
@@ -139,7 +144,7 @@ public class GameController {
                     });
 
                     c.setOnMouseClicked( e -> {
-                        gameView.doAnimationPlayYourCard(c);
+                        gameView.doPlayYourCard(c);
                         c.setOnMouseClicked(null);
                         c.setOnMouseEntered(null);
                         c.setOnMouseExited(null);
@@ -159,6 +164,7 @@ public class GameController {
             public void run() {
                 JassClient.mainProgram.getGameOverView().createTableView();
                 JassClient.mainProgram.getGameOverView().setWinner(winnerName);
+                JassClient.mainProgram.getGameOverView().setGameOverStageTitle();
                 JassClient.mainProgram.getGameView().stop();
                 JassClient.mainProgram.startGameOver();
             }

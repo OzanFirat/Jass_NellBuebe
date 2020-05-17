@@ -103,24 +103,26 @@ public class ClientThread extends Thread {
                         }
                     }
                     break;
-                case STARTGAMEREJECTED:
-                    writeMessage(new Message(Message.Type.STARTGAMEREJECTED));
-                    logger.info("Start Game has been rejected");
-                    break;
-
                 case CHATMESSAGE:
                     serverModel.broadcast(new Message(Message.Type.CHATMESSAGE,getUsername()+": "+ receivedMessage.getMessage()));
                     break;
+
                 case STARTGAME:
                     if (gameModel.checkIfFourPlayers()) {
+                        gameModel.setMaxPoints(receivedMessage.getMaxPoints());
                         gameModel.dealCardsToPlayer();
-                        gameModel.setRandomStartPlayer();
+                        if (gameModel.getRoundCounter() == 0) {
+                            gameModel.setRandomStartPlayer();
+                        } else {
+                            gameModel.moveToNextStartPlayer();
+                        }
                         serverModel.broadcast(new Message(Message.Type.STARTGAME, gameModel.getCurrentPlayer().getPlayerName()));
                         for (int i = 0; i < gameModel.getNumOfPlayers(); i++) {
                             serverModel.broadcast(new Message(Message.Type.DEALCARDS, gameModel.getPlayers().get(i).getPlayerName(), gameModel.getPlayers().get(i).getHandCards()));
                         }
                         logger.info("The cards were sent to the clients");
                         gameModel.putPlayersInOrder();
+
                     }else{
                         writeMessage(new Message(Message.Type.STARTGAMEREJECTED));
                     }
@@ -142,15 +144,20 @@ public class ClientThread extends Thread {
                     // message to the clients to inform them about which player has played which card
                     serverModel.broadcast(new Message(Message.Type.CARDPLAYED, gameModel.getCurrentPlayer().getPlayerName(), receivedMessage.getCardString()));
 
-                    // now the things in the gameModel according to the received cards needs to be done
+
+                    gameModel.addTurnToCurrentRound(receivedMessage.getCardString());
+                    gameModel.moveToNextPlayer();
+                    // inform the clients that the next turn is happening
+                    serverModel.broadcast(new Message(Message.Type.YOURTURN, gameModel.getCurrentPlayer().getPlayerName()));
+
 
                     if (gameModel.checkIfRoundFull()) {
-                        gameModel.addTurnToCurrentRound(receivedMessage.getCardString());
                         gameModel.evaluateCurrentRound();
                         // send message to clients to inform them about the results in the last round
                         logger.info("the round is finished");
                         logger.info(gameModel.getCurrentWinner().getPlayerName()+" has won the round");
                         // This Thread has to sleep to let the clients see the played cards for a while
+                        serverModel.broadcast(new Message(Message.Type.YOURTURN, "Nobody"));
                         try {
                             Thread.sleep(4000);
                         } catch (InterruptedException e) {
@@ -162,13 +169,21 @@ public class ClientThread extends Thread {
                                 serverModel.broadcast(new Message(Message.Type.ROUNDFINISHED, p.getPlayerName(), p.getPointCounter()));
                             }
                         }
+                        serverModel.broadcast(new Message(Message.Type.YOURTURN, gameModel.getCurrentWinner().getPlayerName()));
                         gameModel.putPlayersInOrder();
                         gameModel.createRound();
                         logger.info("The next round has been created");
-                    } else {
-                        gameModel.addTurnToCurrentRound(receivedMessage.getCardString());
                     }
-                    gameModel.moveToNextPlayer();
+
+                    // Check if the maximum points chosen by user are reached, if so end game
+                    if (gameModel.checkIfMaxPointsReached() && gameModel.getMaxPoints()!= 0) {
+                        try {
+                            Thread.sleep(4000);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                        serverModel.broadcast(new Message(Message.Type.MAXPOINTSREACHED, gameModel.getWinnerofGame()));
+                    }
 
                     // inform the clients that the game is finished and let them know about the score
                     if (gameModel.checkIfGameFinished()) {
@@ -178,14 +193,25 @@ public class ClientThread extends Thread {
                             e.printStackTrace();
                         }
                         serverModel.broadcast(new Message(Message.Type.GAMEFINISHED, gameModel.getWinnerofGame()));
+                        if (gameModel.getMaxPoints() == 0) {
+                            serverModel.broadcast(new Message(Message.Type.MAXPOINTSREACHED, gameModel.getWinnerofGame()));
+                        } else {
+                            serverModel.broadcast(new Message(Message.Type.YOURTURN, "NOBODY"));
+                            gameModel.dealCardsToPlayer();
+                            for (int i = 0; i < gameModel.getNumOfPlayers(); i++) {
+                                serverModel.broadcast(new Message(Message.Type.DEALCARDS, gameModel.getPlayers().get(i).getPlayerName(), gameModel.getPlayers().get(i).getHandCards()));
+                            }
+                            // Move to the next start playr so he can choose the trumpf for the next round
+                            gameModel.moveToNextStartPlayer();
+                            serverModel.broadcast(new Message(Message.Type.STARTGAME, gameModel.getCurrentPlayer().getPlayerName()));
+                            logger.info("The cards were sent to the clients");
+                            // Set Current player as current winner to get playing order correctly done
+                            gameModel.setCurrentWinner(gameModel.getCurrentPlayer());
+                            gameModel.putPlayersInOrder();
+                        }
+
                     }
-
-                    // TODO Define what happens in the gameModel
-
-                    // inform the clients that the next turn is happening
-                    serverModel.broadcast(new Message(Message.Type.YOURTURN, gameModel.getCurrentPlayer().getPlayerName()));
                     break;
-
             }
 
         }

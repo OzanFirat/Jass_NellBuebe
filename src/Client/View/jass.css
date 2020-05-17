@@ -39,6 +39,15 @@
     -fx-border-width: 5px;
 }
 
+.winner-text {
+    -fx-background-color: black;
+    -fx-text-fill: gold;
+    -fx-alignment: center;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Comic Sans MS";
+}
+
 .text-area {
     -fx-font-family: "Comic Sans MS";
     -fx-font-size: 14px;

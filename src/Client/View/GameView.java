@@ -10,6 +10,7 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -121,6 +122,7 @@ public class GameView {
     public Button btnTrump;
     public Button btnTopsDown;
     public Button btnBottomsUp;
+    Group gameInstructions;
 
     //Elements to display the languageSetting
     public ChoiceBox<String> choiceBoxLanguageGameView;
@@ -151,19 +153,23 @@ public class GameView {
         createUnderlayYourCards();
         createUnderlayCardsInMiddle();
         createChoiceBoxLanguage();
-        createChatButton();
         createGameInstructions();
+        createChatButton();
+
+
 
         registerForShutDown();
 
-        rootJassGame.getChildren().addAll(rootCards, cardsPlayedByOpponents, overlayNotYourTurn, paneScoreTable);
+        rootJassGame.getChildren().addAll(rootCards, cardsPlayedByOpponents, overlayNotYourTurn, paneScoreTable, gameInstructions);
         rootJassGame.getChildren().addAll(oppPanes);
         rootJassGame.setBackground(new Background(new BackgroundImage(background, null, null, null, null)));
+        gameInstructions.toFront();
 
         Scene scene = new Scene(rootJassGame, sceneWidth, sceneHeight);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
         gameStage.setScene(scene);
         gameStage.setTitle("Jass by NellBuebe");
+        gameStage.setResizable(false);
     }
 
 
@@ -287,6 +293,7 @@ public class GameView {
             public void run() {
                 if (!rootJassGame.getChildren().contains(overlayNotYourTurn)) {
                     rootJassGame.getChildren().add(overlayNotYourTurn);
+                    gameInstructions.toFront();
                 }
             }
         });
@@ -690,7 +697,7 @@ public class GameView {
         btnBottomsUp.setTranslateX(60);
         btnBottomsUp.setTranslateY(725);
 
-        rootJassGame.getChildren().addAll(btngameCards, btnTrump, btnMinorSuit, btnBottomsUp, btnTopsDown, lblGameInstruction);
+        gameInstructions = new Group(btngameCards, btnTrump, btnMinorSuit, btnBottomsUp, btnTopsDown, lblGameInstruction);
     }
 
     // needs to be optimized TODO

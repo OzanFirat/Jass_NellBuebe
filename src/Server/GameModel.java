@@ -41,6 +41,17 @@ public class GameModel {
         deck = new DeckOfCards();
     }
 
+
+    public synchronized void removePlayer(String playerName){
+        Player playerToRemove = null;
+        for(Player p : players){
+            if(p.getPlayerName().equals(playerName)){
+                playerToRemove = p;
+            }
+        }
+        players.remove(playerToRemove);
+    }
+
     public void addPlayer(String playerName, int id){
         if (players.size() < 4) {
             Player p = new Player(playerName, id);

@@ -25,6 +25,14 @@ public class LobbyController {
         this.model = model;
         this.lobbyView = lobbyView;
 
+
+        lobbyView.getStage().setOnCloseRequest(e -> {
+            cc.sendMessage(new Message(Message.Type.LOGOUT,model.getUserName()));
+            e.consume();
+            lobbyView.showAlertLeavingLobby();
+            JassClient.mainProgram.stopLobby();
+        });
+
         lobbyView.getBtnStart().setOnAction(e -> {
 
             cc.sendMessage(new Message(Message.Type.STARTGAME, cc.getUserName() + "has started the game"));

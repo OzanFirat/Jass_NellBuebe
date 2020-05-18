@@ -74,34 +74,27 @@ public class ClientThread extends Thread {
             // Different actions based on message type
             switch (receivedMessage.getType()) {
                 case LOGOUT:
-                    // TODO Levin
-                    // writeMessage(new Message(4));
+                    gameModel.removePlayer(receivedMessage.getPlayerName());
+                    serverModel.removePlayerByName(receivedMessage.getPlayerName());
+                    serverModel.broadcast(new Message(Message.Type.WHOISIN, serverModel.getPlayerNames()));
+                    logger.info(username + " disconnected  with LOGOUT.");
+                    keepGoing = false;
                     break;
                 case LOGIN:
+                    boolean accept = true;
                     if (gameModel.getPlayers().size() != 0) {
-                        writeMessage(new Message(Message.Type.LOGIN, userName));
-                        boolean accept = true;
                         for (int i = 0; i < gameModel.getPlayers().size(); i++) {
                             if (gameModel.getPlayers().get(i).getPlayerName().equals(receivedMessage.getUserName())) {
                                 accept = false;
+                                writeMessage(new Message(Message.Type.LOGINREJECTED));
                             }
                         }
-                        if (accept == false )
-                            writeMessage(new Message(Message.Type.LOGINREJECTED));
-                        else {
-                            if (gameModel.getPlayers().size() >= 4){
-                                writeMessage(new Message(Message.Type.LOGINREJECTEDTOOMANYPLAYERS));
-                            }else{
-                                addPlayerToGame();
-                            }
-                        }
-                    } else {
-                        if (gameModel.getPlayers().size() > 4){
+                        if (gameModel.getPlayers().size() >= serverModel.getALLOWEDPLAYERS()){
                             writeMessage(new Message(Message.Type.LOGINREJECTEDTOOMANYPLAYERS));
-                        }else{
-                            addPlayerToGame();
+                            accept = false;
                         }
                     }
+                    if(accept) addPlayerToGame();
                     break;
                 case CHATMESSAGE:
                     serverModel.broadcast(new Message(Message.Type.CHATMESSAGE,getUsername()+": "+ receivedMessage.getMessage()));
@@ -124,7 +117,7 @@ public class ClientThread extends Thread {
                         gameModel.putPlayersInOrder();
 
                     }else{
-                        writeMessage(new Message(Message.Type.STARTGAMEREJECTED));
+                        writeMessage(new Message(Message.Type.STARTGAMEREJECTED, gameModel.getPlayers().size()));
                     }
                     break;
                 case TRUMPF:
@@ -215,6 +208,7 @@ public class ClientThread extends Thread {
             }
 
         }
+        serverModel.removeClient(id);
         close();
     }
 

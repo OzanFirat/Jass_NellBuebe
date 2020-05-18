@@ -23,7 +23,7 @@ public class Message implements Serializable {
     // Server can give action by a GameAction from Player
     // Server rejects startGame if players are too less
 
-    public enum Type {WHOISIN, CHATMESSAGE, LOGOUT, LOGIN, LOGINREJECTED, LOGINACCEPTED,DEALCARDS,TRUMPF,
+    public enum Type {WHOISIN, CHATMESSAGE, LOGOUT, LOGIN, LOGINREJECTED, LOGINACCEPTED,DEALCARDS,TRUMPF,CLIENTLOST,
         STARTGAME, YOURTURN, CARDPLAYED, ROUNDFINISHED, GAMEFINISHED, STARTGAMEREJECTED, LOGINREJECTEDTOOMANYPLAYERS, MAXPOINTSREACHED}
 
     private Type type;
@@ -47,6 +47,9 @@ public class Message implements Serializable {
         this.type = type;
 
         switch (type) {
+            case LOGOUT:
+                this.playerName = message;
+                break;
             case WHOISIN:
                 this.message = message;
                 break;

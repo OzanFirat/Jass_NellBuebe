@@ -3,6 +3,7 @@ package Client.View;
 import Client.Model.ClientModel;
 import Common.ServiceLocator;
 import Common.Translator;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -11,9 +12,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.util.Optional;
 
 
 public class LobbyView {
+
+
     private Stage stage;
     private ClientModel model;
 
@@ -34,6 +38,8 @@ public class LobbyView {
 
     private Pane root;
 
+    public Button button;
+
     //Elements to display the languageSetting
     public ChoiceBox<String> choiceBoxLanguageLobbyView;
 
@@ -43,6 +49,18 @@ public class LobbyView {
 
         sl = ServiceLocator.getServiceLocator();
         t = sl.getTranslator();
+
+
+        stage.setOnCloseRequest(e -> {
+            e.consume();
+            showAlertLeavingLobby();
+        });
+
+        button = new Button("leave lobby");
+        button.setOnAction(e-> showAlertLeavingLobby());
+
+        StackPane layout = new StackPane();
+        layout.getChildren().add(button);
 
         root = new Pane();
         createBackgroundImage();
@@ -158,7 +176,21 @@ public class LobbyView {
         return playersInLobby;
     }
 
+    public void showAlertLeavingLobby(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Lobby");
+        alert.setHeaderText("Exit Lobby");
+        alert.setContentText("Are you sure u want to exit the Lobby?");
 
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            Platform.exit();
+            System.exit(0);
+        }
+    }
 
+    public Stage getStage() {
+        return stage;
+    }
 
 }

@@ -267,6 +267,7 @@ public class GameView {
                 rectanglesOverlay = new ArrayList<>();
 
                 for (int i = 0; i < model.getYourCards().size(); i++) {
+
                     Rectangle rect = new Rectangle(cardWidth + 1, cardHeight);
                     rect.setFill(Color.rgb(0, 0, 0, 0.5));
                     rectanglesOverlay.add(rect);
@@ -647,7 +648,7 @@ public class GameView {
         rootJassGame.getChildren().add(choiceBoxLanguageGameView);
     }
 
-    private void createChatButton() {
+    public void createChatButton() {
         // defined Chat-Elements in gameView
         btnChatGame = new Button(t.getString("game.button.chatroom"));
         btnChatGame.setId("chatButton");
@@ -656,7 +657,7 @@ public class GameView {
         rootJassGame.getChildren().add(btnChatGame);
     }
 
-    private void createGameInstructions() {
+    public void createGameInstructions() {
         // defined Rules-Elements in gameView
         lblGameInstruction = new Label(t.getString("game.lbl.gameInstruction"));
         lblGameInstruction.setAlignment(Pos.CENTER);

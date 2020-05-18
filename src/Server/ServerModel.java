@@ -23,8 +23,8 @@ public class ServerModel {
     private Logger logger = sl.getLogger();
 
 
-    // declaration of the MAX player for the JassGame
-    private final int MAX_PLAYER = 4;
+    // declaration of the allowed players for the JassGame
+    private final int ALLOWEDPLAYERS = 4;
 
 
     // initializing portNumber to check if server is running
@@ -39,14 +39,12 @@ public class ServerModel {
     // GameModel to control the logic of the game
     private GameModel gameModel;
 
-    // reports
-    private String report = " *** ";
 
 
     public ServerModel(int portNr) {
         // the port
         this.portNr = portNr;
-        clientThreads = new ArrayList<ClientThread>(MAX_PLAYER);
+        clientThreads = new ArrayList<ClientThread>(ALLOWEDPLAYERS);
         gameModel = GameModel.getGameModel();
     }
 
@@ -110,6 +108,31 @@ public class ServerModel {
         }
     }
 
+    //checks at the login and on startgame if there are enough, but not to many players
+    protected boolean checkPlayerCount(int arraySize){
+        if(arraySize == ALLOWEDPLAYERS){
+            return false;
+        }
+        return true;
+    }
+
+    // this method checks if client tried to sent LOGOUT message to exit
+    public void removeClient(int id) {
+
+        String clientDisconnected = "";
+        // loop trough arrayList until the id has been found
+        for (int i = 0; i < clientThreads.size(); ++i){
+            ClientThread clientThread = clientThreads.get(i);
+            if(clientThread.id == id){
+                clientDisconnected = clientThread.getUsername();
+                clientThreads.remove(i);
+                break;
+            }
+        }
+        Message message = new Message(Message.Type.CLIENTLOST, clientDisconnected);
+        broadcast(message);
+    }
+
     public synchronized String getPlayerByName(String name) {
         return playerNames.stream().filter(player -> player.equals(name)).toString();
     }
@@ -118,12 +141,21 @@ public class ServerModel {
         playerNames.add(name);
     }
 
+    public synchronized void removePlayerByName(String name){
+        playerNames.remove(name);
+    }
+
+
     public synchronized ArrayList<String> getPlayerNames() {
         return playerNames;
     }
 
     public void setPlayerNames(ArrayList<String> playerNames) {
         this.playerNames = playerNames;
+    }
+
+    public int getALLOWEDPLAYERS() {
+        return ALLOWEDPLAYERS;
     }
 
     // needs to be optimized TODO

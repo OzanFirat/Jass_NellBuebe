@@ -55,6 +55,7 @@ public class LobbyView {
         Scene scene = new Scene(root, 700, 400);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
         stage.setScene(scene);
+        stage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/logo.png")));
     }
 
     public void start(){

@@ -172,6 +172,7 @@ public class GameView {
         gameStage.setScene(scene);
         gameStage.setTitle("Jass by NellBuebe");
         gameStage.setResizable(false);
+        gameStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/logo.png")));
     }
 
 

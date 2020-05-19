@@ -61,6 +61,7 @@ public class SettingsView {
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
         settingsStage.setScene(scene);
         settingsStage.setTitle("Jass by NellBuebe - Settings");
+        settingsStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/logo.png")));
     }
 
     public void start() {

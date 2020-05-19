@@ -40,7 +40,7 @@ public class LoginView {
     //Elements to display the languageSetting
     private ChoiceBox<String> choiceBoxLanguageLoginView;
 
-    private int sceneWidth = 570;
+    private int sceneWidth = 600;
     private int sceneHeight = 330;
 
 
@@ -57,6 +57,7 @@ public class LoginView {
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("Jass by NellBuebe - Log In");
+        stage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/logo.png")));
 
     }
 

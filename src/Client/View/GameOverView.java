@@ -89,6 +89,7 @@ public class GameOverView {
         sceneGameOver = new Scene(root, sceneWidth, sceneHeight);
         sceneGameOver.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
         gameOverStage.setScene(sceneGameOver);
+        gameOverStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/logo.png")));
 
     }
 

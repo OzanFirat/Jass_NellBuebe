@@ -5,6 +5,7 @@ import Common.ServiceLocator;
 import Common.Translator;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -97,6 +98,7 @@ public class ChatView {
         chatStage.setHeight(530);
         chatStage.setWidth(500);
         chatStage.setResizable(false);
+        chatStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/logo.png")));
 
     }
 

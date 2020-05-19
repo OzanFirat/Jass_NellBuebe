@@ -233,9 +233,13 @@ public class ClientCommunication {
                             break;
 
                         case YOURTURN:
-                            if (receivedMessage.getCurrentPlayer().equals(model.getUserName())) {
+                            if (receivedMessage.getPlayerName().equals(model.getUserName())) {
                                 logger.info("It's your turn - " + model.getUserName());
                                 // if it's your turn, remove the overlay and set the cards on action
+                                // if it's your turn, remove the overlay and set the cards on action
+                                if (receivedMessage.getIllegalCards() != null) {
+                                    model.createIndexIllegalCards(receivedMessage.getIllegalCards());
+                                }
                                 JassClient.mainProgram.getGameView().hideOverlayNotYourTurn();
                                 JassClient.mainProgram.getGameController().handleCardAction();
                             } else {

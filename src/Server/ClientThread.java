@@ -141,7 +141,7 @@ public class ClientThread extends Thread {
                     gameModel.addTurnToCurrentRound(receivedMessage.getCardString());
                     gameModel.moveToNextPlayer();
                     // inform the clients that the next turn is happening
-                    serverModel.broadcast(new Message(Message.Type.YOURTURN, gameModel.getCurrentPlayer().getPlayerName()));
+                    serverModel.broadcast(new Message(Message.Type.YOURTURN, gameModel.getCurrentPlayer().getPlayerName(), gameModel.getCurrentPlayer().blockCards(gameModel.getCurrentRound())));
 
 
                     if (gameModel.checkIfRoundFull()) {

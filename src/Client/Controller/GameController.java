@@ -61,6 +61,7 @@ public class GameController {
         updateOpponentLabels();
         gameView.createGameHistory();
         gameView.createOverlayNotYourTurn();
+        gameView.showOverlayNotYourTurn();
         gameView.createTableViewScore();
         gameView.setStageTitle(model.getUserName());
     }

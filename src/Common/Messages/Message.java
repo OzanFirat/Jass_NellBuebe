@@ -39,6 +39,7 @@ public class Message implements Serializable {
     private String trumpf;
     private int maxPoints;
     private int playerCount;
+    private volatile ArrayList<String> illegalCards;
 
 
     // Messages for player entering the game
@@ -62,7 +63,7 @@ public class Message implements Serializable {
             case TRUMPF:
                 this.trumpf = message;
             case YOURTURN:
-                this.currentPlayer = message;
+                this.playerName = message;
                 break;
             case STARTGAME:
                 this.playerName = message;
@@ -94,6 +95,15 @@ public class Message implements Serializable {
         this.type = type;
         this.playerName = playerName;
         this.arrayList = playerCards;
+
+        switch (type) {
+            case DEALCARDS:
+                this.arrayList = playerCards;
+                break;
+            case YOURTURN:
+                illegalCards = (ArrayList<String>) playerCards;
+                break;
+        }
     }
 
 
@@ -224,6 +234,14 @@ public class Message implements Serializable {
 
     public void setMaxPoints(int maxPoints) {
         this.maxPoints = maxPoints;
+    }
+
+    public ArrayList<String> getIllegalCards() {
+        return illegalCards;
+    }
+
+    public void setIllegalCards(ArrayList<String> illegalCards) {
+        this.illegalCards = illegalCards;
     }
 
 }

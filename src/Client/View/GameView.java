@@ -63,6 +63,8 @@ public class GameView {
     public Label lblWinner3;
     public Label lblWinner4;
 
+    public Label lblWinnerUser;
+
     // Elements to display trumpf choice
     private ArrayList<TrumpfLabel> listTrumpfLabels;
     private Label titleChooseTrumpf;
@@ -76,6 +78,8 @@ public class GameView {
 
     // ArrayList to save the rectangles of the overlay - needed to remove them when it's your turn
     private ArrayList<Rectangle> rectanglesOverlay;
+    // ArrayList of rectangles to create an overlay which blocks illegal cards
+    private ArrayList<Rectangle> rectanglesIllegalCards = new ArrayList<>();
 
     //Elements to display the current Trumpf
     protected Label lblTrumpf;
@@ -105,8 +109,8 @@ public class GameView {
 
 
     // lenght and width of the scene
-    private final double sceneWidth = 1400;
-    private final double sceneHeight = 800;
+    private final double sceneWidth = 1390;
+    private final double sceneHeight = 790;
 
     //Define the image for the background
     private Image background = new Image(getClass().getClassLoader().getResourceAsStream("images/background_1400x800.png"));
@@ -155,8 +159,6 @@ public class GameView {
         createChoiceBoxLanguage();
         createGameInstructions();
         createChatButton();
-
-
 
         registerForShutDown();
 
@@ -261,6 +263,15 @@ public class GameView {
             c.setTranslateX(xStartPoint + (i* xSpaceCards) +(i*cardWidth));
         }
         rootCards.getChildren().addAll(yourCards);
+
+        // create Label to display when user has won the round
+        lblWinnerUser = new Label("Winner"); //TODO get text done with service locator
+        lblWinnerUser.getStyleClass().add("winner-text");
+        lblWinnerUser.setMinWidth(100);
+        lblWinnerUser.setTranslateX(xMiddle-50);
+        lblWinnerUser.setTranslateY(yStartingPoint - 50);
+        lblWinnerUser.setVisible(false);
+        rootJassGame.getChildren().add(lblWinnerUser);
     }
 
     // creates an overlay to enable cards if it's not your turn
@@ -278,10 +289,8 @@ public class GameView {
                     rect.setFill(Color.rgb(0, 0, 0, 0.5));
                     rectanglesOverlay.add(rect);
                     rect.setTranslateX(xStartPoint + (i* xSpaceCards) +(i*cardWidth));
+                    rect.setTranslateY(yStartingPoint);
                 }
-                overlayNotYourTurn.getChildren().addAll(rectanglesOverlay);
-                overlayNotYourTurn.setTranslateY(yStartingPoint);
-
             }
         });
     }
@@ -291,9 +300,13 @@ public class GameView {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                if (!rootJassGame.getChildren().contains(overlayNotYourTurn)) {
-                    rootJassGame.getChildren().add(overlayNotYourTurn);
-                    gameInstructions.toFront();
+                // remove the rectangles to cover illegal cards if they are part of the root
+                if (rootJassGame.getChildren().containsAll(rectanglesIllegalCards)) {
+                    rootJassGame.getChildren().removeAll(rectanglesIllegalCards);
+                }
+                // add the overlay to cover all cards if it's not part of the root yet
+                if (!rootJassGame.getChildren().containsAll(rectanglesOverlay)) {
+                    rootJassGame.getChildren().addAll(rectanglesOverlay);
                 }
             }
         });
@@ -305,9 +318,29 @@ public class GameView {
 
             @Override
             public void run() {
-                rootJassGame.getChildren().remove(overlayNotYourTurn);
+                rootJassGame.getChildren().removeAll(rectanglesOverlay);
+                if (model.getIllegalCards() != null) {
+                    createOverlayIllegalCards();
+                }
             }
         });
+    }
+
+    private void createOverlayIllegalCards() {
+        rectanglesIllegalCards = new ArrayList<>();
+        for (int i = 0; i < model.getYourCards().size(); i++) {
+            for (Integer index : model.getIndexesIllegalCards()) {
+                if (i == index) {
+                    Rectangle rect = new Rectangle(cardWidth+1, cardHeight);
+                    rect.setFill(Color.rgb(0, 0, 0, 0.5));
+                    rect.setTranslateX(xStartPoint + (i* xSpaceCards) +(i*cardWidth));
+                    rect.setTranslateY(yStartingPoint);
+                    rectanglesIllegalCards.add(rect);
+                }
+            }
+        }
+        model.setIllegalCards(null);
+        rootJassGame.getChildren().addAll(rectanglesIllegalCards);
     }
 
     public void createUnderlayYourCards() {
@@ -607,6 +640,9 @@ public class GameView {
                 if (winnerName.equals(model.getOppPlayerNames().get(2))) {
                     lblWinner4.setVisible(true);
                 }
+                if (winnerName.equals(model.getUserName())) {
+                    lblWinnerUser.setVisible(true);
+                }
             }
         });
 
@@ -623,6 +659,9 @@ public class GameView {
                 }
                 if (winnerName.equals(model.getOppPlayerNames().get(2))) {
                     lblWinner4.setVisible(false);
+                }
+                if (winnerName.equals(model.getUserName())) {
+                    lblWinnerUser.setVisible(false);
                 }
             }
         });

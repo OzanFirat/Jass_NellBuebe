@@ -20,6 +20,8 @@ public class ClientModel {
     private String cardName;
     private ObservableList<PlayerScoreTuple> playerWithPoints;
     private String trumpf;
+    private ArrayList<String> illegalCards;
+    private ArrayList<Integer> indexesIllegalCards;
 
 
     public ClientModel(){
@@ -69,6 +71,21 @@ public class ClientModel {
         for (String s : playerNames) {
             PlayerScoreTuple p = new PlayerScoreTuple(s, 0);
             playerWithPoints.add(p);
+        }
+    }
+
+    public void createIndexIllegalCards(ArrayList<String> illegalCards) {
+        this.illegalCards = illegalCards;
+        indexesIllegalCards = new ArrayList<>();
+
+        if (illegalCards != null) {
+            for (int i = 0; i < yourCards.size(); i++) {
+                for (String s : illegalCards) {
+                    if (yourCards.get(i).toString().equals(s)) {
+                        indexesIllegalCards.add(i);
+                    }
+                }
+            }
         }
     }
 
@@ -147,5 +164,21 @@ public class ClientModel {
 
     public void setTrumpf(String trumpf) {
         this.trumpf = trumpf;
+    }
+
+    public ArrayList<Integer> getIndexesIllegalCards() {
+        return indexesIllegalCards;
+    }
+
+    public void setIndexesIllegalCards(ArrayList<Integer> indexesLegalCards) {
+        this.indexesIllegalCards = indexesLegalCards;
+    }
+
+    public ArrayList<String> getIllegalCards() {
+        return illegalCards;
+    }
+
+    public void setIllegalCards(ArrayList<String> illegalCards) {
+        this.illegalCards = illegalCards;
     }
 }

@@ -29,6 +29,11 @@ public class ServerController {
                 //serverView.startBtn.setText(t.getString("server is running"));
             }
         });
+
+        serverView.jassHelp.setOnAction(e->{
+            serverView.showAlertHelp();
+        });
+
         serverView.getStage().setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
                 System.exit(0);

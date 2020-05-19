@@ -2,6 +2,7 @@ package Server;
 
 import Common.ServiceLocator;
 import Common.Translator;
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
@@ -35,6 +36,9 @@ public class ServerView {
     Menu languageMenu;
     Menu helpMenu;
 
+    // MenuItem
+    MenuItem jassHelp;
+
 
 
     //Define the image for the background in serverView
@@ -53,7 +57,12 @@ public class ServerView {
         languageMenu = new Menu(t.getString("server.menu.language"));
         helpMenu = new Menu(t.getString("server.menu.help"));
 
+        jassHelp = new MenuItem("Game Set Up");
+
+
         mBar.getMenus().addAll(languageMenu, helpMenu);
+        helpMenu.getItems().add(jassHelp);
+
 
         // initializing all GUI elements
         lblJassGame = new Label(t.getString("server.label.JassGameServer"));
@@ -152,5 +161,16 @@ public class ServerView {
         return stage;
     }
 
-
+    public void showAlertHelp(){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Help");
+                alert.setHeaderText("Jass by Nellbuebe");
+                alert.setContentText("To proceed the game u have to start the server first than all 4 clients.");
+                alert.showAndWait();
+            }
+        });
+    }
 }

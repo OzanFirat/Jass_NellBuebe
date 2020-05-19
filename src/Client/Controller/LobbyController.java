@@ -9,7 +9,9 @@ import Common.ServiceLocator;
 import Common.Translator;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class LobbyController {
@@ -25,12 +27,9 @@ public class LobbyController {
         this.model = model;
         this.lobbyView = lobbyView;
 
-
         lobbyView.getStage().setOnCloseRequest(e -> {
-            cc.sendMessage(new Message(Message.Type.LOGOUT,model.getUserName()));
             e.consume();
-            lobbyView.showAlertLeavingLobby();
-            JassClient.mainProgram.stopLobby();
+            showAlertLeavingLobby();
         });
 
         lobbyView.getBtnStart().setOnAction(e -> {
@@ -70,5 +69,20 @@ public class LobbyController {
                 alert.showAndWait();
             }
         });
+    }
+
+    public void showAlertLeavingLobby(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Lobby");
+        alert.setHeaderText("Exit Lobby");
+        alert.setContentText("Are you sure u want to exit the Lobby?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            cc.sendMessage(new Message(Message.Type.LOGOUT,model.getUserName()));
+            JassClient.mainProgram.stopLobby();
+            Platform.exit();
+            System.exit(0);
+        }
     }
 }

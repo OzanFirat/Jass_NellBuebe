@@ -126,7 +126,10 @@ public class ClientThread extends Thread {
                     serverModel.broadcast(new Message(Message.Type.TRUMPF, gameModel.getTrumpf().toString()));
                     serverModel.broadcast(new Message(Message.Type.YOURTURN, gameModel.getCurrentPlayer().getPlayerName()));
                     break;
-
+                case EXITGAME:
+                    serverModel.broadcast(new Message(Message.Type.EXITGAME,"Game cannot be continued, because one player has left the game"));
+                    logger.info("Game has been terminated");
+                    break;
                 case CARDPLAYED:
                     // Logger in the server to see which player has played which card
                     for (int i = 0; i < gameModel.getPlayers().size(); i++) {

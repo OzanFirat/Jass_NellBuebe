@@ -959,4 +959,8 @@ public class GameView {
     public VBox getvBoxTrumpf() {
         return vBoxTrumpf;
     }
+
+    public Stage getGameStage() {
+        return gameStage;
+    }
 }

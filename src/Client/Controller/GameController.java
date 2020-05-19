@@ -9,8 +9,11 @@ import Common.Messages.Message;
 import Common.ServiceLocator;
 import Common.Translator;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class GameController {
@@ -31,6 +34,13 @@ public class GameController {
         this.model = model;
         this.gameView = gameView;
         log = JassClient.mainProgram.getLogger();
+
+        // event for exiting game
+        gameView.getGameStage().setOnCloseRequest(e -> {
+            e.consume();
+            showConfirmationExitGame();
+        });
+
 
         // eventHandling for starting chatRoom
         gameView.btnChatGame.setOnAction( e-> {
@@ -181,5 +191,48 @@ public class GameController {
             }
         });
     }
+
+    // This method gives Alert to the player who leaves the game
+    public void showConfirmationExitGame(){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Exit");
+                alert.setHeaderText("Leave Game");
+                alert.setContentText("Are you sure u want to exit, game can't  be proceeded anymore");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    clientCommunication.sendMessage(new Message(Message.Type.EXITGAME,model.getUserName()+"has left the game"));
+                    JassClient.mainProgram.getGameView().stop();
+                    Platform.exit();
+                    System.exit(0);
+                }
+            }
+        });
+    }
+
+    //This method informs every player that one player has left the game, and that the game cannot be proceeded anymore
+    public void showInformationExitGame() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Exit");
+                alert.setHeaderText("Player left game!");
+                alert.setContentText("The game cannot be proceeded anymore");
+                alert.showAndWait();
+                if(alert.getResult() ==  ButtonType.OK){
+                    clientCommunication.sendMessage(new Message(Message.Type.EXITGAME,model.getUserName()+"has left the game"));
+                    JassClient.mainProgram.getGameView().stop();
+                    Platform.exit();
+                    System.exit(0);
+                }
+            }
+        });
+    }
+
+
 }
 

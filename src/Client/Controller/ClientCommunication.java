@@ -177,6 +177,10 @@ public class ClientCommunication {
                             logger.info("Login rejected");
                             JassClient.mainProgram.getLoginController().showAlertLoginRejectedTooManyPlayers();
                             break;
+                        case EXITGAME:
+                            JassClient.mainProgram.getGameController().showInformationExitGame();
+                            logger.info("Game cannot be continued, because one player has left the game");
+                            break;
                         case LOGINACCEPTED:
                             model.setUserName(receivedMessage.getUserName());
                             JassClient.mainProgram.getLoginController().loginAccepted();

@@ -25,7 +25,7 @@ public class Round {
         return winner;
     }
 
-    // TODO Method to evaluate the winner of the round
+
     // Gives back the player who wins the round
     public Player evaluateRound() {
         Turn winnerTurn = turns.get(0);

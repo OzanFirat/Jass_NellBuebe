@@ -98,7 +98,6 @@ public class ClientCommunication {
 
     public boolean start() {
         try {
-            //TODO
             socket = new Socket(server, portNr);
             logger.info(socket.toString() + "starting the socket...");
             logger.info("the socket has successfully started");

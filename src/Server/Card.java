@@ -51,16 +51,18 @@ public class Card implements Serializable, Comparable<Card> {
         public int getValueinPoints() {
             int value = 0;
             int ordinal = this.ordinal();
-            // TODO: switch case für performance
-            if (ordinal == 0) value = 0;
-            if (ordinal== 1) value = 0;
-            if (ordinal == 2) value = 0;
-            if (ordinal == 3) value = 0;
-            if (ordinal == 4) value = 10;
-            if (ordinal == 5) value = 2;
-            if (ordinal == 6) value = 3;
-            if (ordinal == 7) value = 4;
-            if (ordinal == 8) value = 11;
+
+            switch (ordinal) {
+                case 0: value = 0; break;
+                case 1: value = 0; break;
+                case 2: value = 0; break;
+                case 3: value = 0; break;
+                case 4: value = 10; break;
+                case 5: value = 2; break;
+                case 6: value = 3; break;
+                case 7: value = 4; break;
+                case 8: value = 11; break;
+            }
             return value;
         }
     };

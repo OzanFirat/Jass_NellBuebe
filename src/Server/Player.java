@@ -23,13 +23,17 @@ public class Player {
         boolean trumpfPlayedOutOfColor = false;
         Card trumpfCardOutOfColor = null;
         Card.Suit trumpf = round.getTrumpf();
-        Card firstCard = round.getTurns().get(0).getCard();
+        Card firstCard = null;
+
         ArrayList<String> blockedCards = new ArrayList();
 
-        // check if the player has the same suit in hand than the first card which was played
-        for(Card c : handCards) {
-            if (c.getSuit() == firstCard.getSuit()) {
-                sameSuitInHand = true;
+        // check if the player has the same suit in hand than the first card which was played - only if it's not the first turn of the round
+        if (round.getTurns().size() != 0) {
+            firstCard = round.getTurns().get(0).getCard();
+            for (Card c : handCards) {
+                if (c.getSuit() == firstCard.getSuit()) {
+                    sameSuitInHand = true;
+                }
             }
         }
 
@@ -40,6 +44,8 @@ public class Player {
                 trumpfCardOutOfColor = t.getCard();
             }
         }
+
+
 
         for(Card c : handCards) {
             if (sameSuitInHand) {

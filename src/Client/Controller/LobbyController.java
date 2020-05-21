@@ -51,8 +51,15 @@ public class LobbyController {
         });
 
         lobbyView.getBtnSettings().setOnAction( e-> {
-            JassClient.mainProgram.getSettingsView().setSettingStageTitle();
-            JassClient.mainProgram.startSettings();
+            if( !settingsPopup){
+                settingsPopup = true;
+                JassClient.mainProgram.getSettingsView().setSettingStageTitle();
+                JassClient.mainProgram.startSettings();
+            }else{
+                settingsPopup = false;
+                JassClient.mainProgram.stopSettings();
+            }
+            e.consume();
         });
 
     }

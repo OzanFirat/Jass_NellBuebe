@@ -43,8 +43,8 @@ public class SettingsView {
     private Label lblTitle;
 
     // lenght and width of the scene
-    private final double sceneWidth = 700;
-    private final double sceneHeight = 400;
+    private final double sceneWidth = 550;
+    private final double sceneHeight = 200;
 
     //Define the image for the background
     private Image background = new Image(getClass().getClassLoader().getResourceAsStream("images/login_background_medium.jpg"));
@@ -59,6 +59,8 @@ public class SettingsView {
 
         Scene scene = new Scene(rootSettings, sceneWidth, sceneHeight);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
+        settingsStage.setX(525);
+        settingsStage.setY(300);
         settingsStage.setScene(scene);
         settingsStage.setTitle("Jass by NellBuebe - Settings");
         settingsStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/logo.png")));
@@ -113,7 +115,7 @@ public class SettingsView {
         grid.add(lblChooseMaxPoints, 0, 2);
         grid.add(cbMaxPoints, 1, 2);
 
-        btnEnter = new Button("Start Game");
+        btnEnter = new Button("Enter");
         grid.add(btnEnter, 1, 3);
     }
 

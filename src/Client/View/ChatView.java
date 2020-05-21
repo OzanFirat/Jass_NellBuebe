@@ -97,6 +97,8 @@ public class ChatView {
 
         chatStage.setHeight(530);
         chatStage.setWidth(500);
+        chatStage.setX(600);
+        chatStage.setY(100);
         chatStage.setResizable(false);
         chatStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/logo.png")));
 

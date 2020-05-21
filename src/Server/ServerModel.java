@@ -39,6 +39,8 @@ public class ServerModel {
     // GameModel to control the logic of the game
     private GameModel gameModel;
 
+    private volatile boolean gameModelResetted;
+
 
 
     public ServerModel(int portNr) {
@@ -145,6 +147,9 @@ public class ServerModel {
         playerNames.remove(name);
     }
 
+    public synchronized void resetPlayerNames() {
+        playerNames = new ArrayList<String>();
+    }
 
     public synchronized ArrayList<String> getPlayerNames() {
         return playerNames;
@@ -165,5 +170,13 @@ public class ServerModel {
             Platform.exit();
             System.exit(0);
         }
+    }
+
+    public synchronized boolean isGameModelResetted() {
+        return gameModelResetted;
+    }
+
+    public synchronized void setGameModelResetted(boolean gameModelResetted) {
+        this.gameModelResetted = gameModelResetted;
     }
 }

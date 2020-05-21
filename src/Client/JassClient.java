@@ -9,12 +9,14 @@ import Common.Translator;
 import javafx.application.Application;
 import javafx.application.Platform;
 
+import javafx.collections.FXCollections;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class JassClient extends Application {
@@ -99,6 +101,13 @@ public class JassClient extends Application {
         loginView.start();
 
     }
+    public void resetClientModel() {
+        model.setPlayerNames(new ArrayList<>());
+        model.setOppPlayerNames(new ArrayList<>());
+        model.setYourCards(new ArrayList<>());
+        model.setPlayerWithPoints(FXCollections.observableArrayList());
+    }
+
 
     public void startLogin() {
         loginView.start();

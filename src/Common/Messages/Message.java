@@ -24,7 +24,7 @@ public class Message implements Serializable {
     // Server rejects startGame if players are too less
 
     public enum Type {WHOISIN, CHATMESSAGE, LOGOUT, LOGIN, LOGINREJECTED, LOGINACCEPTED,DEALCARDS,TRUMPF,CLIENTLOST,EXITGAME,
-        STARTGAME, YOURTURN, CARDPLAYED, ROUNDFINISHED, GAMEFINISHED, STARTGAMEREJECTED, LOGINREJECTEDTOOMANYPLAYERS, MAXPOINTSREACHED}
+        STARTGAME, YOURTURN, CARDPLAYED, ROUNDFINISHED, GAMEFINISHED, STARTGAMEREJECTED, LOGINREJECTEDTOOMANYPLAYERS, MAXPOINTSREACHED, BACKTOLOBBY}
 
     private Type type;
     private String message;
@@ -79,6 +79,10 @@ public class Message implements Serializable {
                 break;
             case MAXPOINTSREACHED:
                 this.winnerName = message;
+                break;
+            case BACKTOLOBBY:
+                this.userName = message;
+                break;
         }
         this.message = message;
     }

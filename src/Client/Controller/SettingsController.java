@@ -20,8 +20,10 @@ public class SettingsController {
         log = JassClient.mainProgram.getLogger();
 
         settingsView.btnEnter.setOnAction(e -> {
-            int maxPoints = (int) settingsView.getCbMaxPoints().getValue();
-            JassClient.mainProgram.getLobbyController().setMaxPoints(maxPoints);
+            if (settingsView.getCbMaxPoints().getValue() != null) {
+                int maxPoints = (int) settingsView.getCbMaxPoints().getValue();
+                JassClient.mainProgram.getLobbyController().setMaxPoints(maxPoints);
+            }
             settingsView.stop();
             JassClient.mainProgram.getLobbyController().setSettingsPopup(false);
         });

@@ -43,7 +43,7 @@ public class ClientCommunication {
     private String userName;
     private ArrayList<String> playerNames = new ArrayList<>(3);
 
-    private ChatView chatView;
+    private boolean gameViewLaunch = true;
 
     public void setServer(String server) {
         this.server = server;
@@ -202,6 +202,10 @@ public class ClientCommunication {
 
                         case STARTGAME:
                             // initialize the game
+                            if (gameViewLaunch) {
+                                gameCounter = 0;
+                                gameViewLaunch = false;
+                            }
 
                             if (gameCounter == 0) {
                                 clientModel.fillOppPlayerList();
@@ -293,6 +297,8 @@ public class ClientCommunication {
 
                         case MAXPOINTSREACHED:
                             JassClient.mainProgram.getGameOverView().showAlertGameOver(receivedMessage.getWinnerName());
+                            JassClient.mainProgram.getGameView().hideOverlayNotYourTurn();
+                            gameViewLaunch = true;
                         default:
                             logger.info("no cases occurred");
 

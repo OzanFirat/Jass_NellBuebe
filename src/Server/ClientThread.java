@@ -94,7 +94,10 @@ public class ClientThread extends Thread {
                             accept = false;
                         }
                     }
-                    if(accept) addPlayerToGame();
+                    if(accept) {
+                        addPlayerToGame();
+                        writeMessage(new Message(Message.Type.LOGINACCEPTED, getUsername()));
+                    }
                     break;
                 case CHATMESSAGE:
                     serverModel.broadcast(new Message(Message.Type.CHATMESSAGE,getUsername()+": "+ receivedMessage.getMessage()));
@@ -102,6 +105,7 @@ public class ClientThread extends Thread {
 
                 case STARTGAME:
                     if (gameModel.checkIfFourPlayers()) {
+                        serverModel.setGameModelResetted(false);
                         gameModel.setMaxPoints(receivedMessage.getMaxPoints());
                         gameModel.dealCardsToPlayer();
                         if (gameModel.getRoundCounter() == 0) {
@@ -213,6 +217,22 @@ public class ClientThread extends Thread {
 
                     }
                     break;
+                case BACKTOLOBBY:
+                    if (!serverModel.isGameModelResetted()) {
+                        gameModel.resetGameModel();
+                        serverModel.resetPlayerNames();
+                        serverModel.setGameModelResetted(true);
+                    }
+                    addPlayerToGame();
+                    break;
+                case CLIENTLOST:
+                    keepGoing = false;
+                    if (!serverModel.isGameModelResetted()) {
+                        gameModel.resetGameModel();
+                        serverModel.resetPlayerNames();
+                        serverModel.setGameModelResetted(true);
+                    }
+                    break;
             }
 
         }
@@ -222,12 +242,15 @@ public class ClientThread extends Thread {
 
     private void addPlayerToGame() {
         setUserName(receivedMessage.getUserName());
-        writeMessage(new Message(Message.Type.LOGINACCEPTED, getUsername()));
         serverModel.broadcast(new Message(Message.Type.CHATMESSAGE, getUsername() + " has joined the room"));
         serverModel.addPlayerByName(getUsername());
+        gameModel.addPlayer(getUsername());
+        for (int i = 0; i < gameModel.getPlayers().size(); i++) {
+            if (gameModel.getPlayers().get(i).getPlayerName().equals(receivedMessage.getUserName())) {
+                gameModel.getPlayers().get(i).setId(i+1);
+            }
+        }
         serverModel.broadcast(new Message(Message.Type.WHOISIN, serverModel.getPlayerNames()));
-        gameModel.addPlayer(getUsername(), id);
-
     }
 
 

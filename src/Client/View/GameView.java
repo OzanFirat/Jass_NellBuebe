@@ -64,6 +64,7 @@ public class GameView {
     public Label lblWinner4;
 
     public Label lblWinnerUser;
+    private Label lblUserName;
 
     // Elements to display trumpf choice
     private ArrayList<TrumpfLabel> listTrumpfLabels;
@@ -274,9 +275,17 @@ public class GameView {
         lblWinnerUser.getStyleClass().add("winner-text");
         lblWinnerUser.setMinWidth(100);
         lblWinnerUser.setTranslateX(xMiddle-50);
-        lblWinnerUser.setTranslateY(yStartingPoint - 50);
+        lblWinnerUser.setTranslateY(yStartingPoint - 60);
         lblWinnerUser.setVisible(false);
-        rootJassGame.getChildren().add(lblWinnerUser);
+
+        lblUserName = new Label(model.getUserName());
+        lblUserName.getStyleClass().add("oppName");
+        lblUserName.setMinWidth(100);
+        lblUserName.setTranslateX(xMiddle-50);
+        lblUserName.setTranslateY(yStartingPoint - 30);
+
+
+        rootJassGame.getChildren().addAll(lblWinnerUser, lblUserName);
     }
 
     // creates an overlay to enable cards if it's not your turn
@@ -290,7 +299,7 @@ public class GameView {
 
                 for (int i = 0; i < model.getYourCards().size(); i++) {
 
-                    Rectangle rect = new Rectangle(cardWidth + 1, cardHeight);
+                    Rectangle rect = new Rectangle(cardWidth + 2, cardHeight+2);
                     rect.setFill(Color.rgb(0, 0, 0, 0.5));
                     rectanglesOverlay.add(rect);
                     rect.setTranslateX(xStartPoint + (i* xSpaceCards) +(i*cardWidth));
@@ -336,7 +345,7 @@ public class GameView {
         for (int i = 0; i < model.getYourCards().size(); i++) {
             for (Integer index : model.getIndexesIllegalCards()) {
                 if (i == index) {
-                    Rectangle rect = new Rectangle(cardWidth+1, cardHeight);
+                    Rectangle rect = new Rectangle(cardWidth+2, cardHeight+2);
                     rect.setFill(Color.rgb(0, 0, 0, 0.5));
                     rect.setTranslateX(xStartPoint + (i* xSpaceCards) +(i*cardWidth));
                     rect.setTranslateY(yStartingPoint);

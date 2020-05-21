@@ -12,9 +12,8 @@ public class Player {
     private int pointCounter;
 
     // creates player initially with 0 points
-    public Player(String playerName, int id) {
+    public Player(String playerName) {
         this.playerName = playerName;
-        this.id = id;
         this.pointCounter = 0;
     }
 

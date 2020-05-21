@@ -34,6 +34,8 @@ public class GameOverView {
 
 
     public Button btnExit;
+    public Button btnBackToLobby;
+
     private Image background ;
     private ImageView imvBackground;
 
@@ -56,6 +58,7 @@ public class GameOverView {
         btnExit = new Button (t.getString("gameOver.btn.Exit"));
         title = new Label (t.getString("gameOver.lbl.Title"));
         lblResult = new Label(t.getString("gameOver.lbl.Results"));
+        btnBackToLobby = new Button("Back to Lobby");
 
         // defined languages
         choiceBoxLanguageGameOverView = new ChoiceBox<>();
@@ -142,10 +145,13 @@ public class GameOverView {
         btnExit.setTranslateX(720);
         btnExit.setTranslateY(420);
 
+        btnBackToLobby.setTranslateX(600);
+        btnBackToLobby.setTranslateY(420);
+
         choiceBoxLanguageGameOverView.setTranslateX(600);
         choiceBoxLanguageGameOverView.setTranslateY(420);
 
-        root.getChildren().addAll(btnExit,choiceBoxLanguageGameOverView);
+        root.getChildren().addAll(btnExit,choiceBoxLanguageGameOverView, btnBackToLobby);
     }
 
     public void createTableView() {

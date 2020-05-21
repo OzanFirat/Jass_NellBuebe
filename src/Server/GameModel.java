@@ -42,6 +42,25 @@ public class GameModel {
         deck = new DeckOfCards();
     }
 
+    public  void resetGameModel() {
+        players = new ArrayList<>();
+        currentPlayer = null;
+        currentRound = null;
+        currentWinner = null;
+        allPlayedRounds = new ArrayList<>();
+        indexOfCurrentPlayer = 0;
+        deck = new DeckOfCards();
+        winnerOfGame = null;
+        playingOrder = new ArrayList<>();
+        roundCounter = 0;
+        maxPoints = 0;
+        currentRoundPoints = 0;
+        trumpf = null;
+        indexOfStartPlayer = 0;
+        allCardsPlayedCounter = 0;
+        evaluationtype = null;
+    }
+
 
     public synchronized void removePlayer(String playerName){
         Player playerToRemove = null;
@@ -53,9 +72,9 @@ public class GameModel {
         players.remove(playerToRemove);
     }
 
-    public void addPlayer(String playerName, int id){
+    public void addPlayer(String playerName){
         if (players.size() < 4) {
-            Player p = new Player(playerName, id);
+            Player p = new Player(playerName);
             players.add(p);
             currentPlayer = players.get(0);
         }

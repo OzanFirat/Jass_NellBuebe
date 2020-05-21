@@ -218,29 +218,33 @@ public class GameView {
         Platform.runLater( new Runnable() {
             public void run() {
                 boxTrumpfChoice = new VBox(50);
-                boxTrumpfChoice.setMinWidth(400);
+                boxTrumpfChoice.setMinWidth(600);
                 boxTrumpfChoice.setMinHeight(300);
-                boxTrumpfChoice.setTranslateX(xMiddle - 200);
+                boxTrumpfChoice.setTranslateX(xMiddle - 300);
                 boxTrumpfChoice.setTranslateY(yMiddle - 150);
 
                 listTrumpfLabels = new ArrayList<>();
 
-                TrumpfLabel hearts = new TrumpfLabel("hearts", style);
-                TrumpfLabel clubs = new TrumpfLabel("clubs", style);
-                TrumpfLabel diamonds = new TrumpfLabel("diamonds", style);
-                TrumpfLabel spades = new TrumpfLabel("spades", style);
+                TrumpfLabel hearts = new TrumpfLabel("hearts", style, true);
+                TrumpfLabel clubs = new TrumpfLabel("clubs", style, true);
+                TrumpfLabel diamonds = new TrumpfLabel("diamonds", style, true);
+                TrumpfLabel spades = new TrumpfLabel("spades", style, true);
+                TrumpfLabel bottomUp = new TrumpfLabel("Bottom Up", style, false);
+                TrumpfLabel topDown = new TrumpfLabel("Top Down", style, false);
 
                 listTrumpfLabels.add(hearts);
                 listTrumpfLabels.add(clubs);
                 listTrumpfLabels.add(diamonds);
                 listTrumpfLabels.add(spades);
+                listTrumpfLabels.add(bottomUp);
+                listTrumpfLabels.add(topDown);
 
                 HBox container = new HBox(20);
 
                 container.setAlignment(Pos.CENTER);
                 container.getChildren().addAll(listTrumpfLabels);
 
-                titleChooseTrumpf = new Label("Choose Trumpf for the game");
+                titleChooseTrumpf = new Label("Choose Trumpf for the game"); // TODO set text with serviceLocator
                 titleChooseTrumpf.getStyleClass().add("login-text");
 
 

@@ -27,7 +27,7 @@ public class ClientCommunication {
     // declaring all socket elements
     private Socket socket;
 
-    private ClientModel model = JassClient.mainProgram.getClientModel();
+    private ClientModel clientModel = JassClient.mainProgram.getClientModel();
     // private GameController gameController = JassClient.mainProgram.getGameController();
 
 
@@ -181,12 +181,12 @@ public class ClientCommunication {
                             logger.info("Game cannot be continued, because one player has left the game");
                             break;
                         case LOGINACCEPTED:
-                            model.setUserName(receivedMessage.getUserName());
+                            clientModel.setUserName(receivedMessage.getUserName());
                             JassClient.mainProgram.getLoginController().loginAccepted();
                             logger.info("Login accepted");
                             break;
                         case WHOISIN:
-                            model.setPlayerNames(receivedMessage.getPlayerNames());
+                            clientModel.setPlayerNames(receivedMessage.getPlayerNames());
                             JassClient.mainProgram.getLobbyController().updateLobby();
                             JassClient.mainProgram.getChatcontroller().updateChatEntry();
                             logger.info("Who is in message received");
@@ -204,14 +204,14 @@ public class ClientCommunication {
                             // initialize the game
 
                             if (gameCounter == 0) {
-                                model.fillOppPlayerList();
+                                clientModel.fillOppPlayerList();
                                 // fill the ObservableList to show the updated scores during the game
-                                model.fillPlayerWithPoints();
+                                clientModel.fillPlayerWithPoints();
                                 JassClient.mainProgram.getGameController().initializeGame();
                                 JassClient.mainProgram.getSettingsView().stop();
                             }
 
-                            if (model.getUserName().equals(receivedMessage.getPlayerName())) {
+                            if (clientModel.getUserName().equals(receivedMessage.getPlayerName())) {
                                 JassClient.mainProgram.getGameView().createTrumpfChoice();
                                 JassClient.mainProgram.getGameController().handleTrumpfChoiceAction();
                             }
@@ -219,15 +219,20 @@ public class ClientCommunication {
                             break;
 
                         case TRUMPF:
-                            model.setTrumpf(receivedMessage.getTrumpf());
-                            // fill the ObservableList to show the updated scores during the game
+                            if (receivedMessage.getTrumpf() != null) {
+                                clientModel.setTrumpf(receivedMessage.getTrumpf());
+                            } else {
+                                clientModel.setTrumpf(receivedMessage.getGameType());
+                            }
+                            // update the trumpf elements to display the trumpf for the game
                             JassClient.mainProgram.getGameController().updateTrumpfElements();
                             break;
+
                         case DEALCARDS:
                             // Set your cards and put the opponents in the right order to display in view
-                            if (model.getUserName().equals(receivedMessage.getPlayerName())) {
+                            if (clientModel.getUserName().equals(receivedMessage.getPlayerName())) {
                                 JassClient.mainProgram.getSettingsController().setCardStyle();
-                                model.setYourCards(receivedMessage.getArrayList());
+                                clientModel.setYourCards(receivedMessage.getArrayList());
                                 logger.info(userName +" has received his cards");
 
                                 logger.info("The game has launched");
@@ -236,12 +241,12 @@ public class ClientCommunication {
                             break;
 
                         case YOURTURN:
-                            if (receivedMessage.getPlayerName().equals(model.getUserName())) {
-                                logger.info("It's your turn - " + model.getUserName());
+                            if (receivedMessage.getPlayerName().equals(clientModel.getUserName())) {
+                                logger.info("It's your turn - " + clientModel.getUserName());
                                 // if it's your turn, remove the overlay and set the cards on action
                                 // if it's your turn, remove the overlay and set the cards on action
                                 if (receivedMessage.getIllegalCards() != null) {
-                                    model.createIndexIllegalCards(receivedMessage.getIllegalCards());
+                                    clientModel.createIndexIllegalCards(receivedMessage.getIllegalCards());
                                 }
                                 JassClient.mainProgram.getGameView().hideOverlayNotYourTurn();
                                 JassClient.mainProgram.getGameController().handleCardAction();
@@ -254,18 +259,18 @@ public class ClientCommunication {
                             break;
 
                         case CARDPLAYED:
-                            for (int i = 0; i < model.getOppPlayerNames().size(); i++) {
-                                if (receivedMessage.getCurrentPlayer().equals(model.getOppPlayerNames().get(i))) {
-                                    logger.info(model.getOppPlayerNames().get(i) + " has played card: " + receivedMessage.getCardString());
-                                    model.setIndexCurrentPlayer(model.getOppPlayerNames().indexOf(model.getOppPlayerNames().get(i)));
-                                    JassClient.mainProgram.getGameView().updateCardsPlayedByOpps(receivedMessage.getCardString(), model.getIndexCurrentPlayer());
+                            for (int i = 0; i < clientModel.getOppPlayerNames().size(); i++) {
+                                if (receivedMessage.getCurrentPlayer().equals(clientModel.getOppPlayerNames().get(i))) {
+                                    logger.info(clientModel.getOppPlayerNames().get(i) + " has played card: " + receivedMessage.getCardString());
+                                    clientModel.setIndexCurrentPlayer(clientModel.getOppPlayerNames().indexOf(clientModel.getOppPlayerNames().get(i)));
+                                    JassClient.mainProgram.getGameView().updateCardsPlayedByOpps(receivedMessage.getCardString(), clientModel.getIndexCurrentPlayer());
                                 }
                             }
                             break;
 
                         case ROUNDFINISHED:
                             System.out.println("The Winner of the round is: " + receivedMessage.getPlayerName());
-                            for (PlayerScoreTuple p : model.getPlayerWithPoints()) {
+                            for (PlayerScoreTuple p : clientModel.getPlayerWithPoints()) {
                                 if (receivedMessage.getPlayerName().equals(p.getName()))
                                     p.setPoints(receivedMessage.getPointsOfRound());
                             }

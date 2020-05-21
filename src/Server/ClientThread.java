@@ -122,8 +122,13 @@ public class ClientThread extends Thread {
                     break;
                 case TRUMPF:
                     gameModel.setTrumpf(receivedMessage.getTrumpf());
+                    gameModel.setEvaluationtype(receivedMessage.getGameType());
                     gameModel.createRound();
-                    serverModel.broadcast(new Message(Message.Type.TRUMPF, gameModel.getTrumpf().toString()));
+                    if (receivedMessage.getTrumpf() != null) {
+                        serverModel.broadcast(new Message(Message.Type.TRUMPF, gameModel.getTrumpf().toString(), receivedMessage.getGameType()));
+                    } else {
+                        serverModel.broadcast(new Message(Message.Type.TRUMPF, null, receivedMessage.getGameType()));
+                    }
                     serverModel.broadcast(new Message(Message.Type.YOURTURN, gameModel.getCurrentPlayer().getPlayerName()));
                     break;
                 case EXITGAME:

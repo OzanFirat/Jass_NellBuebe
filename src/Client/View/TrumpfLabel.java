@@ -6,10 +6,12 @@ import javafx.scene.image.ImageView;
 
 public class TrumpfLabel extends Label {
     private String name;
+    private boolean isTrumpf;
 
-    public TrumpfLabel(String name, CardLabel.Style style) {
+    public TrumpfLabel(String name, CardLabel.Style style, boolean isTrumpf) {
         super();
         this.name = name;
+        this.isTrumpf = isTrumpf;
 
         String fileName = name;
         if (style.equals(CardLabel.Style.DE)) {
@@ -25,6 +27,14 @@ public class TrumpfLabel extends Label {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isTrumpf() {
+        return isTrumpf;
+    }
+
+    public void setTrumpf(boolean trumpf) {
+        isTrumpf = trumpf;
     }
 
 }

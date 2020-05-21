@@ -127,7 +127,11 @@ public class GameController {
                     });
 
                     lbl.setOnMouseClicked( e -> {
-                        clientCommunication.sendMessage(new Message(Message.Type.TRUMPF, lbl.getName()));
+                        if (lbl.isTrumpf()) {
+                            clientCommunication.sendMessage(new Message(Message.Type.TRUMPF, lbl.getName(), "Trumpf"));
+                        } else {
+                            clientCommunication.sendMessage(new Message(Message.Type.TRUMPF, null, lbl.getName()));
+                        }
                         gameView.removeFromRootJassGame(gameView.getBoxTrumpfChoice());
                     });
                 }

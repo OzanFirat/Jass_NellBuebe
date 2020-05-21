@@ -24,6 +24,7 @@ public class GameModel {
     private Player startPlayer;
     private int indexOfStartPlayer;
     private int allCardsPlayedCounter;
+    private Round.EVALUATIONTYPE evaluationtype;
 
     public static GameModel getGameModel() {
         if (gameModel == null){
@@ -135,24 +136,28 @@ public class GameModel {
         if (currentRound != null) {
             allPlayedRounds.add(currentRound);
         }
-        currentRound = new Round(trumpf);
+        currentRound = new Round(trumpf, evaluationtype);
         roundCounter++;
     }
 
     public void setTrumpf(String trumpf) {
-        switch (trumpf) {
-            case "hearts":
-                this.trumpf = Card.Suit.Hearts;
-                break;
-            case "clubs":
-                this.trumpf = Card.Suit.Clubs;
-                break;
-            case "diamonds":
-                this.trumpf = Card.Suit.Diamonds;
-                break;
-            case "spades":
-                this.trumpf = Card.Suit.Spades;
-                break;
+        if (trumpf != null) {
+            switch (trumpf) {
+                case "hearts":
+                    this.trumpf = Card.Suit.Hearts;
+                    break;
+                case "clubs":
+                    this.trumpf = Card.Suit.Clubs;
+                    break;
+                case "diamonds":
+                    this.trumpf = Card.Suit.Diamonds;
+                    break;
+                case "spades":
+                    this.trumpf = Card.Suit.Spades;
+                    break;
+            }
+        } else {
+            this.trumpf = null;
         }
     }
 
@@ -347,5 +352,24 @@ public class GameModel {
 
     public void setMaxPoints(int maxPoints) {
         this.maxPoints = maxPoints;
+    }
+
+    public Round.EVALUATIONTYPE getEvaluationtype() {
+        return evaluationtype;
+    }
+
+    public void setEvaluationtype(String e) {
+        String s = e;
+        switch (s) {
+            case "Trumpf":
+                this.evaluationtype = Round.EVALUATIONTYPE.TRUMPF;
+                break;
+            case "Bottom Up":
+                this.evaluationtype = Round.EVALUATIONTYPE.BOTTOMUP;
+                break;
+            case "Top Down":
+                this.evaluationtype = Round.EVALUATIONTYPE.TOPDOWN;
+                break;
+        }
     }
 }

@@ -29,7 +29,7 @@ public class SettingsView {
 
     private GridPane grid;
     public ArrayList<ImageView> imvTrumpfIcons = new ArrayList<ImageView>(4);
-    public Button btnStartGame;
+    public Button btnEnter;
     private Rectangle rect;
     public ArrayList<Button> btnChooseTrumpf = new ArrayList<Button>(4);
 
@@ -113,8 +113,8 @@ public class SettingsView {
         grid.add(lblChooseMaxPoints, 0, 2);
         grid.add(cbMaxPoints, 1, 2);
 
-        btnStartGame = new Button("Start Game");
-        grid.add(btnStartGame, 1, 3);
+        btnEnter = new Button("Start Game");
+        grid.add(btnEnter, 1, 3);
     }
 
 
@@ -134,5 +134,9 @@ public class SettingsView {
 
     public void setCbCardStyle(ChoiceBox cbCardStyle) {
         this.cbCardStyle = cbCardStyle;
+    }
+
+    public Stage getSettingsStage() {
+        return settingsStage;
     }
 }

@@ -31,6 +31,7 @@ public class ChatController {
         chatView.messageEntry.setOnKeyPressed(e->{
             switch (e.getCode()){
                 case ESCAPE:
+                    JassClient.mainProgram.getGameController().setChatPopup(false);
                     JassClient.mainProgram.stopChat();
                     break;
                 case ENTER:
@@ -44,12 +45,18 @@ public class ChatController {
         chatView.getScene().setOnKeyPressed(e-> {
             switch (e.getCode()){
                 case ESCAPE:
+                    JassClient.mainProgram.getGameController().setChatPopup(false);
                     JassClient.mainProgram.stopChat();
                     break;
                 case ENTER:
                     sendMessage();
             }
             e.consume();
+        });
+
+        chatView.getChatStage().setOnCloseRequest(e->{
+            chatView.stop();
+            JassClient.mainProgram.getGameController().setChatPopup(false);
         });
     }
     public void sendMessage(){

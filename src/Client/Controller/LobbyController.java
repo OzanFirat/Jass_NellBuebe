@@ -23,6 +23,9 @@ public class LobbyController {
     private ServiceLocator sl = ServiceLocator.getServiceLocator();
     private Translator t = sl.getTranslator();
 
+    private boolean settingsPopup = false;
+    private int maxPoints;
+
     public LobbyController(ClientModel model, LobbyView lobbyView) {
         this.model = model;
         this.lobbyView = lobbyView;
@@ -33,13 +36,18 @@ public class LobbyController {
         });
 
         lobbyView.getBtnStart().setOnAction(e -> {
-
-            cc.sendMessage(new Message(Message.Type.STARTGAME, cc.getUserName() + "has started the game"));
+            cc.sendMessage(new Message(Message.Type.STARTGAME, cc.getUserName(), maxPoints));
             log.info(model.getUserName() + " sent start game request");
         });
 
         lobbyView.getBtnChat().setOnAction(e -> {
-            JassClient.mainProgram.startChat();
+            if(!JassClient.mainProgram.getGameController().isChatPopup()){
+                JassClient.mainProgram.getGameController().setChatPopup(true);
+                JassClient.mainProgram.startChat();
+            }else{
+                JassClient.mainProgram.getGameController().setChatPopup(false);
+                JassClient.mainProgram.stopChat();
+            }
         });
 
         lobbyView.getBtnSettings().setOnAction( e-> {
@@ -84,5 +92,18 @@ public class LobbyController {
             Platform.exit();
             System.exit(0);
         }
+    }
+    // Getters and Setters
+
+    public boolean isSettingsPopup() {
+        return settingsPopup;
+    }
+
+    public void setSettingsPopup(boolean settingsPopup) {
+        this.settingsPopup = settingsPopup;
+    }
+
+    public void setMaxPoints(int maxPoints) {
+        this.maxPoints = maxPoints;
     }
 }

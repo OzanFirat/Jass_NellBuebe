@@ -21,6 +21,9 @@ public class GameController {
     private GameView gameView;
     private Logger log;
 
+    // set popups false
+    private boolean chatPopup = false;
+
     public ClientCommunication clientCommunication = ClientCommunication.getInstance();
 
 
@@ -44,7 +47,13 @@ public class GameController {
 
         // eventHandling for starting chatRoom
         gameView.btnChatGame.setOnAction( e-> {
-            JassClient.mainProgram.startChat();
+            if(!chatPopup){
+                chatPopup = true;
+                JassClient.mainProgram.startChat();
+            }else{
+                chatPopup = false;
+                JassClient.mainProgram.stopChat();
+            }
         });
 
         // eventHandling for all gameInstructions
@@ -235,6 +244,15 @@ public class GameController {
                 }
             }
         });
+    }
+
+    // Getters and Setters
+    public boolean isChatPopup() {
+        return chatPopup;
+    }
+
+    public void setChatPopup(boolean chatPopup) {
+        this.chatPopup = chatPopup;
     }
 
 

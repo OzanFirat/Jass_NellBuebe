@@ -19,12 +19,17 @@ public class SettingsController {
         this.settingsView = settingsView;
         log = JassClient.mainProgram.getLogger();
 
-        settingsView.btnStartGame.setOnAction( e -> {
+        settingsView.btnEnter.setOnAction(e -> {
             int maxPoints = (int) settingsView.getCbMaxPoints().getValue();
-            cc.sendMessage(new Message(Message.Type.STARTGAME, maxPoints));
+            JassClient.mainProgram.getLobbyController().setMaxPoints(maxPoints);
             settingsView.stop();
+            JassClient.mainProgram.getLobbyController().setSettingsPopup(false);
         });
 
+        settingsView.getSettingsStage().setOnCloseRequest(e->{
+            settingsView.stop();
+            JassClient.mainProgram.getLobbyController().setSettingsPopup(false);
+        });
     }
 
     public void setCardStyle() {

@@ -112,6 +112,10 @@ public class ChatView {
         this.scene = scene;
     }
 
+    public Stage getChatStage() {
+        return chatStage;
+    }
+
     public void start() {
         chatStage.setTitle(model.getUserName());
         chatStage.show();

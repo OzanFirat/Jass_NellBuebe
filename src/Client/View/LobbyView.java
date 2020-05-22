@@ -34,8 +34,12 @@ public class LobbyView {
 
     private Pane root;
 
+
     //Elements to display the languageSetting
     public ChoiceBox<String> choiceBoxLanguageLobbyView;
+
+    //Element for setting language for settingsView
+    public SettingsView settingsView;
 
     public LobbyView(Stage lobbyStage, ClientModel model) {
         this.stage = lobbyStage;
@@ -84,6 +88,7 @@ public class LobbyView {
                 sl.getConfiguration().setLocalOption("Language", sl.getLocales()[1].getLanguage());
                 sl.setTranslator(new Translator(sl.getLocales()[1].getLanguage()));
                 updateLobbyViewTexts();
+
             } else {
                 sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
                 sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));

@@ -45,7 +45,7 @@ public class GameOverView {
     public Label lblWinnerName;
 
     // lenght and width of the scene
-    private final double sceneWidth = 900;
+    private final double sceneWidth = 1000;
     private final double sceneHeight = 517;
 
     //Elements to display the languageSetting
@@ -148,7 +148,7 @@ public class GameOverView {
         btnBackToLobby.setTranslateX(600);
         btnBackToLobby.setTranslateY(420);
 
-        choiceBoxLanguageGameOverView.setTranslateX(600);
+        choiceBoxLanguageGameOverView.setTranslateX(840);
         choiceBoxLanguageGameOverView.setTranslateY(420);
 
         root.getChildren().addAll(btnExit,choiceBoxLanguageGameOverView, btnBackToLobby);

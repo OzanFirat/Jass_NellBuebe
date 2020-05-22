@@ -57,7 +57,7 @@ public class ServerView {
         languageMenu = new Menu(t.getString("server.menu.language"));
         helpMenu = new Menu(t.getString("server.menu.help"));
 
-        jassHelp = new MenuItem("Game Set Up");
+        jassHelp = new MenuItem(t.getString("server.menuItem.jassHelp"));
 
 
         mBar.getMenus().addAll(languageMenu, helpMenu);
@@ -140,6 +140,7 @@ public class ServerView {
         // Menus
         languageMenu.setText(t.getString("server.menu.language"));
         helpMenu.setText(t.getString("server.menu.help"));
+        jassHelp.setText(t.getString("server.menuItem.jassHelp"));
 
         //Labels and Buttons
         lblJassGame.setText(t.getString("server.label.JassGameServer"));

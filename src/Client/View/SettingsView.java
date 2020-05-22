@@ -43,19 +43,46 @@ public class SettingsView {
     private Label lblTitle;
 
     // lenght and width of the scene
-    private final double sceneWidth = 550;
+    private final double sceneWidth = 650;
     private final double sceneHeight = 200;
 
     //Define the image for the background
     private Image background = new Image(getClass().getClassLoader().getResourceAsStream("images/login_background_medium.jpg"));
 
+    //Elements to display the languageSetting
+    public ChoiceBox<String> choiceBoxLanguageSettingsView;
+
     public SettingsView(Stage settingsStage, ClientModel model) {
         this.settingsStage = settingsStage;
         this.model = model;
 
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+
+        // defined languages
+        choiceBoxLanguageSettingsView = new ChoiceBox<>();
+        choiceBoxLanguageSettingsView.setValue("DE");
+        choiceBoxLanguageSettingsView.getItems().add("EN");
+        choiceBoxLanguageSettingsView.getItems().add("DE");
+        choiceBoxLanguageSettingsView.setTranslateX(300);
+
+
+        choiceBoxLanguageSettingsView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+            if (newValue == "DE" || newValue == "GER") {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[1].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[1].getLanguage()));
+                updateSettingsViewTexts();
+
+            } else {
+                sl.getConfiguration().setLocalOption("Language", sl.getLocales()[0].getLanguage());
+                sl.setTranslator(new Translator(sl.getLocales()[0].getLanguage()));
+                updateSettingsViewTexts();
+            }
+        });
+
         createBackgroundImage();
         createGridPane();
-        rootSettings.getChildren().add(grid);
+        rootSettings.getChildren().addAll(grid);
 
         Scene scene = new Scene(rootSettings, sceneWidth, sceneHeight);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
@@ -87,39 +114,52 @@ public class SettingsView {
         background = new Image(getClass().getClassLoader().getResourceAsStream("images/background_plain.png"));
         ImageView imvBackground = new ImageView(background);
         imvBackground.setFitHeight(400);
-        imvBackground.setFitWidth(700);
+        imvBackground.setFitWidth(650);
         rootSettings.getChildren().add(imvBackground);
     }
 
     public void createGridPane() {
+
         grid = new GridPane();
         grid.setVgap(20);
         grid.setHgap(5);
         grid.setAlignment(Pos.CENTER);
 
-        lblTitle = new Label("Settings");
+        lblTitle = new Label(t.getString("settings.title"));
         grid.add(lblTitle, 0, 0);
         lblTitle.getStyleClass().add("login-text");
 
-        lblCardStyle = new Label(t.getString("lobby.lbl.CardStyle"));
+        lblCardStyle = new Label(t.getString("settings.lbl.CardStyle"));
         cbCardStyle = new ChoiceBox<>(FXCollections.observableArrayList("DE", "FR"));
         lblCardStyle.getStyleClass().add("login-text");
 
         grid.add(lblCardStyle, 0, 1);
         grid.add(cbCardStyle, 1, 1);
 
-        lblChooseMaxPoints = new Label("Choose at how many points the game should end");
+        lblChooseMaxPoints = new Label(t.getString("settings.lblChooseMaxPoints"));
         lblChooseMaxPoints.getStyleClass().add("login-text");
         cbMaxPoints = new ChoiceBox<>(FXCollections.observableArrayList(100, 1000, 1500));
 
         grid.add(lblChooseMaxPoints, 0, 2);
         grid.add(cbMaxPoints, 1, 2);
 
-        btnEnter = new Button("Enter");
+        btnEnter = new Button(t.getString("settings.btnEnter"));
         grid.add(btnEnter, 1, 3);
+
+        grid.add(choiceBoxLanguageSettingsView, 0,3);
     }
 
 
+    protected void updateSettingsViewTexts() {
+        ServiceLocator sl = ServiceLocator.getServiceLocator();
+        Translator t = sl.getTranslator();
+
+        // Labels and Buttons
+        lblChooseMaxPoints.setText(t.getString("settings.lblChooseMaxPoints"));
+        lblTitle.setText(t.getString("settings.title"));
+        btnEnter.setText(t.getString("settings.btnEnter"));
+        lblCardStyle.setText(t.getString("settings.lbl.CardStyle"));
+    }
 
 
     public ChoiceBox getCbMaxPoints() {
@@ -141,4 +181,5 @@ public class SettingsView {
     public Stage getSettingsStage() {
         return settingsStage;
     }
+
 }

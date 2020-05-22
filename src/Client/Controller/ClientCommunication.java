@@ -4,7 +4,6 @@ package Client.Controller;
 import Client.JassClient;
 import Client.Model.ClientModel;
 import Client.Model.PlayerScoreTuple;
-import Client.View.ChatView;
 import Common.Messages.Message;
 
 import java.io.IOException;

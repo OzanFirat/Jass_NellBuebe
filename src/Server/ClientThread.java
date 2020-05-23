@@ -113,7 +113,7 @@ public class ClientThread extends Thread {
                         } else {
                             gameModel.moveToNextStartPlayer();
                         }
-                        serverModel.broadcast(new Message(Message.Type.STARTGAME, gameModel.getCurrentPlayer().getPlayerName()));
+                        serverModel.broadcast(new Message(Message.Type.STARTGAME, gameModel.getCurrentPlayer().getPlayerName(), gameModel.getMaxPoints()));
                         for (int i = 0; i < gameModel.getNumOfPlayers(); i++) {
                             serverModel.broadcast(new Message(Message.Type.DEALCARDS, gameModel.getPlayers().get(i).getPlayerName(), gameModel.getPlayers().get(i).getHandCards()));
                         }
@@ -197,10 +197,11 @@ public class ClientThread extends Thread {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        serverModel.broadcast(new Message(Message.Type.GAMEFINISHED, gameModel.getWinnerofGame()));
+
                         if (gameModel.getMaxPoints() == 0) {
                             serverModel.broadcast(new Message(Message.Type.MAXPOINTSREACHED, gameModel.getWinnerofGame()));
                         } else {
+                            serverModel.broadcast(new Message(Message.Type.GAMEFINISHED, gameModel.getWinnerofGame()));
                             serverModel.broadcast(new Message(Message.Type.YOURTURN, "NOBODY"));
                             gameModel.dealCardsToPlayer();
                             for (int i = 0; i < gameModel.getNumOfPlayers(); i++) {

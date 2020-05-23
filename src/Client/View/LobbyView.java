@@ -56,7 +56,7 @@ public class LobbyView {
         createCBLanguage();
 
 
-        Scene scene = new Scene(root, 700, 400);
+        Scene scene = new Scene(root, 750, 400);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
         stage.setScene(scene);
         stage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/logo.png")));
@@ -102,7 +102,7 @@ public class LobbyView {
         background = new Image(getClass().getClassLoader().getResourceAsStream("images/login_background_medium.jpg"));
         imvBackground = new ImageView(background);
         imvBackground.setFitHeight(400);
-        imvBackground.setFitWidth(700);
+        imvBackground.setFitWidth(750);
         root.getChildren().addAll(imvBackground);
     }
 
@@ -114,7 +114,11 @@ public class LobbyView {
         btnSettings = new Button(t.getString("lobby.btn.Settings"));
         btnChat = new Button("Chat");
 
-        containerButtons = new HBox(50);
+        btnStart.getStyleClass().add("basic-button");
+        btnSettings.getStyleClass().add("basic-button");
+        btnChat.getStyleClass().add("basic-button");
+
+        containerButtons = new HBox(20);
         containerButtons.getChildren().addAll(btnSettings, btnChat, btnStart);
         containerButtons.setTranslateX(350);
         containerButtons.setTranslateY(300);

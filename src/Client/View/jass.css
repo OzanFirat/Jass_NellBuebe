@@ -1,9 +1,10 @@
 .oppName {
      -fx-alignment: center;
-     -fx-background-color: #000000;
+     -fx-background-color: #252422;
      -fx-text-fill: #ffffff;
-     -fx-font-weight: bolder;
+     -fx-font-weight: bold;
      -fx-font-family: "Comic Sans MS";
+     -fx-font-size: 14px;
 }
 
 .login-text {
@@ -14,13 +15,45 @@
     -fx-font-weight: bold;
 }
 
+.basic-button {
+    -fx-background-radius: 5;
+    -fx-background-color: #252422;
+    -fx-border-width: 3px;
+    -fx-border-color: whitesmoke;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Comic Sans MS";
+    -fx-text-fill: whitesmoke;
+    -fx-text-alignment: center;
+    -fx-border-radius: 3px;
+}
+
+.basic-button:hover {
+    -fx-background-color: whitesmoke;
+    -fx-cursor: hand;
+    -fx-border-color: black;
+    -fx-text-fill: black;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+.maxPoints {
+    -fx-background-color: whitesmoke;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill:  black;
+    -fx-border-color: #252422;
+    -fx-border-style: solid;
+    -fx-border-width: 10px;
+}
+
 .card-label-hover {
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.7) , 10,0,5,5 );
     -fx-cursor: hand;
 }
 
 .trumpf {
-    -fx-border-color: black;
+    -fx-border-color: #252422;
     -fx-border-style: solid;
     -fx-border-width: 10px;
 }
@@ -40,7 +73,7 @@
 }
 
 .winner-text {
-    -fx-background-color: black;
+    -fx-background-color: #252422;
     -fx-text-fill: gold;
     -fx-alignment: center;
     -fx-font-size: 18px;
@@ -64,7 +97,7 @@
 .table-view{
     -fx-background-color: transparent;
     -fx-border-width: 5px;
-    -fx-border-color: #424242;
+    -fx-border-color: #252422;
     -fx-border-style: solid;
 }
 
@@ -82,6 +115,8 @@
 .table-view .column-header-background .label{
     -fx-background-color: transparent;
     -fx-text-fill: white;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 14px;
 }
 
 .table-view .column-header {
@@ -109,6 +144,7 @@
 #titleRules{
     -fx-background-color:#424242;
     -fx-text-fill: white;
+    -fx-font-family: "Comic Sans MS";
     -fx-max-height: 30px;
     -fx-min-height: 20px;
     -fx-max-width: 150px;
@@ -118,6 +154,8 @@
 
 #rules{
     -fx-background-color: #616161;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
     -fx-text-fill: white;
     -fx-max-height: 30px;
     -fx-min-height: 20px;

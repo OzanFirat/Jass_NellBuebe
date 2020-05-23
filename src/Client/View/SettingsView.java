@@ -144,6 +144,7 @@ public class SettingsView {
         grid.add(cbMaxPoints, 1, 2);
 
         btnEnter = new Button(t.getString("settings.btnEnter"));
+        btnEnter.getStyleClass().add("basic-button");
         grid.add(btnEnter, 1, 3);
 
         grid.add(choiceBoxLanguageSettingsView, 0,3);

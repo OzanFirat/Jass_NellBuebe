@@ -143,6 +143,13 @@ public class ClientCommunication {
         this.userName = userName;
     }
 
+    public boolean isGameViewLaunch() {
+        return gameViewLaunch;
+    }
+
+    public void setGameViewLaunch(boolean gameViewLaunch) {
+        this.gameViewLaunch = gameViewLaunch;
+    }
 
     /*
      * a class that waits for the message from the server
@@ -210,7 +217,7 @@ public class ClientCommunication {
                                 clientModel.fillOppPlayerList();
                                 // fill the ObservableList to show the updated scores during the game
                                 clientModel.fillPlayerWithPoints();
-                                JassClient.mainProgram.getGameController().initializeGame();
+                                JassClient.mainProgram.getGameController().initializeGame(receivedMessage.getMaxPoints());
                                 JassClient.mainProgram.getSettingsView().stop();
                             }
 
@@ -285,6 +292,7 @@ public class ClientCommunication {
                                 interruptedException.printStackTrace();
                             }
                             JassClient.mainProgram.getGameView().hideRoundWinner(receivedMessage.getPlayerName());
+                            clientModel.orderScores();
                             JassClient.mainProgram.getGameView().getTvScoreTable().refresh();
                             JassClient.mainProgram.getGameController().updateGameHistory(receivedMessage.getPlayerName());
                             JassClient.mainProgram.getGameView().removeCardsInMiddle();

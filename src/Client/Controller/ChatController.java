@@ -23,6 +23,7 @@ public class ChatController {
         });
 
         chatView.exitChatButton.setOnAction(e->{
+            JassClient.mainProgram.getGameController().setChatPopup(false);
             JassClient.mainProgram.stopChat();
         });
 

@@ -1,6 +1,6 @@
 package Client.Model;
 
-public class PlayerScoreTuple<String, Int> {
+public class PlayerScoreTuple<String, Int> implements Comparable<PlayerScoreTuple>{
     private Int points;
     private final String name;
 
@@ -29,5 +29,13 @@ public class PlayerScoreTuple<String, Int> {
         } else {
             return tuple;
         }
+    }
+
+    @Override
+    public int compareTo(PlayerScoreTuple o) {
+        int yourPoints = (Integer) this.points;
+        int otherPoints = (Integer) o.getPoints();
+        int order =  otherPoints - yourPoints;
+        return order;
     }
 }

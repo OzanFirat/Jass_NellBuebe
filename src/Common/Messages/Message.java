@@ -133,6 +133,15 @@ public class Message implements Serializable {
         this.type = type;
         this.playerName = playerName;
         this.pointsOfRound = points;
+
+        switch (type) {
+            case STARTGAME:
+                this.maxPoints = points;
+                break;
+            case ROUNDFINISHED:
+                this.pointsOfRound = points;
+                break;
+        }
     }
 
     // message for too less plasyers

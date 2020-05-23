@@ -23,7 +23,6 @@ public class GameOverController {
             gameOverView.stop();
             JassClient.mainProgram.startLobby();
             cc.sendMessage(new Message(Message.Type.BACKTOLOBBY, model.getUserName()));
-            // TODO reset model so that another round can be played (tableView, fillOpPlayerList, Opplabels in view!)
             JassClient.mainProgram.resetClientModel();
             JassClient.mainProgram.getGameView().removeFromRootJassGame(JassClient.mainProgram.getGameView().getvBoxTrumpf());
         });

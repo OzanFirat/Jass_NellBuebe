@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import  javafx.scene.image.Image;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ClientModel {
 
@@ -87,6 +88,10 @@ public class ClientModel {
                 }
             }
         }
+    }
+
+    public void orderScores() {
+        Collections.sort(playerWithPoints);
     }
 
     // Getters and Setters

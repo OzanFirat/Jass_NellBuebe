@@ -142,14 +142,17 @@ public class GameOverView {
     }
 
     private void placeButton() {
-        btnExit.setTranslateX(720);
+        btnExit.getStyleClass().add("basic-button");
+        btnBackToLobby.getStyleClass().add("basic-button");
+
+        btnExit.setTranslateX(750);
         btnExit.setTranslateY(420);
 
         btnBackToLobby.setTranslateX(600);
         btnBackToLobby.setTranslateY(420);
 
-        choiceBoxLanguageGameOverView.setTranslateX(840);
-        choiceBoxLanguageGameOverView.setTranslateY(420);
+        choiceBoxLanguageGameOverView.setTranslateX(750);
+        choiceBoxLanguageGameOverView.setTranslateY(220);
 
         root.getChildren().addAll(btnExit,choiceBoxLanguageGameOverView, btnBackToLobby);
     }
@@ -170,7 +173,7 @@ public class GameOverView {
         tvScoreTable.setItems(model.getPlayerWithPoints());
 
         tvScoreTable.setTranslateX(600);
-        tvScoreTable.setTranslateY(250);
+        tvScoreTable.setTranslateY(260);
 
         rootTable.getChildren().add(tvScoreTable);
     }

@@ -111,6 +111,7 @@ public class LoginView {
         inputIpAdress.setText("127.0.0.1");
         btnLogIn.setText(t.getString("login.btn.Login"));
         btnLogIn.setAlignment(Pos.CENTER_RIGHT);
+        btnLogIn.getStyleClass().add("basic-button");
 
         lblWelcome.getStyleClass().add("login-text");
         lblUserName.getStyleClass().add("login-text");

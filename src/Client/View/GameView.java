@@ -51,6 +51,7 @@ public class GameView {
     Pane underlayCardsInMiddle;
     Pane paneScoreTable;
     VBox boxTrumpfChoice;
+    VBox vBoxMaxPoints;
 
     //Elements to display the opponents
     public Label lblPlayer2Name;
@@ -65,6 +66,9 @@ public class GameView {
 
     public Label lblWinnerUser;
     private Label lblUserName;
+
+    private Label titleMaxPoints;
+    private Label lblMaxPoints;
 
     // Elements to display trumpf choice
     private ArrayList<TrumpfLabel> listTrumpfLabels;
@@ -161,6 +165,7 @@ public class GameView {
         createGameInstructions();
         createChatButton();
 
+
         registerForShutDown();
 
         rootJassGame.getChildren().addAll(rootCards, cardsPlayedByOpponents, overlayNotYourTurn, paneScoreTable, gameInstructions);
@@ -176,12 +181,9 @@ public class GameView {
         gameStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/logo.png")));
     }
 
-
     public void start() {
         gameStage.show();
     }
-
-
 
     public void stop() {
         gameStage.hide();
@@ -288,6 +290,13 @@ public class GameView {
         rootJassGame.getChildren().addAll(lblWinnerUser, lblUserName);
     }
 
+    public void removeYourCards() {
+        for (CardLabel c : yourCards) {
+            rootCards.getChildren().remove(c);
+        }
+        yourCards = new ArrayList<>();
+    }
+
     // creates an overlay to enable cards if it's not your turn
     public void createOverlayNotYourTurn() {
 
@@ -361,7 +370,7 @@ public class GameView {
         underlayYourCards = new HBox(xSpaceCards);
         ArrayList<Rectangle> list = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
-            Rectangle rect = new Rectangle(cardWidth, cardHeight);
+            Rectangle rect = new Rectangle(cardWidth , cardHeight);
             rect.setFill(Color.rgb(0, 0, 0, 0.5));
             list.add(rect);
         }
@@ -553,7 +562,7 @@ public class GameView {
         // Getting the image and label to display the trumpf done
         lblTrumpf = new Label(t.getString("game.lbl.trump"));
         lblTrumpf.setMinWidth(70);
-        lblTrumpf.getStyleClass().add("login-text");
+        lblTrumpf.getStyleClass().add("oppName");
 
         HBox imgContainer = new HBox();
 
@@ -562,8 +571,9 @@ public class GameView {
         imgContainer.getStyleClass().add("trumpf");
 
         vBoxTrumpf.getChildren().addAll(lblTrumpf, imgContainer);
-        vBoxTrumpf.setTranslateX(950);
+        vBoxTrumpf.setTranslateX(1050);
         vBoxTrumpf.setTranslateY(spaceToEdge);
+        vBoxTrumpf.setAlignment(Pos.CENTER);
         rootJassGame.getChildren().add(vBoxTrumpf);
     }
 
@@ -577,17 +587,19 @@ public class GameView {
         tvcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tvcPoints.setCellValueFactory(new PropertyValueFactory<>("points"));
 
-        tvScoreTable.setMaxHeight(141);
-        tvScoreTable.setMaxWidth(160);
+        tvScoreTable.setMaxHeight(145);
+        tvScoreTable.setMaxWidth(165);
+
+
 
         tvScoreTable.setItems(model.getPlayerWithPoints());
 
-        tvScoreTable.setTranslateX(1100);
+        tvScoreTable.setTranslateX(1170);
         tvScoreTable.setTranslateY(spaceToEdge);
 
         // Create a rectangle to fill gap between frame and table
-        Rectangle rect = new Rectangle(160, 141);
-        rect.setTranslateX(1100);
+        Rectangle rect = new Rectangle(165, 145);
+        rect.setTranslateX(1170);
         rect.setTranslateY(spaceToEdge);
         rect.setFill(Color.BLACK);
 
@@ -637,8 +649,8 @@ public class GameView {
         Image trumpf = new Image(getClass().getClassLoader().getResourceAsStream("images/" + fileName));
         ImageView img = new ImageView();
         img.setImage(trumpf);
-        img.setFitWidth(50);
-        img.setFitHeight(50);
+        img.setFitWidth(60);
+        img.setFitHeight(60);
         return img;
     }
 
@@ -682,6 +694,29 @@ public class GameView {
 
     }
 
+    public void createBoxMaxPoints(int maxPoints) {
+        vBoxMaxPoints = new VBox(10);
+
+        titleMaxPoints = new Label("Points to reach"); // TODO ServiceLocator
+        titleMaxPoints.setMinWidth(80);
+        titleMaxPoints.getStyleClass().add("oppName");
+
+        lblMaxPoints = new Label(Integer.toString(maxPoints));
+        lblMaxPoints.setAlignment(Pos.CENTER);
+        lblMaxPoints.setMinWidth(80);
+        lblMaxPoints.setMinHeight(80);
+        lblMaxPoints.getStyleClass().add("maxPoints");
+
+        vBoxMaxPoints.getChildren().addAll(titleMaxPoints, lblMaxPoints);
+        vBoxMaxPoints.setAlignment(Pos.CENTER);
+        vBoxMaxPoints.setTranslateX(900);
+        vBoxMaxPoints.setTranslateY(spaceToEdge);
+
+        rootJassGame.getChildren().add(vBoxMaxPoints);
+
+
+    }
+
     public void createChoiceBoxLanguage() {
         // defined languages
         choiceBoxLanguageGameView = new ChoiceBox<>();
@@ -711,7 +746,7 @@ public class GameView {
     public void createChatButton() {
         // defined Chat-Elements in gameView
         btnChatGame = new Button(t.getString("game.button.chatroom"));
-        btnChatGame.setId("chatButton");
+        btnChatGame.getStyleClass().add("basic-button");
         btnChatGame.setTranslateX(1100);
         btnChatGame.setTranslateY(725);
         rootJassGame.getChildren().add(btnChatGame);
@@ -724,6 +759,7 @@ public class GameView {
         lblGameInstruction.setId("titleRules");
         lblGameInstruction.setTranslateX(60);
         lblGameInstruction.setTranslateY(605);
+
 
         btngameCards = new Button(t.getString("game.button.playingCards"));
         btngameCards.setId("rules");

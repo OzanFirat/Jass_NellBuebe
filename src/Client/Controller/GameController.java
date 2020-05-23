@@ -76,19 +76,22 @@ public class GameController {
         });
     }
 
-    public void initializeElements(){
+    public void initializeElements(int maxPoints){
         updateOpponentLabels();
         gameView.createGameHistory();
         gameView.createOverlayNotYourTurn();
         gameView.showOverlayNotYourTurn();
         gameView.createTableViewScore();
         gameView.setStageTitle(model.getUserName());
+        if (maxPoints != 0) {
+            gameView.createBoxMaxPoints(maxPoints);
+        }
     }
 
-    public void initializeGame(){
+    public void initializeGame(int maxPoints){
         Platform.runLater(new Runnable() {
             public void run() {
-                initializeElements();
+                initializeElements(maxPoints);
                 JassClient.mainProgram.stopLobby();
                 JassClient.mainProgram.startGame();
             }
@@ -234,13 +237,17 @@ public class GameController {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Exit");
                 alert.setHeaderText("Player left game!");
-                alert.setContentText("The game cannot be proceeded anymore");
+                alert.setContentText("The game cannot be proceeded anymore - You're getting redirected to the Lobby");
                 alert.showAndWait();
                 if(alert.getResult() ==  ButtonType.OK){
-                    clientCommunication.sendMessage(new Message(Message.Type.EXITGAME,model.getUserName()+"has left the game"));
+                    clientCommunication.sendMessage(new Message(Message.Type.BACKTOLOBBY, model.getUserName()));
+                    gameView.hideOverlayNotYourTurn();
+                    gameView.removeYourCards();
+                    JassClient.mainProgram.getGameView().removeFromRootJassGame(JassClient.mainProgram.getGameView().getvBoxTrumpf());
                     JassClient.mainProgram.getGameView().stop();
-                    Platform.exit();
-                    System.exit(0);
+                    JassClient.mainProgram.resetClientModel();
+                    JassClient.mainProgram.startLobby();
+                    clientCommunication.setGameViewLaunch(true);
                 }
             }
         });

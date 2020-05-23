@@ -76,6 +76,7 @@ public class ClientThread extends Thread {
                 case LOGOUT:
                     gameModel.removePlayer(receivedMessage.getPlayerName());
                     serverModel.removePlayerByName(receivedMessage.getPlayerName());
+                    gameModel.updatePlayerID();
                     serverModel.broadcast(new Message(Message.Type.WHOISIN, serverModel.getPlayerNames()));
                     logger.info(username + " disconnected  with LOGOUT.");
                     keepGoing = false;

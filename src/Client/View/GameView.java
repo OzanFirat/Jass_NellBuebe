@@ -114,8 +114,8 @@ public class GameView {
 
 
     // lenght and width of the scene
-    private final double sceneWidth = 1390;
-    private final double sceneHeight = 790;
+    private final double sceneWidth = 1400;
+    private final double sceneHeight = 800;
 
     //Define the image for the background
     private Image background = new Image(getClass().getClassLoader().getResourceAsStream("images/background_1400x800.png"));

@@ -80,6 +80,12 @@ public class GameModel {
         }
     }
 
+    public void updatePlayerID() {
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).setId(i + 1);
+        }
+    }
+
     public void setRandomStartPlayer() {
         Random rand = new Random();
         int determiner = rand.nextInt(4);

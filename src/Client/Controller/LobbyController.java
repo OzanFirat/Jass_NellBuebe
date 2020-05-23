@@ -37,7 +37,6 @@ public class LobbyController {
 
         lobbyView.getBtnStart().setOnAction(e -> {
             cc.sendMessage(new Message(Message.Type.STARTGAME, cc.getUserName(), maxPoints));
-            log.info(model.getUserName() + " sent start game request");
         });
 
         lobbyView.getBtnChat().setOnAction(e -> {
@@ -69,7 +68,6 @@ public class LobbyController {
         lobbyView.getPlayersInLobby().setText("");
         for (String s : model.getPlayerNames()) {
             lobbyView.getPlayersInLobby().appendText(s + "\n");
-            System.out.println(s);
         }
     }
 

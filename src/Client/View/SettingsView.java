@@ -64,7 +64,6 @@ public class SettingsView {
         choiceBoxLanguageSettingsView.setValue("DE");
         choiceBoxLanguageSettingsView.getItems().add("EN");
         choiceBoxLanguageSettingsView.getItems().add("DE");
-        choiceBoxLanguageSettingsView.setTranslateX(300);
 
 
         choiceBoxLanguageSettingsView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
@@ -131,6 +130,7 @@ public class SettingsView {
 
         lblCardStyle = new Label(t.getString("settings.lbl.CardStyle"));
         cbCardStyle = new ChoiceBox<>(FXCollections.observableArrayList("DE", "FR"));
+        cbCardStyle.getStyleClass().add("choiceBox");
         lblCardStyle.getStyleClass().add("login-text");
 
         grid.add(lblCardStyle, 0, 1);
@@ -138,7 +138,8 @@ public class SettingsView {
 
         lblChooseMaxPoints = new Label(t.getString("settings.lblChooseMaxPoints"));
         lblChooseMaxPoints.getStyleClass().add("login-text");
-        cbMaxPoints = new ChoiceBox<>(FXCollections.observableArrayList(100, 1000, 1500));
+        cbMaxPoints = new ChoiceBox<>(FXCollections.observableArrayList(100, 250, 500));
+        cbMaxPoints.getStyleClass().add("choiceBox");
 
         grid.add(lblChooseMaxPoints, 0, 2);
         grid.add(cbMaxPoints, 1, 2);
@@ -147,7 +148,9 @@ public class SettingsView {
         btnEnter.getStyleClass().add("basic-button");
         grid.add(btnEnter, 1, 3);
 
+        choiceBoxLanguageSettingsView.getStyleClass().add("choiceBox");
         grid.add(choiceBoxLanguageSettingsView, 0,3);
+        grid.setTranslateX(20);
     }
 
 

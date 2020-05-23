@@ -81,7 +81,7 @@ public class LobbyView {
         choiceBoxLanguageLobbyView.getItems().add("EN");
         choiceBoxLanguageLobbyView.getItems().add("DE");
         choiceBoxLanguageLobbyView.setTranslateX(580);
-        choiceBoxLanguageLobbyView.setTranslateY(120);
+        choiceBoxLanguageLobbyView.setTranslateY(100);
 
         choiceBoxLanguageLobbyView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
             if (newValue == "DE" || newValue == "GER") {
@@ -95,6 +95,7 @@ public class LobbyView {
                 updateLobbyViewTexts();
             }
         });
+        choiceBoxLanguageLobbyView.getStyleClass().add("choiceBox");
         root.getChildren().add(choiceBoxLanguageLobbyView);
     }
 
@@ -138,7 +139,7 @@ public class LobbyView {
     private void createTitle() {
         lblTitle = new Label("Lobby");
         lblTitle.setTranslateX(250);
-        lblTitle.setTranslateY(120);
+        lblTitle.setTranslateY(110);
         lblTitle.setMinWidth(250);
         lblTitle.getStyleClass().add("login-text");
         root.getChildren().add(lblTitle);

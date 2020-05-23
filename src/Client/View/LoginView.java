@@ -80,7 +80,7 @@ public class LoginView {
     private void createChoiceBoxLanguage() {
         // defined languages
         choiceBoxLanguageLoginView = new ChoiceBox<>();
-        choiceBoxLanguageLoginView.setValue("DE");
+        choiceBoxLanguageLoginView.getStyleClass().add("choiceBox");
         choiceBoxLanguageLoginView.getItems().add("EN");
         choiceBoxLanguageLoginView.getItems().add("DE");
 
@@ -108,6 +108,8 @@ public class LoginView {
         lblWelcome = new Label(t.getString("login.lbl.Welcome"));
         lblUserName = new Label(t.getString("login.lbl.UserName"));
         lblIpAddress = new Label(t.getString("login.lbl.IpAddress"));
+        lblWelcome.setMinWidth(300);
+        lblWelcome.setAlignment(Pos.CENTER_LEFT);
         inputIpAdress.setText("127.0.0.1");
         btnLogIn.setText(t.getString("login.btn.Login"));
         btnLogIn.setAlignment(Pos.CENTER_RIGHT);

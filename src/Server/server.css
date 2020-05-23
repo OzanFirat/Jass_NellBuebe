@@ -6,7 +6,28 @@
 .server-text {
     -fx-alignment: center;
     -fx-text-fill: white;
-    -fx-font-family: "Comic Sans MS";
+    -fx-font-family: "JetBrains Mono";
     -fx-font-size: 18px;
     -fx-font-weight: bold;
+}
+
+.button {
+    -fx-background-radius: 5;
+    -fx-background-color: #252422;
+    -fx-border-width: 3px;
+    -fx-border-color: whitesmoke;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: "JetBrains Mono";
+    -fx-text-fill: whitesmoke;
+    -fx-text-alignment: center;
+    -fx-border-radius: 3px;
+}
+
+.button:hover {
+    -fx-background-color: whitesmoke;
+    -fx-cursor: hand;
+    -fx-border-color: black;
+    -fx-text-fill: black;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
 }

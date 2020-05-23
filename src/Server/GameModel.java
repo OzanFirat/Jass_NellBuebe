@@ -217,7 +217,7 @@ public class GameModel {
         int numOfRoundsTotal = 9;
         currentWinner = currentRound.evaluateRound();
         currentRoundPoints = currentRound.countPoints();
-        if (roundCounter == numOfRoundsTotal) {
+        if (roundCounter % numOfRoundsTotal == 0) {
             currentRoundPoints += lastRoundBonus;
         }
         currentWinner.addPointsToCounter(currentRoundPoints);

@@ -65,7 +65,6 @@ public class ClientModel {
                 oppPlayerNames.set(2, s2);
                 break;
         }
-        System.out.println("Reordering done");
     }
 
     public void fillPlayerWithPoints() {

@@ -104,10 +104,12 @@ public class GameController {
                 if (firstRound) {
                     gameView.createTrumpfElements();
                     firstRound = false;
+                    gameView.createChoiceBoxLanguage();
                 } else {
                     gameView.removeFromRootJassGame(gameView.getvBoxTrumpf());
                     gameView.createTrumpfElements();
                 }
+
             }
         });
     }

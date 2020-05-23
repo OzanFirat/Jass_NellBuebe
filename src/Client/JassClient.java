@@ -66,37 +66,32 @@ public class JassClient extends Application {
         model = new ClientModel();
         loginView = new LoginView(primaryStage, model);
         loginController = new LoginController(model, loginView);
-        log.info("Login View MVC erstellt");
 
         // ******* Lobby View MVC
         Stage lobbyStage = new Stage();
         lobbyView = new LobbyView(lobbyStage, model);
         lobbyController = new LobbyController(model, lobbyView);
-        log.info("Lobby MVC erstellt");
 
         // ********* Chat View MVC
         Stage chatStage = new Stage();
         chatView = new ChatView(chatStage, model);
         chatController = new ChatController(model, chatView);
-        log.info("Chat View MVC erstellt");
 
         // ********* Settings / Create Game View MVC
         Stage settingsStage = new Stage();
         settingsView = new SettingsView(settingsStage, model);
         settingsController = new SettingsController(model, settingsView);
-        log.info("Settings View MVC erstellt");
 
         // ********* Game View MVC
         Stage gameStage = new Stage();
         gameView = new GameView(gameStage, model);
         gameController = new GameController(model, gameView);
-        log.info("Game View MVC erstellt");
 
         // ********* GameOver View MVC
         Stage gameOverStage = new Stage();
         gameOverView = new GameOverView(gameOverStage, model);
         gameOverController = new GameOverController(model, gameOverView);
-        log.info("Game Over View MVC erstellt");
+        log.info("Client successfully started");
 
         loginView.start();
 

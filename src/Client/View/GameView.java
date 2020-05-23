@@ -161,7 +161,6 @@ public class GameView {
 
         createUnderlayYourCards();
         createUnderlayCardsInMiddle();
-        createChoiceBoxLanguage();
         createGameInstructions();
         createChatButton();
 
@@ -273,7 +272,7 @@ public class GameView {
         rootCards.getChildren().addAll(yourCards);
 
         // create Label to display when user has won the round
-        lblWinnerUser = new Label("Winner"); //TODO get text done with service locator
+        lblWinnerUser = new Label(t.getString("gameView.label.winner")); //TODO get text done with service locator
         lblWinnerUser.getStyleClass().add("winner-text");
         lblWinnerUser.setMinWidth(100);
         lblWinnerUser.setTranslateX(xMiddle-50);
@@ -420,7 +419,7 @@ public class GameView {
         lblPlayer2Name.setMinWidth(imvPlayer2.getFitWidth());
         lblPlayer2Name.getStyleClass().add("oppName");
 
-        lblWinner2 = new Label("Winner");
+        lblWinner2 = new Label(t.getString("gameView.label.winner"));
         lblWinner2.getStyleClass().add("winner-text");
         lblWinner2.setVisible(false);
         lblWinner2.setMinWidth(imvPlayer2.getFitWidth());
@@ -452,7 +451,7 @@ public class GameView {
         lblPlayer3Name.setMinWidth(imvPlayer3.getFitWidth());
         lblPlayer3Name.getStyleClass().add("oppName");
 
-        lblWinner3 = new Label("Winner");
+        lblWinner3 = new Label(t.getString("gameView.label.winner"));
         lblWinner3.getStyleClass().add("winner-text");
         lblWinner3.setVisible(false);
         lblWinner3.setMinWidth(imvPlayer3.getFitWidth());
@@ -483,7 +482,7 @@ public class GameView {
         lblPlayer4Name.setMinWidth(imvPlayer4.getFitWidth());
         lblPlayer4Name.getStyleClass().add("oppName");
 
-        lblWinner4 = new Label("Winner");
+        lblWinner4 = new Label(t.getString("gameView.label.winner"));
         lblWinner4.getStyleClass().add("winner-text");
         lblWinner4.setVisible(false);
         lblWinner4.setMinWidth(imvPlayer4.getFitWidth());
@@ -525,8 +524,6 @@ public class GameView {
 
                         cardsPlayedByOpps.set(indexOfCurrentPlayer, c0);
                         cardsPlayedByOpponents.getChildren().add(c0);
-
-                        System.out.println("Next cards to be played at right side");
                         break;
                     case 1:
                         // Place the card for the player on the top
@@ -538,7 +535,6 @@ public class GameView {
 
                         cardsPlayedByOpps.set(indexOfCurrentPlayer, c1);
                         cardsPlayedByOpponents.getChildren().add(c1);
-                        System.out.println("Next card to be played on top side");
                         break;
                     case 2:
                         c2 = new CardLabel(cardName, style);
@@ -548,11 +544,8 @@ public class GameView {
 
                         cardsPlayedByOpps.set(indexOfCurrentPlayer, c2);
                         cardsPlayedByOpponents.getChildren().add(c2);
-                        System.out.println("Next card to be played on left side");
                         break;
                 }
-
-                System.out.println("Card to be placed is: " + cardName);
             }
         });
     }
@@ -583,6 +576,8 @@ public class GameView {
         tvcName = new TableColumn(t.getString("game.tableColumn.tvcName"));
         tvcPoints = new TableColumn(t.getString("game.tableColumn.tvcPoint"));
         tvScoreTable.getColumns().addAll(tvcName, tvcPoints);
+
+        tvcName.setMinWidth(90);
 
         tvcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tvcPoints.setCellValueFactory(new PropertyValueFactory<>("points"));
@@ -636,10 +631,6 @@ public class GameView {
         });
     }
 
-    public void setOpponentCards() {
-        cardsPlayedByOpponents.getChildren().addAll(playedCards);
-    }
-
     private ImageView loadTrumpfImage() {
         String fileName = model.getTrumpf();
         if (style.equals(CardLabel.Style.DE)) {
@@ -654,7 +645,7 @@ public class GameView {
         return img;
     }
 
-    public void showRoundWinner(String winnerName) {
+    public void showRoundWinner(String winnerName, int maxPoints) {
         Platform.runLater(new Runnable() {
             public void run() {
                 if (winnerName.equals(model.getOppPlayerNames().get(0))) {
@@ -697,8 +688,8 @@ public class GameView {
     public void createBoxMaxPoints(int maxPoints) {
         vBoxMaxPoints = new VBox(10);
 
-        titleMaxPoints = new Label("Points to reach"); // TODO ServiceLocator
-        titleMaxPoints.setMinWidth(80);
+        titleMaxPoints = new Label(t.getString("gameView.Label.pointsForWin")); // TODO ServiceLocator
+        titleMaxPoints.setMinWidth(115);
         titleMaxPoints.getStyleClass().add("oppName");
 
         lblMaxPoints = new Label(Integer.toString(maxPoints));
@@ -723,8 +714,8 @@ public class GameView {
         choiceBoxLanguageGameView.setValue("DE");
         choiceBoxLanguageGameView.getItems().add("EN");
         choiceBoxLanguageGameView.getItems().add("DE");
-        choiceBoxLanguageGameView.setId("languageSetting");
-        choiceBoxLanguageGameView.setTranslateX(1300);
+        choiceBoxLanguageGameView.getStyleClass().add("choiceBox");
+        choiceBoxLanguageGameView.setTranslateX(1250);
         choiceBoxLanguageGameView.setTranslateY(725);
 
         choiceBoxLanguageGameView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
@@ -962,6 +953,11 @@ public class GameView {
         tvcName.setText(t.getString("game.tableColumn.tvcName"));
         tvcPoints.setText(t.getString("game.tableColumn.tvcPoint"));
         lblTrumpf.setText(t.getString("game.lbl.trump"));
+        lblWinner2.setText(t.getString("gameView.label.winner"));
+        lblWinner3.setText(t.getString("gameView.label.winner"));
+        lblWinner4.setText(t.getString("gameView.label.winner"));
+        lblWinnerUser.setText(t.getString("gameView.label.winner"));
+        titleMaxPoints.setText(t.getString("gameView.Label.pointsForWin"));
     }
 
     public void showAlertGameFinished(String leader) {

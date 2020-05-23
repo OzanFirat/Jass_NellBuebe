@@ -64,7 +64,6 @@ public class ChatController {
         ClientCommunication cc = ClientCommunication.getInstance();
         Message msg = new Message(Message.Type.CHATMESSAGE, chatView.messageEntry.getText());
         cc.sendMessage(msg);
-        log.info("The following message has been successfully sent" + chatView.messageEntry.getText());
         chatView.messageEntry.setText("");
     }
 

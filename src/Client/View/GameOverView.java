@@ -153,6 +153,7 @@ public class GameOverView {
 
         choiceBoxLanguageGameOverView.setTranslateX(750);
         choiceBoxLanguageGameOverView.setTranslateY(220);
+        choiceBoxLanguageGameOverView.getStyleClass().add("choiceBox");
 
         root.getChildren().addAll(btnExit,choiceBoxLanguageGameOverView, btnBackToLobby);
     }
@@ -167,8 +168,10 @@ public class GameOverView {
         tvcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tvcPoints.setCellValueFactory(new PropertyValueFactory<>("points"));
 
-        tvScoreTable.setMaxHeight(142);
-        tvScoreTable.setMaxWidth(160);
+        tvcName.setMinWidth(90);
+
+        tvScoreTable.setMaxHeight(145);
+        tvScoreTable.setMaxWidth(165);
 
         tvScoreTable.setItems(model.getPlayerWithPoints());
 

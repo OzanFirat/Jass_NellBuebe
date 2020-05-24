@@ -14,10 +14,10 @@ public class Message implements Serializable {
     // there are different type of messages sent by the clients
     // Receive Players connected to the server as a List
     // Message an ordinary text message in a chatroom for conversations
-    // Clients can disconnect themselves from the server TODO
+    // Clients can disconnect themselves from the server
     // Clients can connect themselves from the LoginWindow to the server
     // Server can accept the connections from the clients unit the max players are 4
-    // Server can show a message if client loses connection to server TODO
+    // Server can show a message if client loses connection to server
     // Server can announce if the Game has started
     // Server can give turns for the currentPlayer who has to play
     // Server can give action by a GameAction from Player

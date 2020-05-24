@@ -246,7 +246,7 @@ public class GameView {
                 container.setAlignment(Pos.CENTER);
                 container.getChildren().addAll(listTrumpfLabels);
 
-                titleChooseTrumpf = new Label("Choose Trumpf for the game"); // TODO set text with serviceLocator
+                titleChooseTrumpf = new Label(t.getString("gameView.label.titleChooseTrumpf"));
                 titleChooseTrumpf.getStyleClass().add("login-text");
 
 
@@ -272,7 +272,7 @@ public class GameView {
         rootCards.getChildren().addAll(yourCards);
 
         // create Label to display when user has won the round
-        lblWinnerUser = new Label(t.getString("gameView.label.winner")); //TODO get text done with service locator
+        lblWinnerUser = new Label(t.getString("gameView.label.winner"));
         lblWinnerUser.getStyleClass().add("winner-text");
         lblWinnerUser.setMinWidth(100);
         lblWinnerUser.setTranslateX(xMiddle-50);
@@ -688,7 +688,7 @@ public class GameView {
     public void createBoxMaxPoints(int maxPoints) {
         vBoxMaxPoints = new VBox(10);
 
-        titleMaxPoints = new Label(t.getString("gameView.Label.pointsForWin")); // TODO ServiceLocator
+        titleMaxPoints = new Label(t.getString("gameView.Label.pointsForWin"));
         titleMaxPoints.setMinWidth(115);
         titleMaxPoints.getStyleClass().add("oppName");
 
@@ -780,7 +780,6 @@ public class GameView {
         gameInstructions = new Group(btngameCards, btnTrump, btnMinorSuit, btnBottomsUp, btnTopsDown, lblGameInstruction);
     }
 
-    // needs to be optimized TODO
     public void showConfirmationCloseGame(){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Exit Game");
@@ -957,7 +956,10 @@ public class GameView {
         lblWinner3.setText(t.getString("gameView.label.winner"));
         lblWinner4.setText(t.getString("gameView.label.winner"));
         lblWinnerUser.setText(t.getString("gameView.label.winner"));
-        titleMaxPoints.setText(t.getString("gameView.Label.pointsForWin"));
+        if (lblMaxPoints != null) {
+            titleMaxPoints.setText(t.getString("gameView.Label.pointsForWin"));
+        }
+        titleChooseTrumpf.setText(t.getString("gameView.label.titleChooseTrumpf"));
     }
 
     public void showAlertGameFinished(String leader) {
@@ -1007,5 +1009,13 @@ public class GameView {
 
     public Stage getGameStage() {
         return gameStage;
+    }
+
+    public VBox getvBoxMaxPoints() {
+        return vBoxMaxPoints;
+    }
+
+    public void setvBoxMaxPoints(VBox vBoxMaxPoints) {
+        this.vBoxMaxPoints = vBoxMaxPoints;
     }
 }

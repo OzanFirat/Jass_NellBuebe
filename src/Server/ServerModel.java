@@ -135,10 +135,6 @@ public class ServerModel {
         broadcast(message);
     }
 
-    public synchronized String getPlayerByName(String name) {
-        return playerNames.stream().filter(player -> player.equals(name)).toString();
-    }
-
     public synchronized void addPlayerByName(String name){
         playerNames.add(name);
     }
@@ -163,14 +159,6 @@ public class ServerModel {
         return ALLOWEDPLAYERS;
     }
 
-    // needs to be optimized TODO
-    public void closeAllThreads(){
-        for ( ClientThread t : clientThreads) {
-
-            Platform.exit();
-            System.exit(0);
-        }
-    }
 
     public synchronized boolean isGameModelResetted() {
         return gameModelResetted;

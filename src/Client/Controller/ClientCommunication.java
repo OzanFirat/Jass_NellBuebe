@@ -53,30 +53,18 @@ public class ClientCommunication {
         return ClientCommunication.instance;
     }
 
-    /**
-     * This method sends a message to the console
-     */
-    private void display(String msg) {
-        System.out.println(msg);
-    }
-
-    /**
-     * This method sends a message to the server
-     */
+    // The method used to send a message to the server
     void sendMessage(Message msg) {
         try {
             out.writeObject(msg);
             out.flush();
             out.reset();
         } catch (IOException e) {
-            display("Exception writing to server: " + e);
+            logger.info("Exception writing to server: " + e);
         }
     }
 
-    /**
-     * When something goes wrong
-     * Close the Input/Output streams and disconnect
-     */
+    // Close the socket and I/O stream in case something goes wrong
     private void disconnect() {
         try {
             if (in != null) in.close();
@@ -101,7 +89,7 @@ public class ClientCommunication {
 
             // if connection to server failed
         } catch (Exception e) {
-            display("Connection to Server has failed:" + e);
+            logger.info("Connection to Server has failed:" + e);
             JassClient.mainProgram.getLoginController().showAlertConnectionFailed();
             return false;
         }
@@ -116,7 +104,7 @@ public class ClientCommunication {
             out = new ObjectOutputStream(socket.getOutputStream());
             logger.info("I/O streams successfully created");
         } catch (IOException io) {
-            display("I/O Exception: " + io);
+            logger.info("I/O Exception: " + io);
             return false;
         }
 
@@ -162,7 +150,7 @@ public class ClientCommunication {
                     try {
                         receivedMessage = (Message) in.readObject();
                     } catch (IOException e) {
-                        display(userName + " Exception reading Streams: " + e);
+                        logger.info(userName + " Exception reading Streams: " + e);
                         break;
                     }
                     switch (receivedMessage.getType()) {

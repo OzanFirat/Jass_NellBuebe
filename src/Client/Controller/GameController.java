@@ -245,8 +245,9 @@ public class GameController {
                     clientCommunication.sendMessage(new Message(Message.Type.BACKTOLOBBY, model.getUserName()));
                     gameView.hideOverlayNotYourTurn();
                     gameView.removeYourCards();
-                    JassClient.mainProgram.getGameView().removeFromRootJassGame(JassClient.mainProgram.getGameView().getvBoxTrumpf());
-                    JassClient.mainProgram.getGameView().stop();
+                    gameView.removeFromRootJassGame(gameView.getvBoxMaxPoints());
+                    gameView.removeFromRootJassGame(gameView.getvBoxTrumpf());
+                    gameView.stop();
                     JassClient.mainProgram.resetClientModel();
                     JassClient.mainProgram.startLobby();
                     clientCommunication.setGameViewLaunch(true);

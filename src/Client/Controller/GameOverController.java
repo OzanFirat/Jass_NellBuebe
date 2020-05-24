@@ -36,5 +36,12 @@ public class GameOverController {
             Platform.exit();
             System.exit(0);
         });
+
+        gameOverView.getGameOverStage().setOnCloseRequest( e -> {
+            e.consume();
+            cc.sendMessage(new Message(Message.Type.CLIENTLOST, model.getUserName()));
+            Platform.exit();
+            System.exit(0);
+        });
     }
 }

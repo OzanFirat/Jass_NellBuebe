@@ -75,7 +75,7 @@ public class Player {
             }
         }
 
-        if(blockedCards.size()==0){
+        if(blockedCards.size()==0 || handCards.size() == 1){
             blockedCards = null;
         }
         return blockedCards;

@@ -216,4 +216,12 @@ public class GameOverView {
         tvcPoints.setText(t.getString("gameOver.tableView.Points"));
 
     }
+
+    public Stage getGameOverStage() {
+        return gameOverStage;
+    }
+
+    public void setGameOverStage(Stage gameOverStage) {
+        this.gameOverStage = gameOverStage;
+    }
 }

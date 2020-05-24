@@ -25,6 +25,7 @@ public class GameOverController {
             cc.sendMessage(new Message(Message.Type.BACKTOLOBBY, model.getUserName()));
             JassClient.mainProgram.resetClientModel();
             JassClient.mainProgram.getGameView().removeFromRootJassGame(JassClient.mainProgram.getGameView().getvBoxTrumpf());
+            JassClient.mainProgram.getGameView().removeFromRootJassGame(JassClient.mainProgram.getGameView().getvBoxMaxPoints());
         });
 
         gameOverView.btnExit.setOnAction( e -> {

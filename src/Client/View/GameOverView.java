@@ -58,7 +58,7 @@ public class GameOverView {
         btnExit = new Button (t.getString("gameOver.btn.Exit"));
         title = new Label (t.getString("gameOver.lbl.Title"));
         lblResult = new Label(t.getString("gameOver.lbl.Results"));
-        btnBackToLobby = new Button("Back to Lobby");
+        btnBackToLobby = new Button(t.getString("gameOver.btn.backToLobby"));
 
         // defined languages
         choiceBoxLanguageGameOverView = new ChoiceBox<>();

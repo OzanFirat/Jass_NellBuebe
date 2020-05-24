@@ -89,6 +89,7 @@ public class SettingsView {
         settingsStage.setY(300);
         settingsStage.setScene(scene);
         settingsStage.setTitle("Jass by NellBuebe - Settings");
+        settingsStage.setResizable(false);
         settingsStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/logo.png")));
     }
 

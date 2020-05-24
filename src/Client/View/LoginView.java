@@ -56,6 +56,7 @@ public class LoginView {
         Scene scene = new Scene(root, sceneWidth, sceneHeight);
         scene.getStylesheets().add(getClass().getResource("jass.css").toExternalForm());
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.setTitle("Jass by NellBuebe - Log In");
         stage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/logo.png")));
 

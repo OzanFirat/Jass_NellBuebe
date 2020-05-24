@@ -620,11 +620,14 @@ public class GameView {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                CardLabel cardToRemove = null;
                 for (CardLabel card : yourCards) {
                     if (card.getTranslateX() == xMiddle - (cardWidth / 2) && card.getTranslateY() == yMiddle + 10) {
                         rootCards.getChildren().remove(card);
+                        cardToRemove = card;
                     }
                 }
+                yourCards.remove(cardToRemove);
 
                 cardsPlayedByOpponents.getChildren().removeAll(c0, c1, c2);
             }
@@ -1017,5 +1020,13 @@ public class GameView {
 
     public void setvBoxMaxPoints(VBox vBoxMaxPoints) {
         this.vBoxMaxPoints = vBoxMaxPoints;
+    }
+
+    public ArrayList<CardLabel> getYourCards() {
+        return yourCards;
+    }
+
+    public void setYourCards(ArrayList<CardLabel> yourCards) {
+        this.yourCards = yourCards;
     }
 }

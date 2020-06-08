@@ -110,14 +110,6 @@ public class ServerModel {
         }
     }
 
-    //checks at the login and on startgame if there are enough, but not to many players
-    protected boolean checkPlayerCount(int arraySize){
-        if(arraySize == ALLOWEDPLAYERS){
-            return false;
-        }
-        return true;
-    }
-
     // this method checks if client tried to sent LOGOUT message to exit
     public void removeClient(int id) {
 
